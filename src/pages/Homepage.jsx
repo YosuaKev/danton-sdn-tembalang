@@ -1,0 +1,32 @@
+import React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import HeroSection from "../components/HeroSection";
+import FeaturesSection from "../components/FeatureSection";
+import AboutSection from "../components/AboutSection";
+import DepartmentsSection from "../components/DepartmentsSection";
+import TestimonialsSection from "../components/TestimonialsSection";
+import NewsSection from "../components/NewsSection";
+import GallerySection from "../components/GallerySection";
+import AlumniSection from "../components/AlumniSection";
+import JumlahSiswa from "../components/JumlahSiswa";
+
+const App = () => {
+  return (
+    <div className="min-h-screen bg-white">
+      <Header />
+      <HeroSection />
+      <JumlahSiswa />
+      <FeaturesSection />
+      <AboutSection />
+      <TestimonialsSection />
+      <NewsSection />
+      <GallerySection />
+      <Footer />
+    </div>
+  );
+};
+
+export default App;
