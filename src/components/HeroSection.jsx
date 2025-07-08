@@ -26,9 +26,11 @@ const HeroSection = () => {
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, provident.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
-                Daftar Sekarang
-              </button>
+              <a href="https://spmb.semarangkota.go.id/" target="_blank" rel="noopener noreferrer">
+                <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
+                  Daftar Sekarang
+                </button>
+              </a>
               <button className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors text-lg font-semibold">
                 Pelajari Lebih Lanjut
               </button>

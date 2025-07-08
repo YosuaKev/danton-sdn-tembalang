@@ -6,6 +6,8 @@ import BeritaPage from"./pages/BeritaSekolah";
 import PrestasiPage from "./pages/PrestasiSekolah";
 import DataGuruPage from "./pages/GuruSekolah";
 import KontakPage from "./pages/KontakSekolah";
+import LoginPage from "./admin/LoginPage";
+import BeritaAdmin from "./admin/BeritaAdmin";
 
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
         <Route path="/prestasi" element={<PrestasiPage/>}/>
         <Route path="/guru" element={<DataGuruPage/>}/>
         <Route path="/kontak" element={<KontakPage/>}/>
+        <Route path="/admin" element={<LoginPage/>}/>
+        <Route path="/beritaadmin" element={<BeritaAdmin/>}/>
       </Routes>
     </Router>
   )
