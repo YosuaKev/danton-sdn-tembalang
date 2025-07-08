@@ -46,7 +46,7 @@ const Berita = () => {
               <button href="#" onClick={handleHome} className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
               <button href="#" onClick={handleProfil} className="hover:text-blue-200 transition-colors duration-200">Profil</button>
               <button href="#" onClick={handleGuru} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Berita</a>
+              <a href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Berita</a>
               <button href="#" onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
               <button href="#" onClick={handleKontak}className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
             </nav>

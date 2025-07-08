@@ -16,6 +16,7 @@ import {
   Menu,
   Bell,
 } from "lucide-react";
+import HeaderAdmin from './HeaderAdmin'
 
 const BeritaAdmin = () => {
   // Sample initial data
@@ -259,32 +260,19 @@ const BeritaAdmin = () => {
                 </span>
               </div>
 
-              {/* Desktop Navigation */}
-              <div className="hidden md:ml-10 md:flex md:space-x-8">
-                {navItems.map((item) => (
-                  <a
-                    key={item.label}
-                    href="#"
-                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                      item.active
-                        ? "bg-blue-100 text-blue-700 border-b-2 border-blue-500"
-                        : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    <item.icon size={18} className="mr-2" />
-                    {item.label}
-                  </a>
-                ))}
-              </div>
+            {/* Navigation Links */}
+            <nav className="hidden md:flex space-x-6 ml-64">
+              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
+              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Profil</button>
+              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Guru</button>
+              <button href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Berita</button>
+              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
+              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
+            </nav>
             </div>
 
             {/* Right side items */}
             <div className="flex items-center space-x-4">
-              {/* Notifications */}
-              <button className="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full">
-                <Bell size={20} />
-                <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white"></span>
-              </button>
 
               {/* Add News Button */}
               <button

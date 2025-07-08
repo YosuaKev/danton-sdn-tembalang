@@ -31,9 +31,6 @@ const HeroSection = () => {
                   Daftar Sekarang
                 </button>
               </a>
-              <button className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors text-lg font-semibold">
-                Pelajari Lebih Lanjut
-              </button>
             </div>
           </div>
         </div>
