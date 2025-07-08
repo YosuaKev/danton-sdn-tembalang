@@ -7,6 +7,11 @@ const Berita = () => {
     const handleHome = (e) => {
     e.preventDefault();
     navigate('/')
+    }
+    const handleProfil = (e) => {
+    e.preventDefault();
+    navigate('/profil')
+    }
     const handleKontak = (e) => {
     e.preventDefault();
     navigate('/kontak');
@@ -23,7 +28,7 @@ const Berita = () => {
     e.preventDefault();
     navigate('/berita')
     }
-}
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header Navigation */}
@@ -38,12 +43,12 @@ const Berita = () => {
             
             {/* Navigation Links */}
             <nav className="hidden md:flex space-x-6">
-              <button href="#" onClick={handleHome} className="hover:text-blue-200 transition-colors duration-200">Home</button>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">About</a>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Guru</a>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Siswa</a>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Pendaftaran lainnya</a>
-              <a href="#" onClick={handleKontak}className="hover:text-blue-200 transition-colors duration-200">Kontak</a>
+              <button href="#" onClick={handleHome} className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
+              <button href="#" onClick={handleProfil} className="hover:text-blue-200 transition-colors duration-200">Profil</button>
+              <button href="#" onClick={handleGuru} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
+              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Berita</a>
+              <button href="#" onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
+              <button href="#" onClick={handleKontak}className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
             </nav>
             
             {/* Mobile Menu Button */}

@@ -19,6 +19,8 @@ const Header = () => {
       navigate('/guru')
       else if (item === 'Saran')
       navigate('/saran')
+      else if (item === 'Akademik')
+      navigate('/akademik')
     else {
       navigate(`/${item.toLowerCase()}`);
     }
@@ -40,7 +42,7 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Saran'].map((item) => (
+            {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Kontak', 'Akademik' ].map((item) => (
                 <button
           key={item}
           onClick={(e) => handleNavigation(e, item)}
@@ -53,8 +55,8 @@ const Header = () => {
 
           {/* Kontak Button */}
           <div className="hidden md:flex">
-            <button onClick={handleKontak} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              Kontak
+            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              Masuk
             </button>
           </div>
 
@@ -73,13 +75,13 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-              {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Saran'].map((item) => (
+              {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Kontak', 'Akademik' ].map((item) => (
                 <a key={item} href="#" className="block px-3 py-2 text-gray-700 hover:text-blue-600">
                   {item}
                 </a>
               ))}
               <button className="w-full mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Kontak
+                Masuk
               </button>
             </div>
           </div>

@@ -8,6 +8,11 @@ const DataGuruPage = () => {
   const handleHome = (e) => {
     e.preventDefault();
     navigate('/');
+    }
+    const handleProfil =(e) => {
+    e.preventDefault ();
+    navigate('/profil');
+    }
     const handleKontak = (e) => {
     e.preventDefault();
     navigate('/kontak');
@@ -24,7 +29,6 @@ const DataGuruPage = () => {
     e.preventDefault();
     navigate('/berita')
     }
-  }
 
   const teachers = [
     {
@@ -119,12 +123,12 @@ const DataGuruPage = () => {
 
             {/* Navigation Links */}
             <nav className="hidden md:flex space-x-6">
-              <a href="#" onClick={handleHome} className="text-white hover:text-blue-200 transition-colors duration-200">Beranda</a>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200">Profil</a>
+              <button href="#" onClick={handleHome} className="text-white hover:text-blue-200 transition-colors duration-200">Beranda</button>
+              <button href="#" onClick={handleProfil} className="text-white hover:text-blue-200 transition-colors duration-200">Profil</button>
               <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Guru</a>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200">Berita</a>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200">Prestasi</a>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200">Kontak</a>
+              <button href="#" onClick={handleBerita} className="text-white hover:text-blue-200 transition-colors duration-200">Berita</button>
+              <button href="#" onClick={handlePrestasi} className="text-white hover:text-blue-200 transition-colors duration-200">Prestasi</button>
+              <button href="#" onClick={handleKontak} className="text-white hover:text-blue-200 transition-colors duration-200">Kontak</button>
             </nav>
 
             {/* Mobile Menu Button */}

@@ -1,8 +1,30 @@
 import React from "react";
 import { useState } from "react";
 import { Menu, X, User, BookOpen, Users, Trophy, Newspaper, UserCheck, Phone, Mail, MapPin, Facebook, Instagram, Youtube, ChevronRight, GraduationCap, Monitor, Wrench, Calculator, Palette, Camera, Heart, Star } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+    const handleProfil = (e) => {
+      e.preventDefault();
+      navigate('/profil')
+    }
+    const handleKontak = (e) => {
+    e.preventDefault();
+    navigate('/kontak');
+    }
+    const handleGuru = (e) => {
+    e.preventDefault();
+    navigate('/guru')
+    }
+    const handlePrestasi = (e) => {
+    e.preventDefault();
+    navigate('/prestasi')
+    }
+    const handleBerita = (e) => {
+    e.preventDefault();
+    navigate('/berita')
+    }
   return (
     <footer className="bg-gray-900 text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,7 +53,7 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Navigasi</h4>
             <ul className="space-y-2">
-              {['Home', 'Profil', 'Jurusan', 'Guru', 'Prestasi', 'Berita', 'Alumni', 'Kontak'].map((item) => (
+              {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Kontak'].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-gray-400 hover:text-white transition-colors">
                     {item}

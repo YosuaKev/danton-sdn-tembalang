@@ -6,6 +6,11 @@ const Prestasi = () => {
     const handleHome = (e) => {
     e.preventDefault();
     navigate('/')
+    }
+    const handleProfil = (e) => {
+    e.preventDefault();
+    navigate('/profil');
+    }
     const handleKontak = (e) => {
     e.preventDefault();
     navigate('/kontak');
@@ -22,7 +27,7 @@ const Prestasi = () => {
     e.preventDefault();
     navigate('/berita')
     }
-}
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header Navigation */}
@@ -37,12 +42,12 @@ const Prestasi = () => {
             
             {/* Navigation Links */}
             <nav className="hidden md:flex space-x-6">
-              <a href="#" onClick={handleHome} className="hover:text-blue-200 transition-colors duration-200">Beranda</a>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Profil</a>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Guru</a>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Berita</a>
+              <button href="#" onClick={handleHome} className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
+              <button href="#" onClick={handleProfil} className="hover:text-blue-200 transition-colors duration-200">Profil</button>
+              <button href="#" onClick={handleGuru} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
+              <button href="#" onClick={handleBerita} className="hover:text-blue-200 transition-colors duration-200">Berita</button>
               <a href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Prestasi</a>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200">Kontak</a>
+              <button href="#" onClick={handleKontak} className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
             </nav>
             
             {/* Mobile Menu Button */}

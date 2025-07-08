@@ -1,8 +1,14 @@
 import React from "react";
 import { useState } from "react";
 import { Menu, X, User, BookOpen, Users, Trophy, Newspaper, UserCheck, Phone, Mail, MapPin, Facebook, Instagram, Youtube, ChevronRight, GraduationCap, Monitor, Wrench, Calculator, Palette, Camera, Heart, Star } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const AboutSection = () => {
+  const navigate = useNavigate();
+  const handleProfil = (e) => {
+    e.preventDefault();
+    navigate('/profil')
+    }
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,7 +31,7 @@ const AboutSection = () => {
               berbagai program keahlian yang sesuai dengan kebutuhan industri, kami telah 
               mencetak ribuan alumni yang sukses di berbagai bidang.
             </p>
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
+            <button onClick={handleProfil} className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
               Baca Selengkapnya
             </button>
           </div>

@@ -12,8 +12,27 @@ const Kontak = () => {
   const handleHome = (e) => {
     e.preventDefault();
     navigate('/');
-  }
-
+    }
+  const handleProfil = (e) => {
+    e.preventDefault();
+    navigate('/profil')
+    }
+  const handleKontak = (e) => {
+    e.preventDefault();
+    navigate('/kontak');
+    }
+    const handleGuru = (e) => {
+    e.preventDefault();
+    navigate('/guru')
+    }
+    const handlePrestasi = (e) => {
+    e.preventDefault();
+    navigate('/prestasi')
+    }
+    const handleBerita = (e) => {
+    e.preventDefault();
+    navigate('/berita')
+    }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -49,11 +68,11 @@ const Kontak = () => {
 
             {/* Navigation Links */}
             <nav className="hidden md:flex space-x-6">
-              <a href="#" onClick={handleHome} className="text-white hover:text-blue-200 transition-colors duration-200">Home</a>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200">About</a>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200">Guru</a>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200">Siswa</a>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200">Pendaftaran lainnya</a>
+              <button href="#" onClick={handleHome} className="text-white hover:text-blue-200 transition-colors duration-200">Home</button>
+              <button href="#" onClick={handleProfil} className="text-white hover:text-blue-200 transition-colors duration-200">Profil</button>
+              <button href="#" onClick={handleGuru} className="text-white hover:text-blue-200 transition-colors duration-200">Guru</button>
+              <button href="#" onClick={handleBerita} className="text-white hover:text-blue-200 transition-colors duration-200">Berita</button>
+              <button href="#" onClick={handlePrestasi} className="text-white hover:text-blue-200 transition-colors duration-200">Prestasi</button>
               <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Kontak</a>
             </nav>
 

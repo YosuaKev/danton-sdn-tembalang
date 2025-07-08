@@ -41,8 +41,8 @@ const Profil = () => {
               <button href="#" onClick={handleHome} className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
               <a href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Profil</a>
               <button href="#" onClick={handleGuru} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
-              <a href="#" onClick={handleBerita} className="hover:text-blue-200 transition-colors duration-200">Berita</a>
-              <a href="#" onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</a>
+              <button href="#" onClick={handleBerita} className="hover:text-blue-200 transition-colors duration-200">Berita</button>
+              <button href="#" onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
               <button href="#" onClick={handleKontak} className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
             </nav>
             
