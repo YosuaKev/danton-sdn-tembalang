@@ -221,10 +221,11 @@ const GuruAdmin = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navbar */}
-      <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center">
+              {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
                 <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
                 <span className="font-bold text-xl text-gray-900">
@@ -234,62 +235,72 @@ const GuruAdmin = () => {
                   Admin
                 </span>
               </div>
-              {/* Navigation Links */}
-              <nav className="hidden md:flex space-x-6 ml-64">
-                <button
-                  href="#"
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Beranda
-                </button>
-                <button
-                  href="#" onClick={handleProfilAdmin} 
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Profil
-                </button>
-                <button
-                  href="#" 
-                  className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400"
-                >
-                  Guru
-                </button>
-                <button
-                  href="#"
-                  onClick={handleBeritaAdmin} className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Berita
-                </button>
-                <button
-                  href="#"
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Prestasi
-                </button>
-                <button
-                  href="#"
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Kontak
-                </button>
-              </nav>
             </div>
 
-            {/* Right side items */}
-            <div className="flex items-center space-x-4"></div>
-
-            {/* Profile/Logout */}
-            <div className="relative">
-              <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
-                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                <span className="hidden md:block text-sm font-medium">
-                  Admin
-                </span>
+            <nav className="hidden md:flex space-x-6">
+              <button
+                className="hover:text-blue-600 transition-colors duration-200"
+              >
+                Beranda
               </button>
-            </div>
+              <a
+                href="#"
+                onClick={handleProfilAdmin} 
+                className="hover:text-blue-600 transition-colors duration-200"
+              >
+                Profil
+              </a>
+              <button 
+                className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400"
+              >
+                Guru
+              </button>
+              <button
+                onClick={handleBeritaAdmin}
+                className="hover:text-blue-600 transition-colors duration-200"
+              >
+                Berita
+              </button>
+              <button
+                className="hover:text-blue-600 transition-colors duration-200"
+              >
+                Prestasi
+              </button>
+              <button
+                className="hover:text-blue-600 transition-colors duration-200"
+              >
+                Kontak
+              </button>
+            </nav>
+
+            <button className="md:hidden">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+            
+            {/* Profile/Logout */}
+              <div className="relative">
+                <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
+                  <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                  <span className="hidden md:block text-sm font-medium">
+                    Admin
+                  </span>
+                </button>
+              </div>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">

@@ -247,7 +247,7 @@ const BeritaAdmin = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navigation Bar */}
-      <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
@@ -336,18 +336,18 @@ const BeritaAdmin = () => {
             </div>
           </div>
         )}
-      </nav>
+      </header>
 
       {/* Header Navigation */}
-      <header className="bg-white shadow-md">
+      <header className="bg-blue-900 text-white py-4">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex justify-center item-center text-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                News Management
+              <h1 className="text-2xl font-bold bg-blue-900">
+                Manajemen Berita
               </h1>
-              <p className="text-gray-600">
-                Manage school news and announcements
+              <p className="text-white">
+                Mengatur berita sekolah dan pengumuman.
               </p>
             </div>
           </div>

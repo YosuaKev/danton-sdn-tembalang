@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
+import { X, Menu } from 'lucide-react';
 
 
 const Profil = () => {
