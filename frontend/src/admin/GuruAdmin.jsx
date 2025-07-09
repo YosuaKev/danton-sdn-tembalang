@@ -13,6 +13,15 @@ import HeaderAdmin from "./HeaderAdmin";
 import { useNavigate } from "react-router-dom";
 
 const GuruAdmin = () => {
+  const navigate = useNavigate();
+      const handleBeritaAdmin = (e) => {
+      e.preventDefault();
+      navigate('/beritaadmin')
+      }
+      const handleProfilAdmin = (e) => {
+        e.preventDefault();
+        navigate('/profiladmin')
+      }
   // Mock data for demonstration
   const [teachers, setTeachers] = useState([
     {
@@ -211,7 +220,7 @@ const GuruAdmin = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Admin Navbar */}
       <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -234,20 +243,20 @@ const GuruAdmin = () => {
                   Beranda
                 </button>
                 <button
-                  href="#"
+                  href="#" onClick={handleProfilAdmin} 
                   className="hover:text-blue-200 transition-colors duration-200"
                 >
                   Profil
                 </button>
                 <button
-                  href="#"
-                  className="hover:text-blue-200 transition-colors duration-200"
+                  href="#" 
+                  className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400"
                 >
                   Guru
                 </button>
                 <button
                   href="#"
-                  className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400"
+                  onClick={handleBeritaAdmin} className="hover:text-blue-200 transition-colors duration-200"
                 >
                   Berita
                 </button>
@@ -265,9 +274,10 @@ const GuruAdmin = () => {
                 </button>
               </nav>
             </div>
-            
+
             {/* Right side items */}
             <div className="flex items-center space-x-4"></div>
+
             {/* Profile/Logout */}
             <div className="relative">
               <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
@@ -405,61 +415,111 @@ const GuruAdmin = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white mt-12">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Kontak</h3>
-              <p className="text-gray-300">Email: admin@sekolah.sch.id</p>
-              <p className="text-gray-300">Telepon: (021) 123-4567</p>
-              <p className="text-gray-300">
-                Alamat: Jl. Pendidikan No. 123, Jakarta
-              </p>
+      <footer className="bg-blue-900 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Logo and Contact Info */}
+            <div className="md:col-span-1">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                  <span className="text-xs font-bold">SDN</span>
+                </div>
+                <span className="font-medium">SDN NGAWI</span>
+              </div>
+              <div className="space-y-2 text-sm">
+                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p>
+                <p>Jawa Tengah 43351, Indonesia</p>
+                <p>(024)6708666</p>
+                <p>inpakan@smp1.sch.ac.id</p>
+              </div>
             </div>
+
+            {/* Jelajah */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">Navigasi</h3>
-              <ul className="space-y-2">
+              <h3 className="font-semibold mb-4">Jelajah</h3>
+              <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white">
-                    Dashboard
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    Sambutan
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white">
-                    Data Guru
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    Profil Sekolah
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white">
-                    Data Siswa
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    Berita
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white">
-                    Laporan
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    Galeri
                   </a>
                 </li>
               </ul>
             </div>
+
+            {/* Halaman Umum */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">Media Sosial</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-300 hover:text-white">
-                  Facebook
-                </a>
-                <a href="#" className="text-gray-300 hover:text-white">
-                  Twitter
-                </a>
-                <a href="#" className="text-gray-300 hover:text-white">
-                  Instagram
-                </a>
+              <h3 className="font-semibold mb-4">Halaman Umum</h3>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    Data Guru
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    PPDB SDN
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    Panduan PPDB
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    Lokasi
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-200 transition-colors">
+                    Kontak
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Media Sosial */}
+            <div>
+              <h3 className="font-semibold mb-4">Media Sosial</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
+                    <span className="text-xs">f</span>
+                  </div>
+                  <span>Facebook</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-blue-400 rounded flex items-center justify-center">
+                    <span className="text-xs">t</span>
+                  </div>
+                  <span>Twitter</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-pink-600 rounded flex items-center justify-center">
+                    <span className="text-xs">i</span>
+                  </div>
+                  <span>Instagram</span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-            <p className="text-gray-300">
-              &copy; 2024 Sistem Administrasi Sekolah. All rights reserved.
-            </p>
+          <div className="border-t border-blue-800 mt-8 pt-8 text-center text-sm">
+            <p>&copy; 2024 SDN NGAWI. All rights reserved.</p>
           </div>
         </div>
       </footer>

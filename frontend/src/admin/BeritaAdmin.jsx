@@ -17,8 +17,19 @@ import {
   Bell,
 } from "lucide-react";
 import HeaderAdmin from './HeaderAdmin'
+import { useNavigate } from "react-router-dom";
 
 const BeritaAdmin = () => {
+  const navigate = useNavigate();
+    const handleGuruAdmin = (e) => {
+    e.preventDefault();
+    navigate('/guruadmin')
+    }
+    const handleProfilAdmin = (e) => {
+    e.preventDefault();
+    navigate('/profiladmin')
+    }
+
   // Sample initial data
   const [articles, setArticles] = useState([
     {
@@ -232,7 +243,7 @@ const BeritaAdmin = () => {
 
   const featuredArticle = articles.find((article) => article.featured);
   const regularArticles = articles.filter((article) => !article.featured);
-
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navigation Bar */}
@@ -254,8 +265,8 @@ const BeritaAdmin = () => {
             {/* Navigation Links */}
             <nav className="hidden md:flex space-x-6 ml-64">
               <button href="#" className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
-              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Profil</button>
-              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Guru</button>
+              <button href="#" onClick={handleProfilAdmin} className="hover:text-blue-200 transition-colors duration-200">Profil</button>
+              <button href="#" onClick={handleGuruAdmin} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
               <button href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Berita</button>
               <button href="#" className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
               <button href="#" className="hover:text-blue-200 transition-colors duration-200">Kontak</button>

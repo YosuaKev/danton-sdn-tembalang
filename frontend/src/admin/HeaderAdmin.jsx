@@ -8,21 +8,11 @@ const HeaderAdmin = () => {
   const handleNavigation = (e, item) => {
     e.preventDefault();
     if (item === "Profil") {
-      navigate("/profil"); // <- ke /profil, bukan /profile
+      navigate("/profiladmin"); // <- ke /profil, bukan /profile
     } else if (item === "Beranda") {
       navigate("/");
     } else if (item === "BeritaAdmin") {
-      navigate("/berita");
-    } else if (item === "Prestasi") {
-      navigate("/prestasi");
-    } else if (item === "Guru") {
-      navigate("/guru");
-    }
-    else if (item === "Saran") {
-      navigate("/saran");
-    }
-    else if (item === "Akademik") {
-      navigate("/akademik");
+      navigate("/beritaadmin");
     }
     else {
       navigate(`/${item.toLowerCase()}`);

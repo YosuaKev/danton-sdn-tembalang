@@ -9,6 +9,7 @@ import KontakPage from "./pages/KontakSekolah";
 import LoginPage from "./admin/LoginPage";
 import BeritaAdmin from "./admin/BeritaAdmin";
 import GuruAdmin from "./admin/GuruAdmin";
+import ProfilAdmin from "./admin/ProfilAdmin";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/admin" element={<LoginPage/>}/>
         <Route path="/beritaadmin" element={<BeritaAdmin/>}/>
         <Route path="/guruadmin" element={<GuruAdmin/>}/>
+        <Route path="/profiladmin" element={<ProfilAdmin/>}/>
       </Routes>
     </Router>
   )
