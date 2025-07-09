@@ -230,15 +230,6 @@ const BeritaAdmin = () => {
     }
   };
 
-  // Navigation items
-  const navItems = [
-    { icon: Home, label: "Dashboard", active: false },
-    { icon: BookOpen, label: "News", active: true },
-    { icon: Users, label: "Teachers", active: false },
-    { icon: Image, label: "Gallery", active: false },
-    { icon: Settings, label: "Settings", active: false },
-  ];
-
   const featuredArticle = articles.find((article) => article.featured);
   const regularArticles = articles.filter((article) => !article.featured);
 
