@@ -33,6 +33,10 @@ const Kontak = () => {
     e.preventDefault();
     navigate('/berita')
     }
+    const handleAkademik = (e) => {
+    e.preventDefault();
+    navigate('/akademik')
+    }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -74,6 +78,7 @@ const Kontak = () => {
               <button href="#" onClick={handleBerita} className="text-white hover:text-blue-200 transition-colors duration-200">Berita</button>
               <button href="#" onClick={handlePrestasi} className="text-white hover:text-blue-200 transition-colors duration-200">Prestasi</button>
               <button href="#" className="text-white hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Kontak</button>
+              <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
 
             {/* Mobile Menu Button */}
