@@ -27,7 +27,10 @@ const Prestasi = () => {
     e.preventDefault();
     navigate('/berita')
     }
-
+    const handleAkademik = (e) => {
+    e.preventDefault();
+    navigate('/akademik')
+    }
   return (
     <div className="min-h-screen bg-white">
       {/* Header Navigation */}
@@ -48,6 +51,7 @@ const Prestasi = () => {
               <button href="#" onClick={handleBerita} className="hover:text-blue-200 transition-colors duration-200">Berita</button>
               <a href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Prestasi</a>
               <button href="#" onClick={handleKontak} className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
+              <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
             
             {/* Mobile Menu Button */}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
+import { X, Menu } from 'lucide-react';
 
 
 const Profil = () => {
@@ -24,6 +25,10 @@ const Profil = () => {
     e.preventDefault();
     navigate('/berita')
     }
+    const handleAkademik = (e) => {
+    e.preventDefault();
+    navigate('/akademik')
+    }
   return (
     <div className="min-h-screen bg-white">
       {/* Header Navigation */}
@@ -44,6 +49,7 @@ const Profil = () => {
               <button href="#" onClick={handleBerita} className="hover:text-blue-200 transition-colors duration-200">Berita</button>
               <button href="#" onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
               <button href="#" onClick={handleKontak} className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
+              <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
             
             {/* Mobile Menu Button */}

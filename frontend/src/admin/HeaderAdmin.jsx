@@ -1,7 +1,26 @@
 import { useState } from 'react';
 
-function AdminButton() {
-  const [isOpen, setIsOpen] = useState(false);
+const HeaderAdmin = () => {
+  const navigate = useNavigate();
+  const handleNavigation = (e, item) => {
+    e.preventDefault();
+    if (item === "Profil") {
+      navigate("/profiladmin"); // <- ke /profil, bukan /profile
+    } else if (item === "Beranda") {
+      navigate("/");
+    } else if (item === "BeritaAdmin") {
+      navigate("/beritaadmin");
+    }
+    else {
+      navigate(`/${item.toLowerCase()}`);
+    }
+  };
+  const handleKontak = (e) => {
+    e.preventDefault();
+    navigate("/kontak");
+  };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
 
   return (
     <div className="relative">
@@ -32,4 +51,6 @@ function AdminButton() {
   );
 }
 
-export default AdminButton;
+
+export default HeaderAdmin;
+

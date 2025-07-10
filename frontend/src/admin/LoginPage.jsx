@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { User, Lock, Eye, EyeOff, GraduationCap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,11 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const handleProfilAdmin = (e) => {
+    e.preventDefault();
+    navigate('/profiladmin')
+    }
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -34,6 +40,7 @@ const LoginPage = () => {
         console.log('Remember Me:', formData.rememberMe);
         // In a real app, you would redirect to dashboard here
         alert('Login berhasil! Selamat datang di Dashboard Admin.');
+        navigate('/profiladmin');
       } else {
         setError('Username atau password salah. Silakan coba lagi.');
       }

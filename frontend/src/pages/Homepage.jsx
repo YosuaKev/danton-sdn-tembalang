@@ -20,9 +20,9 @@ const App = () => {
       <HeroSection />
       <JumlahSiswa />
       <FeaturesSection />
-      <AboutSection />
+      <section id="about"><AboutSection /></section>
       <TestimonialsSection />
-      <NewsSection />
+      <section id="news"><NewsSection /></section>
       <GallerySection />
       <Footer />
     </div>

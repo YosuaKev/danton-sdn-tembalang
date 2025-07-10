@@ -73,11 +73,19 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden">
+          <div className="md:hidden overflow-hidden transition-all duration-300 ease-in-out transform origin-top $ {isMenuOpen ? 'max-h-screen opacity-100 scale-y-100' : 'max-h-0 opacity-0 scale-y-0'}">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-              {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Kontak', 'Akademik' ].map((item) => (
-                <a key={item} href="#" className="block px-3 py-2 text-gray-700 hover:text-blue-600">
-                  {item}
+              {[
+                {label: 'Beranda', href: '/beranda'}, 
+                {label:'Profil', href: '/profil'}, 
+                {label:'Guru', href: '/guru'}, 
+                {label:'Prestasi', href: '/prestasi'}, 
+                {label:'Berita', href: '/berita'}, 
+                {label:'Kontak', href: '/kontak'}, 
+                {label:'Akademik', href: '/akademik'}, 
+              ].map((item) => (
+                <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                  {item.label}
                 </a>
               ))}
               <button className="w-full mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
