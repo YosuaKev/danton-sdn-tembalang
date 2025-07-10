@@ -29,6 +29,10 @@ const BeritaAdmin = () => {
     e.preventDefault();
     navigate('/profiladmin')
     }
+    const handleAkademikAdmin = (e) => {
+    e.preventDefault();
+    navigate('/akademikadmin')
+    }
 
   // Sample initial data
   const [articles, setArticles] = useState([
@@ -247,8 +251,8 @@ const BeritaAdmin = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navigation Bar */}
-      <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               {/* Logo */}
@@ -263,13 +267,13 @@ const BeritaAdmin = () => {
               </div>
 
             {/* Navigation Links */}
-            <nav className="hidden md:flex space-x-6 ml-64">
+            <nav className="hidden md:flex space-x-6 ml-50">
               <button href="#" className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
               <button href="#" onClick={handleProfilAdmin} className="hover:text-blue-200 transition-colors duration-200">Profil</button>
               <button href="#" onClick={handleGuruAdmin} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
               <button href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Berita</button>
               <button href="#" className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
+              <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
             </div>
 

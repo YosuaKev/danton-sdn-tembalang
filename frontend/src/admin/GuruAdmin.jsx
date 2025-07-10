@@ -22,6 +22,10 @@ const GuruAdmin = () => {
         e.preventDefault();
         navigate('/profiladmin')
       }
+      const handleAkademikAdmin = (e) => {
+        e.preventDefault();
+        navigate('/akademikadmin')
+      }
   // Mock data for demonstration
   const [teachers, setTeachers] = useState([
     {
@@ -266,13 +270,9 @@ const GuruAdmin = () => {
               >
                 Prestasi
               </button>
-              <button
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
-                Kontak
-              </button>
+              <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
-
+            
             <button className="md:hidden">
               <svg
                 className="w-6 h-6"

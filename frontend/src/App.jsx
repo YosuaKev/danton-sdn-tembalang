@@ -11,6 +11,7 @@ import LoginPage from "./admin/LoginPage";
 import BeritaAdmin from "./admin/BeritaAdmin";
 import GuruAdmin from "./admin/GuruAdmin";
 import ProfilAdmin from "./admin/ProfilAdmin";
+import AkademikAdmin from "./admin/AkademikAdmin";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/beritaadmin" element={<BeritaAdmin/>}/>
         <Route path="/guruadmin" element={<GuruAdmin/>}/>
         <Route path="/profiladmin" element={<ProfilAdmin/>}/>
+        <Route path="/akademikadmin" element={<AkademikAdmin/>}/>
       </Routes>
     </Router>
   )

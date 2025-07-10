@@ -249,13 +249,13 @@ const Kontak = () => {
 
             {/* Halaman Umum */}
             <div>
-              <h3 className="font-semibold mb-4">Halaman Umum</h3>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-blue-200 transition-colors">Data Guru</a></li>
-                <li><a href="#" className="hover:text-blue-200 transition-colors">PPDB SDN</a></li>
-                <li><a href="#" className="hover:text-blue-200 transition-colors">Panduan PPDB</a></li>
-                <li><a href="#" className="hover:text-blue-200 transition-colors">Lokasi</a></li>
-                <li><a href="#" className="hover:text-blue-200 transition-colors">Kontak</a></li>
+              <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
+              <ul className="space-y-2 text-blue-200">
+                <li><a href="#" onClick={handleGuru} className="hover:text-white transition-colors duration-200">Data Guru</a></li>
+                <li><a href="https://spmb.semarangkota.go.id/sd" className="hover:text-white transition-colors duration-200">SPMB SDN</a></li>
+                <li><a href="https://spmb.semarangkota.go.id/assets/content_upload/panduan/Panduan%20Pendaftaran%20SD%202025.pdf" className="hover:text-white transition-colors duration-200">Panduan SPMB</a></li>
+                <li><a href="https://maps.app.goo.gl/ZoFMEgttrNr5Ak6g6" className="hover:text-white transition-colors duration-200">Lokasi</a></li>
+                <li><a href="#" onClick={handleKontak} className="hover:text-white transition-colors duration-200">Kontak</a></li>
               </ul>
             </div>
 

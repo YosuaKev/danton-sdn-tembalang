@@ -12,10 +12,6 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const handleProfilAdmin = (e) => {
-    e.preventDefault();
-    navigate('/profiladmin')
-    }
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;

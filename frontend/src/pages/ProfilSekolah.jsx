@@ -184,11 +184,11 @@ const Profil = () => {
             <div>
               <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
               <ul className="space-y-2 text-blue-200">
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Data Guru</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">PPDB SDN</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Panduan PPDB</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Lokasi</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Kontak</a></li>
+                <li><a href="#" onClick={handleGuru} className="hover:text-white transition-colors duration-200">Data Guru</a></li>
+                <li><a href="https://spmb.semarangkota.go.id/sd" className="hover:text-white transition-colors duration-200">SPMB SDN</a></li>
+                <li><a href="https://spmb.semarangkota.go.id/assets/content_upload/panduan/Panduan%20Pendaftaran%20SD%202025.pdf" className="hover:text-white transition-colors duration-200">Panduan SPMB</a></li>
+                <li><a href="https://maps.app.goo.gl/ZoFMEgttrNr5Ak6g6" className="hover:text-white transition-colors duration-200">Lokasi</a></li>
+                <li><a href="#" onClick={handleKontak} className="hover:text-white transition-colors duration-200">Kontak</a></li>
               </ul>
             </div>
             
