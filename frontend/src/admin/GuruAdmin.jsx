@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import HeaderAdmin from "./HeaderAdmin";
 import { useNavigate } from "react-router-dom";
 
 const GuruAdmin = () => {
