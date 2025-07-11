@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
 import HomePage from "./pages/Homepage";
 import ProfilPage from "./pages/ProfilSekolah";
 import BeritaPage from"./pages/BeritaSekolah";
