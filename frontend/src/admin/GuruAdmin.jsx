@@ -9,7 +9,10 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+<<<<<<< HEAD
 import HeaderAdmin from "./HeaderAdmin";
+=======
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
 import { useNavigate } from "react-router-dom";
 
 const GuruAdmin = () => {
@@ -22,6 +25,13 @@ const GuruAdmin = () => {
         e.preventDefault();
         navigate('/profiladmin')
       }
+<<<<<<< HEAD
+=======
+      const handleAkademikAdmin = (e) => {
+        e.preventDefault();
+        navigate('/akademikadmin')
+      }
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
   // Mock data for demonstration
   const [teachers, setTeachers] = useState([
     {
@@ -266,6 +276,7 @@ const GuruAdmin = () => {
               >
                 Prestasi
               </button>
+<<<<<<< HEAD
               <button
                 className="hover:text-blue-600 transition-colors duration-200"
               >
@@ -273,6 +284,11 @@ const GuruAdmin = () => {
               </button>
             </nav>
 
+=======
+              <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
+            </nav>
+            
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
             <button className="md:hidden">
               <svg
                 className="w-6 h-6"
