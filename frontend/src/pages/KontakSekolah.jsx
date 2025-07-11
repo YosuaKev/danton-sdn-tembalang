@@ -5,9 +5,20 @@ const Kontak = () => {
   const [formData, setFormData] = useState({
     nama: '',
     email: '',
-    noTelp: '',
-    pesan: ''
+    no_telepon: '',  // Changed from noTelp to match backend
+    isi: ''          // Changed from pesan to match backend
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
   const navigate = useNavigate();
   const handleHome = (e) => {
     e.preventDefault();
@@ -37,25 +48,47 @@ const Kontak = () => {
     e.preventDefault();
     navigate('/akademik')
     }
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  
 
-  const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    alert('Pesan berhasil dikirim!');
-    setFormData({
-      nama: '',
-      email: '',
-      noTelp: '',
-      pesan: ''
-    });
-  };
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage('');
 
+    try {
+      const response = await fetch('http://localhost:5000/api/kontak', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle validation errors
+        if (data.errors) {
+          const errorMessages = data.errors.map(error => error.msg).join('\n');
+          throw new Error(errorMessages);
+        }
+        throw new Error(data.error || 'Failed to submit feedback');
+      }
+
+      // Success case
+      setSubmitMessage('Terima kasih atas feedback Anda!');
+      setFormData({
+        nama: '',
+        email: '',
+        no_telepon: '',
+        isi: ''
+      });
+    } catch (error) {
+      setSubmitMessage(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <div className="min-h-screen bg-white">
       {/* Header Navigation */}
@@ -108,89 +141,102 @@ const Kontak = () => {
 
       {/* Contact Form Section */}
       <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
-            
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Nama */}
-                <div>
-                  <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">
-                    Nama
-                  </label>
-                  <input
-                    type="text"
-                    id="nama"
-                    name="nama"
-                    value={formData.nama}
-                    onChange={handleInputChange}
-                    placeholder="Mikana Ackerman"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors duration-200"
-                  />
-                </div>
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Hubungi Kami</h2>
+          
+          {submitMessage && (
+            <div className={`mb-6 p-4 rounded-md ${submitMessage.includes('Terima kasih') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {submitMessage}
+            </div>
+          )}
 
-                {/* Email */}
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="Email@gmail.com"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors duration-200"
-                  />
-                </div>
-              </div>
-
-              {/* No Telp */}
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Nama */}
               <div>
-                <label htmlFor="noTelp" className="block text-sm font-medium text-gray-700 mb-2">
-                  No Telp
+                <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">
+                  Nama
                 </label>
                 <input
-                  type="number"
-                  id="noTelp"
-                  name="noTelp"
-                  value={formData.noTelp}
+                  type="text"
+                  id="nama"
+                  name="nama"
+                  value={formData.nama}
                   onChange={handleInputChange}
-                  placeholder="08123456789"
+                  placeholder="Mikana Ackerman"
                   className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors duration-200"
+                  required
                 />
               </div>
 
-              {/* Pesan */}
+              {/* Email */}
               <div>
-                <label htmlFor="pesan" className="block text-sm font-medium text-gray-700 mb-2">
-                  Pesan
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
                 </label>
-                <textarea
-                  id="pesan"
-                  name="pesan"
-                  value={formData.pesan}
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="Tulis pesan Anda di sini..."
-                  rows="5"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors duration-200 resize-vertical"
-                ></textarea>
+                  placeholder="Email@gmail.com"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors duration-200"
+                  required
+                />
               </div>
+            </div>
 
-              {/* Submit Button */}
-              <div className="text-center">
-                <button
-                  onClick={handleSubmit}
-                  className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-                >
-                  Kirim Pesan
-                </button>
-              </div>
+            {/* No Telp */}
+            <div>
+              <label htmlFor="no_telepon" className="block text-sm font-medium text-gray-700 mb-2">
+                No Telepon
+              </label>
+              <input
+                type="tel"  // Changed from number to tel
+                id="no_telepon"
+                name="no_telepon"
+                value={formData.no_telepon}
+                onChange={handleInputChange}
+                placeholder="08123456789"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors duration-200"
+                required
+              />
+            </div>
+
+            {/* Pesan */}
+            <div>
+              <label htmlFor="isi" className="block text-sm font-medium text-gray-700 mb-2">
+                Pesan
+              </label>
+              <textarea
+                id="isi"
+                name="isi"
+                value={formData.isi}
+                onChange={handleInputChange}
+                placeholder="Tulis pesan Anda di sini..."
+                rows="5"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-colors duration-200 resize-vertical"
+                required
+                minLength="10"
+              ></textarea>
+            </div>
+
+            {/* Submit Button */}
+            <div className="text-center">
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Mengirim...' : 'Kirim Pesan'}
+              </button>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* Map Section */}
       <section className="py-16 bg-white">

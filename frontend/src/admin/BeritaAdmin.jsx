@@ -16,11 +16,8 @@ import {
   Menu,
   Bell,
 } from "lucide-react";
-<<<<<<< HEAD
-import HeaderAdmin from './HeaderAdmin'
-=======
->>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
 import { useNavigate } from "react-router-dom";
+import gambarMain from "../img/janxox.jpeg";
 
 const BeritaAdmin = () => {
   const navigate = useNavigate();
@@ -32,238 +29,200 @@ const BeritaAdmin = () => {
     e.preventDefault();
     navigate('/profiladmin')
     }
-<<<<<<< HEAD
-=======
-    const handleAkademikAdmin = (e) => {
-    e.preventDefault();
-    navigate('/akademikadmin')
-    }
->>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
 
-  // Sample initial data
-  const [articles, setArticles] = useState([
-    {
-      id: 1,
-      title: "Kegiatan Belajar Mengajar di Rumah 2020",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      image: "https://picsum.photos/400/250?random=2",
-      category: "Pembelajaran",
-      date: "2024-01-15",
-      featured: false,
-    },
-    {
-      id: 2,
-      title: "Kegiatan Belajar Mengajar di Rumah 2020",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      image: "https://picsum.photos/400/250?random=3",
-      category: "Pembelajaran",
-      date: "2024-01-14",
-      featured: false,
-    },
-    {
-      id: 3,
-      title: "Kegiatan Belajar Mengajar dirumah",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      image: "https://picsum.photos/600/400?random=5",
-      category: "Kegiatan",
-      date: "2024-01-13",
-      featured: true,
-    },
-    {
-      id: 4,
-      title: "Kegiatan Pembelajaran daring",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      image: "https://picsum.photos/400/250?random=9",
-      category: "Pembelajaran",
-      date: "2024-01-12",
-      featured: false,
-    },
-  ]);
 
+  const [beritas, setBeritas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [uploadMethod, setUploadMethod] = useState("url");
+  const [imagePreview, setImagePreview] = useState(null);
+  
   const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-    image: "",
-    category: "",
-    featured: false,
+    judul: '',
+    isi: '',
+    tanggal_publikasi: new Date().toISOString().split('T')[0],
+    gambar_utama: '',
+    gambar1: '',
+    gambar2: '',
+    gambar3: '',
+    gambar4: '',
+    gambar5: ''
   });
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
-  const [uploadMethod, setUploadMethod] = useState("url"); // 'url' or 'file'
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-  // Handle file upload
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validate file type
-      const validTypes = [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/gif",
-        "image/webp",
-      ];
-      if (!validTypes.includes(file.type)) {
-        alert("Please select a valid image file (JPEG, PNG, GIF, or WebP)");
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-      if (file.size > maxSize) {
-        alert("File size must be less than 5MB");
-        return;
-      }
-
-      setSelectedFile(file);
-
-      // Create a preview URL for the image
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target.result;
-        setImagePreview(result);
-        setFormData((prev) => ({
-          ...prev,
-          image: result,
-        }));
-      };
-      reader.readAsDataURL(file);
+  // Fetch all news
+  const fetchBeritas = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/berita');
+      if (!response.ok) throw new Error('Failed to fetch news');
+      const data = await response.json();
+      setBeritas(data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
     }
   };
 
-  // Handle image URL input
-  const handleImageUrlChange = (e) => {
-    const url = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      image: url,
-    }));
-    setImagePreview(url);
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
   };
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+  // Handle image URL change
+  const handleImageUrlChange = (e) => {
+    const value = e.target.value;
+    setFormData({
+      ...formData,
+      gambar_utama: value
+    });
+    setImagePreview(value);
+  };
+
+  // Handle file upload
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Client-side preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    // In a real app, you would upload to a server here
+    // For now, we'll just use the local preview
+    setFormData({
+      ...formData,
+      gambar_utama: {gambarUtama} // Temporary URL for preview
+    });
   };
 
   // Handle upload method change
   const handleUploadMethodChange = (method) => {
     setUploadMethod(method);
-    setSelectedFile(null);
-    setImagePreview("");
-    setFormData((prev) => ({
-      ...prev,
-      image: "",
-    }));
-  };
-
-  // Create new article
-  const handleCreate = () => {
-    const newArticle = {
-      id: Date.now(),
-      ...formData,
-      date: new Date().toISOString().split("T")[0],
-    };
-    setArticles((prev) => [newArticle, ...prev]);
-    resetForm();
-  };
-
-  // Update existing article
-  const handleUpdate = () => {
-    setArticles((prev) =>
-      prev.map((article) =>
-        article.id === editingId ? { ...article, ...formData } : article
-      )
-    );
-    resetForm();
-  };
-
-  // Delete article
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this article?")) {
-      setArticles((prev) => prev.filter((article) => article.id !== id));
-    }
-  };
-
-  // Start editing
-  const handleEdit = (article) => {
-    setEditingId(article.id);
+    setImagePreview(null);
     setFormData({
-      title: article.title,
-      content: article.content,
-      image: article.image,
-      category: article.category,
-      featured: article.featured,
+      ...formData,
+      gambar_utama: ''
     });
-    setImagePreview(article.image);
-    // Determine upload method based on existing image
-    if (article.image && article.image.startsWith("data:")) {
-      setUploadMethod("file");
-    } else {
-      setUploadMethod("url");
-    }
-    setShowForm(true);
   };
 
   // Reset form
   const resetForm = () => {
     setShowForm(false);
     setEditingId(null);
-    setSelectedFile(null);
-    setImagePreview("");
-    setUploadMethod("url");
+    setImagePreview(null);
     setFormData({
-      title: "",
-      content: "",
-      image: "",
-      category: "",
-      featured: false,
+      judul: '',
+      isi: '',
+      tanggal_publikasi: new Date().toISOString().split('T')[0],
+      gambar_utama: '',
+      gambar1: '',
+      gambar2: '',
+      gambar3: '',
+      gambar4: '',
+      gambar5: ''
     });
   };
 
   // Handle form submission
-  const handleSubmit = () => {
-    if (
-      !formData.title ||
-      !formData.content ||
-      !formData.image ||
-      !formData.category
-    ) {
-      alert("Please fill in all required fields");
-      return;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      let url = 'http://localhost:5000/api/berita';
+      let method = 'POST';
+      
+      if (editingId) {
+        url += `/${editingId}`;
+        method = 'PUT';
+      }
 
-    if (editingId) {
-      handleUpdate();
-    } else {
-      handleCreate();
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save news');
+      }
+
+      const result = await response.json();
+      
+      if (editingId) {
+        setBeritas(beritas.map(item => 
+          item.id_berita === editingId ? result : item
+        ));
+      } else {
+        setBeritas([result, ...beritas]);
+      }
+
+      resetForm();
+    } catch (err) {
+      setError(err.message);
     }
   };
 
-  const featuredArticle = articles.find((article) => article.featured);
-  const regularArticles = articles.filter((article) => !article.featured);
+  // Handle edit
+  const handleEdit = (berita) => {
+    setEditingId(berita.id_berita);
+    setFormData({
+      judul: berita.judul,
+      isi: berita.isi,
+      tanggal_publikasi: new Date(berita.tanggal_publikasi).toISOString().split('T')[0],
+      gambar_utama: berita.gambar_utama,
+      gambar1: berita.gambar1 || '',
+      gambar2: berita.gambar2 || '',
+      gambar3: berita.gambar3 || '',
+      gambar4: berita.gambar4 || '',
+      gambar5: berita.gambar5 || ''
+    });
+    setImagePreview(berita.gambar_utama);
+    setShowForm(true);
+  };
+
+  // Handle delete
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this news?')) return;
+    
+    try {
+      const response = await fetch(`http://localhost:5000/api/berita/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) throw new Error('Failed to delete news');
+
+      setBeritas(beritas.filter(item => item.id_berita !== id));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Featured article (first item for demo)
+  const featuredArticle = beritas.length > 0 ? beritas[0] : null;
+  const regularArticles = beritas.length > 1 ? beritas.slice(1) : [];
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
   
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navigation Bar */}
-<<<<<<< HEAD
-      <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-=======
+
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
->>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
+
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               {/* Logo */}
@@ -292,13 +251,201 @@ const BeritaAdmin = () => {
             <div className="flex items-center space-x-4">
 
               {/* Add News Button */}
-              <button
-                onClick={() => setShowForm(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
-              >
-                <Plus size={20} />
-                <span className="hidden sm:inline">Add News</span>
-              </button>
+      <div className="container mx-auto px-4 pt-8">
+        <button
+          onClick={() => setShowForm(true)}
+          className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors duration-200"
+        >
+          Add News
+        </button>
+      </div>
+
+      {/* News Form Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {editingId ? "Edit News" : "Add New News"}
+                </h2>
+                <button
+                  onClick={resetForm}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    name="judul"
+                    value={formData.judul}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter news title"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Content
+                  </label>
+                  <textarea
+                    name="isi"
+                    value={formData.isi}
+                    onChange={handleInputChange}
+                    rows="4"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter news content"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Publication Date
+                  </label>
+                  <input
+                    type="date"
+                    name="tanggal_publikasi"
+                    value={formData.tanggal_publikasi}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                {/* Image Upload Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Main Image
+                  </label>
+
+                  {/* Upload Method Selector */}
+                  <div className="flex gap-4 mb-4">
+                    <button
+                      type="button"
+                      onClick={() => handleUploadMethodChange("url")}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                        uploadMethod === "url"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                    >
+                      Image URL
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleUploadMethodChange("file")}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center gap-2 ${
+                        uploadMethod === "file"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                    >
+                      <Upload size={16} />
+                      Upload File
+                    </button>
+                  </div>
+
+                  {/* URL Input */}
+                  {uploadMethod === "url" && (
+                    <input
+                      type="url"
+                      name="gambar_utama"
+                      value={formData.gambar_utama}
+                      onChange={handleImageUrlChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="https://example.com/image.jpg"
+                      required
+                    />
+                  )}
+
+                  {/* File Upload */}
+                  {uploadMethod === "file" && (
+                    <div className="space-y-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <p className="text-xs text-gray-500">
+                        Supported formats: JPEG, PNG, GIF, WebP. Max size: 5MB
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Image Preview */}
+                  {imagePreview && (
+                    <div className="mt-4">
+                      <p className="text-sm text-gray-600 mb-2">
+                        Image Preview:
+                      </p>
+                      <div className="relative">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-full h-48 object-cover rounded-md border border-gray-300"
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "block";
+                          }}
+                        />
+                        <div className="w-full h-48 bg-gray-100 rounded-md border border-gray-300 flex items-center justify-center">
+                          <span className="text-gray-500">
+                            Failed to load image
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Additional Images */}
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <div key={num}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Additional Image {num} (Optional)
+                    </label>
+                    <input
+                      type="url"
+                      name={`gambar${num}`}
+                      value={formData[`gambar${num}`]}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder={`https://example.com/image${num}.jpg`}
+                    />
+                  </div>
+                ))}
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={handleSubmit}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <Save size={20} />
+                    {editingId ? "Update" : "Create"}
+                  </button>
+                  <button
+                    onClick={resetForm}
+                    className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400 transition-colors duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
               {/* Profile/Logout */}
               <HeaderAdmin/>
@@ -483,7 +630,7 @@ const BeritaAdmin = () => {
                             e.target.nextSibling.style.display = "block";
                           }}
                         />
-                        <div className="hidden w-full h-48 bg-gray-100 rounded-md border border-gray-300 flex items-center justify-center">
+                        <div className=" w-full h-48 bg-gray-100 rounded-md border border-gray-300 flex items-center justify-center">
                           <span className="text-gray-500">
                             Failed to load image
                           </span>
@@ -564,7 +711,7 @@ const BeritaAdmin = () => {
                   <Edit size={16} />
                 </button>
                 <button
-                  onClick={() => handleDelete(featuredArticle.id)}
+                  onClick={() => handleDelete(featuredArticle.id_berita)}
                   className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors duration-200"
                 >
                   <Trash2 size={16} />
@@ -573,23 +720,20 @@ const BeritaAdmin = () => {
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="relative h-64 md:h-auto">
                   <img
-                    src={featuredArticle.image}
-                    alt={featuredArticle.title}
+                    src={featuredArticle.gambar_utama}
+                    alt={featuredArticle.judul}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="p-8 flex flex-col justify-center">
-                  <span className="text-sm text-blue-600 font-medium mb-2">
-                    {featuredArticle.category}
-                  </span>
                   <h3 className="text-3xl font-bold text-gray-800 mb-4">
-                    {featuredArticle.title}
+                    {featuredArticle.judul}
                   </h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">
-                    {featuredArticle.content}
+                    {featuredArticle.isi}
                   </p>
                   <div className="text-sm text-gray-500">
-                    {new Date(featuredArticle.date).toLocaleDateString()}
+                    {new Date(featuredArticle.tanggal_publikasi).toLocaleDateString()}
                   </div>
                 </div>
               </div>
@@ -607,52 +751,49 @@ const BeritaAdmin = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {regularArticles.map((article) => (
+            {regularArticles.map((berita) => (
               <div
-                key={article.id}
+                key={berita.id_berita}
                 className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 relative"
               >
                 <div className="absolute top-4 right-4 z-10 flex gap-2">
                   <button
-                    onClick={() => handleEdit(article)}
+                    onClick={() => handleEdit(berita)}
                     className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors duration-200"
                   >
                     <Edit size={16} />
                   </button>
                   <button
-                    onClick={() => handleDelete(article.id)}
+                    onClick={() => handleDelete(berita.id_berita)}
                     className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors duration-200"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
                 <img
-                  src={article.image}
-                  alt={article.title}
+                  src={berita.gambar_utama}
+                  alt={berita.judul}
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6">
-                  <span className="text-sm text-blue-600 font-medium">
-                    {article.category}
-                  </span>
                   <h3 className="text-xl font-bold text-gray-800 mb-3 mt-2">
-                    {article.title}
+                    {berita.judul}
                   </h3>
                   <p className="text-gray-600 mb-4">
-                    {article.content.substring(0, 120)}...
+                    {berita.isi.substring(0, 120)}...
                   </p>
                   <div className="text-sm text-gray-500">
-                    {new Date(article.date).toLocaleDateString()}
+                    {new Date(berita.tanggal_publikasi).toLocaleDateString()}
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {regularArticles.length === 0 && (
+          {beritas.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">
-                No articles found. Add your first news article!
+                No news found. Add your first news article!
               </p>
             </div>
           )}
