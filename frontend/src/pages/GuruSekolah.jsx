@@ -29,7 +29,10 @@ const DataGuruPage = () => {
     e.preventDefault();
     navigate('/berita')
     }
-
+    const handleAkademik = (e) => {
+    e.preventDefault();
+    navigate('/akademik')
+    }
   const teachers = [
     {
       id: 1,
@@ -129,6 +132,7 @@ const DataGuruPage = () => {
               <button href="#" onClick={handleBerita} className="text-white hover:text-blue-200 transition-colors duration-200">Berita</button>
               <button href="#" onClick={handlePrestasi} className="text-white hover:text-blue-200 transition-colors duration-200">Prestasi</button>
               <button href="#" onClick={handleKontak} className="text-white hover:text-blue-200 transition-colors duration-200">Kontak</button>
+              <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
 
             {/* Mobile Menu Button */}

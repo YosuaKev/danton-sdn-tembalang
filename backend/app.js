@@ -8,6 +8,9 @@ import profileRoutes from "./routes/profile.routes.js";
 import guruRoutes from "./routes/guru.routes.js";
 import siswaRoutes from "./routes/siswa.routes.js";
 import errorHandler from "./middleware/error.handler.js";
+import beritaRoutes from "./routes/berita.routes.js";
+import kontakRoutes from "./routes/kontak.routes.js";
+import galeriRoutes from "./routes/galeri.routes.js";
 
 dotenv.config();
 
@@ -23,6 +26,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api", profileRoutes);
 app.use("/api/gurus", guruRoutes);
 app.use("/api/siswas", siswaRoutes);
+app.use("/api/kontak", kontakRoutes);
+app.use("/api/berita", beritaRoutes);
+app.use("/api/galeri", galeriRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

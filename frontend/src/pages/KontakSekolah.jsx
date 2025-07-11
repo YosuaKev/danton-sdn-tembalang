@@ -33,6 +33,10 @@ const Kontak = () => {
     e.preventDefault();
     navigate('/berita')
     }
+    const handleAkademik = (e) => {
+    e.preventDefault();
+    navigate('/akademik')
+    }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -68,12 +72,13 @@ const Kontak = () => {
 
             {/* Navigation Links */}
             <nav className="hidden md:flex space-x-6">
-              <button href="#" onClick={handleHome} className="text-white hover:text-blue-200 transition-colors duration-200">Home</button>
+              <button href="#" onClick={handleHome} className="text-white hover:text-blue-200 transition-colors duration-200">Beranda</button>
               <button href="#" onClick={handleProfil} className="text-white hover:text-blue-200 transition-colors duration-200">Profil</button>
               <button href="#" onClick={handleGuru} className="text-white hover:text-blue-200 transition-colors duration-200">Guru</button>
               <button href="#" onClick={handleBerita} className="text-white hover:text-blue-200 transition-colors duration-200">Berita</button>
               <button href="#" onClick={handlePrestasi} className="text-white hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Kontak</a>
+              <button href="#" className="text-white hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Kontak</button>
+              <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
 
             {/* Mobile Menu Button */}

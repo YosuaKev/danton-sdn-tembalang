@@ -1,12 +1,7 @@
-// siswa.model.js
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
-import AutoIncrementFactory from "mongoose-sequence";
 
-// Pass mongoose to plugin
-const AutoIncrement = AutoIncrementFactory(mongoose);
-
-const siswaSchema = new Schema(
+const feedbackSchema = new Schema(
   {
     nama: {
       type: String,
@@ -14,28 +9,30 @@ const siswaSchema = new Schema(
       trim: true,
       maxlength: 100
     },
-    kelas: {
+    email: {
       type: String,
       required: true,
       trim: true,
-      maxlength: 20
+      lowercase: true,
+      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
-    nisn: {
-      type: Number,
+    no_telepon: {  // Fixed typo from no_teelp to no_telepon
+      type: String,  // Changed to String to handle international numbers
       required: true,
-      unique: true,
-      validate: {
-        validator: function(v) {
-          return /^\d{10}$/.test(v.toString());
-        },
-        message: props => `${props.value} is not a valid 10-digit NISN!`
-      }
+      trim: true,
+      match: [/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/, 'Please fill a valid phone number']
     },
+    isi: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 10,
+      maxlength: 1000
+    }
   },
-  { timestamps: true }
+  { 
+    timestamps: true 
+  }
 );
 
-// Add auto-increment ID if needed
-siswaSchema.plugin(AutoIncrement, { inc_field: 'siswa_id' });
-
-export default mongoose.model("Siswa", siswaSchema);
+export default mongoose.model("Feedback", feedbackSchema);
