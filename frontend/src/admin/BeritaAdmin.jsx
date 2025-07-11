@@ -16,6 +16,10 @@ import {
   Menu,
   Bell,
 } from "lucide-react";
+<<<<<<< HEAD
+import HeaderAdmin from './HeaderAdmin'
+=======
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
 import { useNavigate } from "react-router-dom";
 
 const BeritaAdmin = () => {
@@ -28,10 +32,13 @@ const BeritaAdmin = () => {
     e.preventDefault();
     navigate('/profiladmin')
     }
+<<<<<<< HEAD
+=======
     const handleAkademikAdmin = (e) => {
     e.preventDefault();
     navigate('/akademikadmin')
     }
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
 
   // Sample initial data
   const [articles, setArticles] = useState([
@@ -250,8 +257,13 @@ const BeritaAdmin = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navigation Bar */}
+<<<<<<< HEAD
+      <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+=======
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               {/* Logo */}

@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
 import HomePage from "./pages/Homepage";
 import ProfilPage from "./pages/ProfilSekolah";
 import BeritaPage from"./pages/BeritaSekolah";
@@ -9,9 +9,6 @@ import KontakPage from "./pages/KontakSekolah";
 import AkademikPage from "./pages/AkademikSekolah";
 import LoginPage from "./admin/LoginPage";
 import BeritaAdmin from "./admin/BeritaAdmin";
-import GuruAdmin from "./admin/GuruAdmin";
-import ProfilAdmin from "./admin/ProfilAdmin";
-import AkademikAdmin from "./admin/AkademikAdmin";
 
 
 function App() {
@@ -27,9 +24,6 @@ function App() {
         <Route path="/akademik" element={<AkademikPage/>}/>
         <Route path="/admin" element={<LoginPage/>}/>
         <Route path="/beritaadmin" element={<BeritaAdmin/>}/>
-        <Route path="/guruadmin" element={<GuruAdmin/>}/>
-        <Route path="/profiladmin" element={<ProfilAdmin/>}/>
-        <Route path="/akademikadmin" element={<AkademikAdmin/>}/>
       </Routes>
     </Router>
   )

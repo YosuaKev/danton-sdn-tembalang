@@ -1,14 +1,10 @@
 import React from "react";
-import { useState } from "react";
 import { Menu, X, User, BookOpen, Users, Trophy, Newspaper, UserCheck, Phone, Mail, MapPin, Facebook, Instagram, Youtube, ChevronRight, GraduationCap, Monitor, Wrench, Calculator, Palette, Camera, Heart, Star } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
   const navigate = useNavigate();
-    const handleProfil = (e) => {
-      e.preventDefault();
-      navigate('/profil')
-    }
+   
     const handleKontak = (e) => {
     e.preventDefault();
     navigate('/kontak');
@@ -17,14 +13,7 @@ const Footer = () => {
     e.preventDefault();
     navigate('/guru')
     }
-    const handlePrestasi = (e) => {
-    e.preventDefault();
-    navigate('/prestasi')
-    }
-    const handleBerita = (e) => {
-    e.preventDefault();
-    navigate('/berita')
-    }
+ 
   return (
     <footer className="bg-blue-900 text-white py-12">
         <div className="container mx-auto px-4">
@@ -87,7 +76,9 @@ const Footer = () => {
           </div>
           
           <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
+
             <p>&copy; 2025 SDN TEMBALANG. All rights reserved.</p>
+
           </div>
         </div>
       </footer>

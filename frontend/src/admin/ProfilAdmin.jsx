@@ -38,10 +38,13 @@ const ProfilAdmin = () => {
     e.preventDefault() ;
     navigate('/guruadmin')
   }
+<<<<<<< HEAD
+=======
   const handleAkademikAdmin = (e) => {
     e.preventDefault();
     navigate('/akademikadmin')
   }
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
 
   // CRUD Operations
   const handleEdit = (section) => {
@@ -133,7 +136,15 @@ const ProfilAdmin = () => {
               >
                 Prestasi
               </button>
+<<<<<<< HEAD
+              <button
+                className="hover:text-blue-600 transition-colors duration-200"
+              >
+                Kontak
+              </button>
+=======
               <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-600 transition-colors duration-200">Akademik</button>
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
             </nav>
 
             <button className="md:hidden">

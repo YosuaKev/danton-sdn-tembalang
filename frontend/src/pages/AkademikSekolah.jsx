@@ -36,6 +36,10 @@ const Akademik = () => {
     navigate('/akademik')
     }
 
+<<<<<<< HEAD
+  // Sample academic events data
+=======
+>>>>>>> d1fec9c833af6c7a55ab1de8fe6712ee33f54ce1
   const academicEvents = [
     {
       id: 1,
