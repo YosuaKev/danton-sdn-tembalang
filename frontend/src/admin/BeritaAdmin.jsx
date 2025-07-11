@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import {
   Plus,
   Edit,
@@ -16,8 +16,8 @@ import {
   Menu,
   Bell,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import gambarMain from "../img/janxox.jpeg";
+import { useNavigate} from "react-router-dom";
+import gambarMain from "../img/111.jpg";
 
 const BeritaAdmin = () => {
   const navigate = useNavigate();
@@ -38,6 +38,8 @@ const BeritaAdmin = () => {
   const [editingId, setEditingId] = useState(null);
   const [uploadMethod, setUploadMethod] = useState("url");
   const [imagePreview, setImagePreview] = useState(null);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
   
   const [formData, setFormData] = useState({
     judul: '',
@@ -65,6 +67,9 @@ const BeritaAdmin = () => {
     }
   };
 
+  useEffect(() => {
+    fetchBeritas();
+  }, []);
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -100,7 +105,7 @@ const BeritaAdmin = () => {
     // For now, we'll just use the local preview
     setFormData({
       ...formData,
-      gambar_utama: {gambarUtama} // Temporary URL for preview
+      gambar_utama: {gambarMain} // Temporary URL for preview
     });
   };
 
@@ -243,7 +248,7 @@ const BeritaAdmin = () => {
               <button href="#" onClick={handleGuruAdmin} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
               <button href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Berita</button>
               <button href="#" className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
+              <button href="#"  className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
             </div>
 
@@ -448,7 +453,7 @@ const BeritaAdmin = () => {
       )}
 
               {/* Profile/Logout */}
-              <HeaderAdmin/>
+              
 
               {/* Mobile menu button */}
               <button
@@ -465,7 +470,7 @@ const BeritaAdmin = () => {
         {showMobileMenu && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-              {navItems.map((item) => (
+              {/* {navItems.map((item) => (
                 <a
                   key={item.label}
                   href="#"
@@ -478,7 +483,7 @@ const BeritaAdmin = () => {
                   <item.icon size={18} className="mr-3" />
                   {item.label}
                 </a>
-              ))}
+              ))} */}
               <div className="border-t border-gray-200 pt-4">
                 <a
                   href="#"
