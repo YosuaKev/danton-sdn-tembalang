@@ -11,6 +11,8 @@ import errorHandler from "./middleware/error.handler.js";
 import beritaRoutes from "./routes/berita.routes.js";
 import kontakRoutes from "./routes/kontak.routes.js";
 import galeriRoutes from "./routes/galeri.routes.js";
+import homeRoutes from "./routes/home.routes.js"; // Add this line
+
 
 dotenv.config();
 
@@ -29,6 +31,7 @@ app.use("/api/siswas", siswaRoutes);
 app.use("/api/kontak", kontakRoutes);
 app.use("/api/berita", beritaRoutes);
 app.use("/api/galeri", galeriRoutes);
+app.use("/api/home", homeRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
