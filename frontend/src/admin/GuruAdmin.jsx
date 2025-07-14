@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Plus,
@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-
 import { useNavigate } from "react-router-dom";
 
 const GuruAdmin = () => {
@@ -27,73 +26,103 @@ const GuruAdmin = () => {
   const [teachers, setTeachers] = useState([
     {
       id: 1,
-      name: "Hj. ENIS HENRAWATI, S.Pd",
+      nama: "Hj. ENIS HENRAWATI, S.Pd",
       nip: "196801051990032009",
-      subject: "Ilmu Pengetahuan Sosial",
-      profilePicture: null,
+      pelajaran: "Ilmu Pengetahuan Sosial",
+      gambar: null,
     },
     {
       id: 2,
       name: "AHMAD SURYANTO, S.Pd",
       nip: "197505102000031008",
-      subject: "Matematika",
-      profilePicture: null,
+      pelajaran: "Matematika",
+      gambar: null,
     },
     {
       id: 3,
       name: "SITI NURHALIZA, S.Pd",
       nip: "198203152005042012",
-      subject: "Bahasa Indonesia",
-      profilePicture: null,
+      pelajaran: "Bahasa Indonesia",
+      gambar: null,
     },
     {
       id: 4,
       name: "BUDI SANTOSO, S.Pd",
       nip: "197912202003121006",
-      subject: "Pendidikan Jasmani",
-      profilePicture: null,
+      pelajaran: "Pendidikan Jasmani",
+      gambar: null,
     },
     {
       id: 5,
       name: "RINI SETYOWATI, S.Pd",
       nip: "198506182008012015",
-      subject: "Bahasa Inggris",
-      profilePicture: null,
+      pelajaran: "Bahasa Inggris",
+      gambar: null,
     },
     {
       id: 6,
       name: "WAHYU HIDAYAT, S.Pd",
       nip: "199001102015031004",
-      subject: "Fisika",
-      profilePicture: null,
+      pelajaran: "Fisika",
+      gambar: null,
     },
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState("create"); // 'create' or 'edit'
+  const [modalMode, setModalMode] = useState("create");
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [teacherToDelete, setTeacherToDelete] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
-    name: "",
+    nama: "",
     nip: "",
-    subject: "",
-    profilePicture: null,
+    pelajaran: "",
+    gambar: "",
   });
 
   const teachersPerPage = 6;
 
+  // Fetch teachers from API
+  const fetchTeachers = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("http://localhost:5000/api/gurus");
+      if (!response.ok) {
+        throw new Error("Failed to fetch teachers");
+      }
+      const data = await response.json();
+      setTeachers(data);
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fetching teachers:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+  
   // Filter teachers based on search term
-  const filteredTeachers = teachers.filter(
-    (teacher) =>
-      teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      teacher.nip.includes(searchTerm) ||
-      teacher.subject.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredTeachers = teachers.filter((teacher) => {
+  const nama = teacher.nama || teacher.name || "";
+  const nip = teacher.nip || "";
+  const pelajaran = teacher.pelajaran || teacher.subject || "";
+
+  return (
+    nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    nip.toString().includes(searchTerm) || 
+    pelajaran.toLowerCase().includes(searchTerm.toLowerCase())
   );
+});
 
   // Pagination logic
   const totalPages = Math.ceil(filteredTeachers.length / teachersPerPage);
@@ -116,42 +145,51 @@ const GuruAdmin = () => {
   };
 
   // Handle form submission
-  const handleSubmit = () => {
-    // Basic validation
-    if (!formData.name || !formData.nip || !formData.subject) {
-      alert("Mohon lengkapi semua field yang wajib diisi");
-      return;
-    }
+  const handleSubmit = async () => {
+    try {
+      let response;
+      if (modalMode === "create") {
+        // Create new teacher
+        response = await fetch("http://localhost:5000/api/gurus", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+      } else {
+        // Update existing teacher
+        response = await fetch(`http://localhost:5000/api/gurus/${selectedTeacher._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+      }
 
-    if (modalMode === "create") {
-      // Create new teacher
-      const newTeacher = {
-        id: Date.now(),
-        ...formData,
-      };
-      setTeachers((prev) => [...prev, newTeacher]);
-    } else {
-      // Update existing teacher
-      setTeachers((prev) =>
-        prev.map((teacher) =>
-          teacher.id === selectedTeacher.id
-            ? { ...teacher, ...formData }
-            : teacher
-        )
-      );
-    }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save teacher");
+      }
 
-    closeModal();
+      // Refresh the teacher list
+      await fetchTeachers();
+      closeModal();
+    } catch (err) {
+      alert(err.message);
+      console.error("Error saving teacher:", err);
+    }
   };
 
   // Open modal for creating new teacher
   const openCreateModal = () => {
     setModalMode("create");
     setFormData({
-      name: "",
+      nama: "",
       nip: "",
-      subject: "",
-      profilePicture: null,
+      pelajaran: "",
+      gambar: "",
     });
     setShowModal(true);
   };
@@ -161,10 +199,10 @@ const GuruAdmin = () => {
     setModalMode("edit");
     setSelectedTeacher(teacher);
     setFormData({
-      name: teacher.name,
+      nama: teacher.nama,
       nip: teacher.nip,
-      subject: teacher.subject,
-      profilePicture: teacher.profilePicture,
+      pelajaran: teacher.pelajaran,
+      gambar: teacher.gambar,
     });
     setShowModal(true);
   };
@@ -174,10 +212,10 @@ const GuruAdmin = () => {
     setShowModal(false);
     setSelectedTeacher(null);
     setFormData({
-      name: "",
+      nama: "",
       nip: "",
-      subject: "",
-      profilePicture: null,
+      pelajaran: "",
+      gambar: "",
     });
   };
 
@@ -188,12 +226,24 @@ const GuruAdmin = () => {
   };
 
   // Confirm delete
-  const confirmDelete = () => {
-    setTeachers((prev) =>
-      prev.filter((teacher) => teacher.id !== teacherToDelete.id)
-    );
-    setShowDeleteModal(false);
-    setTeacherToDelete(null);
+  const confirmDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/gurus/${teacherToDelete._id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete teacher");
+      }
+
+      // Refresh the teacher list
+      await fetchTeachers();
+      setShowDeleteModal(false);
+      setTeacherToDelete(null);
+    } catch (err) {
+      alert(err.message);
+      console.error("Error deleting teacher:", err);
+    }
   };
 
   // Cancel delete
@@ -218,6 +268,35 @@ const GuruAdmin = () => {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Memuat data guru...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center text-red-600">
+          <p>Gagal memuat data: {error}</p>
+          <button
+            onClick={fetchTeachers}
+            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Coba Lagi
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -326,17 +405,17 @@ const GuruAdmin = () => {
 
         {/* Teacher Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {currentTeachers.map((teacher) => (
+          {currentTeachers.map((teacher, index) => (
             <div
-              key={teacher.id}
+              key={teacher.id || teacher.nip || index}
               className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             >
               <div className="p-6">
                 <div className="flex flex-col items-center mb-4">
-                  {teacher.profilePicture ? (
+                  {teacher.gambar ? (
                     <img
-                      src={teacher.profilePicture}
-                      alt={teacher.name}
+                      src={teacher.gambar}
+                      alt={teacher.nama}
                       className="w-20 h-20 rounded-full object-cover mb-3"
                     />
                   ) : (
@@ -345,13 +424,13 @@ const GuruAdmin = () => {
                     </div>
                   )}
                   <h3 className="text-lg font-semibold text-gray-800 text-center mb-1">
-                    {teacher.name}
+                    {teacher.nama}
                   </h3>
                   <p className="text-sm text-gray-600 mb-2">
                     NIP: {teacher.nip}
                   </p>
                   <p className="text-sm text-blue-600 font-medium text-center">
-                    {teacher.subject}
+                    {teacher.pelajaran}
                   </p>
                 </div>
                 <div className="flex gap-2 justify-center">
@@ -560,8 +639,8 @@ const GuruAdmin = () => {
                   </label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="nama"
+                    value={formData.nama}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
@@ -588,8 +667,8 @@ const GuruAdmin = () => {
                   </label>
                   <input
                     type="text"
-                    name="subject"
-                    value={formData.subject}
+                    name="pelajaran"
+                    value={formData.pelajaran}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
@@ -598,15 +677,15 @@ const GuruAdmin = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    URL Foto Profil (Opsional)
+                    URL Gambar Profil 
                   </label>
                   <input
                     type="url"
-                    name="profilePicture"
-                    value={formData.profilePicture || ""}
+                    name="gambar"
+                    value={formData.gambar}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="https://example.com/photo.jpg"
+                    placeholder="https://example.com/profile.jpg"
                   />
                 </div>
 
