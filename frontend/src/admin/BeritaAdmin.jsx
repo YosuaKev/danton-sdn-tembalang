@@ -91,7 +91,18 @@ const BeritaAdmin = () => {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+    
+    try {
+    const base64String = await convertToBase64(file);
+    setFormData(prev => ({
+      ...prev,
+      gambar_utama: base64String
+    }));
+    setImagePreview(base64String);
+  } catch (error) {
+    console.error('Conversion error:', error);
+    setError('Failed to convert image');
+  }
     try {
     // Upload file to your server and get the URL
     const formData = new FormData();
@@ -102,7 +113,7 @@ const BeritaAdmin = () => {
       body: formData,
     });
 
-if (!response.ok) throw new Error('Upload failed');
+    if (!response.ok) throw new Error('Upload failed');
 
     const { url } = await response.json();
     setFormData(prev => ({
@@ -122,8 +133,19 @@ if (!response.ok) throw new Error('Upload failed');
     };
     reader.readAsDataURL(file);
 
-    // In a real app, you would upload to a server here
-    // For now, we'll just use the local prev
+    try {
+    // Simulasikan upload (ganti dengan API upload sebenarnya)
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const mockUrl = `https://example.com/uploads/${file.name}`;
+    setFormData(prev => ({
+      ...prev,
+      gambar_utama: mockUrl
+    }));
+    setImagePreview(mockUrl);
+  } catch (error) {
+    console.error('Upload error:', error);
+    setError('Gagal mengunggah gambar');
+  }
   };
 
   // Handle upload method change
@@ -164,37 +186,39 @@ if (!response.ok) throw new Error('Upload failed');
     try {
       let url = 'http://localhost:5000/api/berita';
       let method = 'POST';
-      
+
       if (editingId) {
         url += `/${editingId}`;
         method = 'PUT';
+        payload.id_berita = editingId;
       }
+
       const payload = {
-      ...formData,
-      id_berita: formData.id_berita || Math.floor(Math.random() * 1000000),
-      tanggal_publikasi: new Date(formData.tanggal_publikasi).toISOString(),
-      // Convert empty strings to null for optional images
-      gambar1: formData.gambar1 || null,
-      gambar2: formData.gambar2 || null,
-      gambar3: formData.gambar3 || null,
-      gambar4: formData.gambar4 || null,
-      gambar5: formData.gambar5 || null
-    };
+      judul: formData.judul,
+      isi: formData.isi,
+      tanggal_publikasi: new Date (formData.tanggal_publikasi).toISOString(),
+      gambar_utama: formData.gambar_utama,
+      ...(formData.gambar1 && { gambar1: formData.gambar1 }),
+      ...(formData.gambar2 && { gambar2: formData.gambar2 }),
+      ...(formData.gambar3 && { gambar3: formData.gambar3 }),
+      ...(formData.gambar4 && { gambar4: formData.gambar4 }),
+      ...(formData.gambar5 && { gambar5: formData.gambar5 })
+      };
+    
+      
       const response = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(payload),
       });
 
+      const result = await response.json();
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to save news');
       }
 
-      const result = await response.json();
-      
       if (editingId) {
         setBeritas(beritas.map(item => 
           item.id_berita === editingId ? result : item
@@ -206,7 +230,8 @@ if (!response.ok) throw new Error('Upload failed');
       resetForm();
       setError(null);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Terjadi kesalahan saat menyimpan berita');
+      console.error('Error saving news', err);
     }
     
   };
@@ -475,7 +500,10 @@ if (!response.ok) throw new Error('Upload failed');
                     <div className="space-y-2">
                       <input
                         type="file"
-                        accept="image/*"
+                        accept=".jpeg, .png, .svg, .jpg"
+                        name="myFile"
+                        label="image"
+                        id='file-upload'
                         onChange={handleFileChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
@@ -770,3 +798,16 @@ if (!response.ok) throw new Error('Upload failed');
 };
 
 export default BeritaAdmin;
+
+function convertToBase64(file){
+  return new Promise((resolvePath, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+    resolvePath(fileReader.result)
+  };
+  fileReader.onError = (error) => {
+    reject(error)
+  }
+  })
+}
