@@ -11,8 +11,6 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
