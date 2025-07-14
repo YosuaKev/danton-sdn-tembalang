@@ -89,6 +89,7 @@ const Kontak = () => {
       setIsSubmitting(false);
     }
   };
+  
   return (
     <div className="min-h-screen bg-white">
       {/* Header Navigation */}

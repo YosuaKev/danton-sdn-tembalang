@@ -12,17 +12,9 @@ const AkademikAdmin = () => {
   const [editingActivity, setEditingActivity] = useState(null);
   const navigate = useNavigate();
 
-  const handleHome = (e) => {
-    e.preventDefault();
-    navigate('/')
-  }
   const handleProfilAdmin = (e) => {
     e.preventDefault();
     navigate('/profiladmin')
-  }
-  const handleKontak = (e) => {
-    e.preventDefault();
-    navigate('/kontak');
   }
   const handleGuruAdmin = (e) => {
     e.preventDefault();

@@ -268,7 +268,7 @@ const GuruAdmin = () => {
                 Prestasi
               </button>
 
-              <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
+              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
             
 

@@ -17,7 +17,6 @@ import {
   Bell,
 } from "lucide-react";
 import { useNavigate} from "react-router-dom";
-import gambarMain from "../img/111.jpg";
 
 const BeritaAdmin = () => {
   const navigate = useNavigate();
@@ -30,7 +29,6 @@ const BeritaAdmin = () => {
     navigate('/profiladmin')
     }
 
-
   const [beritas, setBeritas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,7 +38,6 @@ const BeritaAdmin = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-  
   const [formData, setFormData] = useState({
     judul: '',
     isi: '',
@@ -71,6 +68,7 @@ const BeritaAdmin = () => {
     fetchBeritas();
   }, []);
   // Handle input changes
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -94,6 +92,29 @@ const BeritaAdmin = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    try {
+    // Upload file to your server and get the URL
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+if (!response.ok) throw new Error('Upload failed');
+
+    const { url } = await response.json();
+    setFormData(prev => ({
+      ...prev,
+      gambar_utama: url
+    }));
+    setImagePreview(url);
+  } catch (error) {
+    console.error('Upload error:', error);
+    // Show error message to user
+  }
+
     // Client-side preview
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -102,11 +123,7 @@ const BeritaAdmin = () => {
     reader.readAsDataURL(file);
 
     // In a real app, you would upload to a server here
-    // For now, we'll just use the local preview
-    setFormData({
-      ...formData,
-      gambar_utama: {gambarMain} // Temporary URL for preview
-    });
+    // For now, we'll just use the local prev
   };
 
   // Handle upload method change
@@ -138,9 +155,12 @@ const BeritaAdmin = () => {
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+  const handleSubmit = async () => {
+    if (!formData.judul || !formData.isi || !formData.tanggal_publikasi || !formData.gambar_utama) {
+      setError('Please fill all required fields');
+      return;
+    }
+
     try {
       let url = 'http://localhost:5000/api/berita';
       let method = 'POST';
@@ -149,13 +169,23 @@ const BeritaAdmin = () => {
         url += `/${editingId}`;
         method = 'PUT';
       }
-
+      const payload = {
+      ...formData,
+      id_berita: formData.id_berita || Math.floor(Math.random() * 1000000),
+      tanggal_publikasi: new Date(formData.tanggal_publikasi).toISOString(),
+      // Convert empty strings to null for optional images
+      gambar1: formData.gambar1 || null,
+      gambar2: formData.gambar2 || null,
+      gambar3: formData.gambar3 || null,
+      gambar4: formData.gambar4 || null,
+      gambar5: formData.gambar5 || null
+    };
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -174,9 +204,11 @@ const BeritaAdmin = () => {
       }
 
       resetForm();
+      setError(null);
     } catch (err) {
       setError(err.message);
     }
+    
   };
 
   // Handle edit
@@ -196,7 +228,10 @@ const BeritaAdmin = () => {
     setImagePreview(berita.gambar_utama);
     setShowForm(true);
   };
-
+  if (editingId) {
+      handleEdit.id_berita = editingId;
+    }
+  
   // Handle delete
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this news?')) return;
@@ -209,6 +244,7 @@ const BeritaAdmin = () => {
       if (!response.ok) throw new Error('Failed to delete news');
 
       setBeritas(beritas.filter(item => item.id_berita !== id));
+      setError(null);
     } catch (err) {
       setError(err.message);
     }
@@ -265,192 +301,7 @@ const BeritaAdmin = () => {
         </button>
       </div>
 
-      {/* News Form Modal */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {editingId ? "Edit News" : "Add New News"}
-                </h2>
-                <button
-                  onClick={resetForm}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    name="judul"
-                    value={formData.judul}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter news title"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Content
-                  </label>
-                  <textarea
-                    name="isi"
-                    value={formData.isi}
-                    onChange={handleInputChange}
-                    rows="4"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter news content"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Publication Date
-                  </label>
-                  <input
-                    type="date"
-                    name="tanggal_publikasi"
-                    value={formData.tanggal_publikasi}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-
-                {/* Image Upload Section */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Main Image
-                  </label>
-
-                  {/* Upload Method Selector */}
-                  <div className="flex gap-4 mb-4">
-                    <button
-                      type="button"
-                      onClick={() => handleUploadMethodChange("url")}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                        uploadMethod === "url"
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                      }`}
-                    >
-                      Image URL
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleUploadMethodChange("file")}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center gap-2 ${
-                        uploadMethod === "file"
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                      }`}
-                    >
-                      <Upload size={16} />
-                      Upload File
-                    </button>
-                  </div>
-
-                  {/* URL Input */}
-                  {uploadMethod === "url" && (
-                    <input
-                      type="url"
-                      name="gambar_utama"
-                      value={formData.gambar_utama}
-                      onChange={handleImageUrlChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="https://example.com/image.jpg"
-                      required
-                    />
-                  )}
-
-                  {/* File Upload */}
-                  {uploadMethod === "file" && (
-                    <div className="space-y-2">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                      <p className="text-xs text-gray-500">
-                        Supported formats: JPEG, PNG, GIF, WebP. Max size: 5MB
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Image Preview */}
-                  {imagePreview && (
-                    <div className="mt-4">
-                      <p className="text-sm text-gray-600 mb-2">
-                        Image Preview:
-                      </p>
-                      <div className="relative">
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-full h-48 object-cover rounded-md border border-gray-300"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "block";
-                          }}
-                        />
-                        <div className="w-full h-48 bg-gray-100 rounded-md border border-gray-300 flex items-center justify-center">
-                          <span className="text-gray-500">
-                            Failed to load image
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Additional Images */}
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <div key={num}>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Additional Image {num} (Optional)
-                    </label>
-                    <input
-                      type="url"
-                      name={`gambar${num}`}
-                      value={formData[`gambar${num}`]}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder={`https://example.com/image${num}.jpg`}
-                    />
-                  </div>
-                ))}
-
-                <div className="flex gap-3 pt-4">
-                  <button
-                    onClick={handleSubmit}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
-                  >
-                    <Save size={20} />
-                    {editingId ? "Update" : "Create"}
-                  </button>
-                  <button
-                    onClick={resetForm}
-                    className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400 transition-colors duration-200"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      
 
               {/* Profile/Logout */}
               
@@ -538,8 +389,8 @@ const BeritaAdmin = () => {
                   </label>
                   <input
                     type="text"
-                    name="title"
-                    value={formData.title}
+                    name="judul"
+                    value={formData.judul}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter news title"
@@ -548,16 +399,31 @@ const BeritaAdmin = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Content
+                    Isi berita
                   </label>
                   <textarea
-                    name="content"
-                    value={formData.content}
+                    name="isi"
+                    value={formData.isi}
                     onChange={handleInputChange}
                     rows="4"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter news content"
                   />
+                </div>
+<div>
+                  <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Publication Date
+                  </label>
+                  <input
+                    type="date"
+                    name="tanggal_publikasi"
+                    value={formData.tanggal_publikasi}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                  </div>
                 </div>
 
                 {/* Image Upload Section */}
@@ -597,7 +463,7 @@ const BeritaAdmin = () => {
                   {uploadMethod === "url" && (
                     <input
                       type="url"
-                      value={formData.image}
+                      value={formData.gambar_Utama}
                       onChange={handleImageUrlChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="https://example.com/image.jpg"
@@ -643,37 +509,6 @@ const BeritaAdmin = () => {
                       </div>
                     </div>
                   )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category
-                  </label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select category</option>
-                    <option value="Pembelajaran">Pembelajaran</option>
-                    <option value="Kegiatan">Kegiatan</option>
-                    <option value="Pengumuman">Pengumuman</option>
-                    <option value="Berita">Berita</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="featured"
-                    checked={formData.featured}
-                    onChange={handleInputChange}
-                    className="mr-2"
-                  />
-                  <label className="text-sm font-medium text-gray-700">
-                    Featured Article
-                  </label>
                 </div>
 
                 <div className="flex gap-3 pt-4">
