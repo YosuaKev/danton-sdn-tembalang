@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "This documentation provides details about the authentication endpoints available in the JagaDompet API. The authentication system uses JWT (JSON Web Tokens) for secure user authentication.",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -18,7 +18,7 @@
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.2",
+    "mongoose": "^8.16.3",
     "mongoose-sequence": "^6.0.1",
     "uuid": "^11.1.0"
   },
