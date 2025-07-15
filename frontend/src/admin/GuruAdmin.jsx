@@ -22,51 +22,8 @@ const GuruAdmin = () => {
         navigate('/profiladmin')
       }
 
-  // Mock data for demonstration
   const [teachers, setTeachers] = useState([
-    {
-      id: 1,
-      nama: "Hj. ENIS HENRAWATI, S.Pd",
-      nip: "196801051990032009",
-      pelajaran: "Ilmu Pengetahuan Sosial",
-      gambar: null,
-    },
-    {
-      id: 2,
-      name: "AHMAD SURYANTO, S.Pd",
-      nip: "197505102000031008",
-      pelajaran: "Matematika",
-      gambar: null,
-    },
-    {
-      id: 3,
-      name: "SITI NURHALIZA, S.Pd",
-      nip: "198203152005042012",
-      pelajaran: "Bahasa Indonesia",
-      gambar: null,
-    },
-    {
-      id: 4,
-      name: "BUDI SANTOSO, S.Pd",
-      nip: "197912202003121006",
-      pelajaran: "Pendidikan Jasmani",
-      gambar: null,
-    },
-    {
-      id: 5,
-      name: "RINI SETYOWATI, S.Pd",
-      nip: "198506182008012015",
-      pelajaran: "Bahasa Inggris",
-      gambar: null,
-    },
-    {
-      id: 6,
-      name: "WAHYU HIDAYAT, S.Pd",
-      nip: "199001102015031004",
-      pelajaran: "Fisika",
-      gambar: null,
-    },
-  ]);
+  ""]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
