@@ -156,8 +156,8 @@ const Header = () => {
               "Guru",
               "Prestasi",
               "Berita",
-              "Kontak",
               "Akademik",
+              "Kontak",
             ].map((item) => (
               <button
                 key={item}
@@ -200,8 +200,8 @@ const Header = () => {
                 "Guru",
                 "Prestasi",
                 "Berita",
-                "Kontak",
                 "Akademik",
+                "Kontak",
               ].map((item) => (
                 <button
                   key={item}
@@ -214,12 +214,6 @@ const Header = () => {
                   {item}
                 </button>
               ))}
-              <button 
-                className="w-full mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                onClick={() => navigate('/login')}
-              >
-                Masuk
-              </button>
             </div>
           </div>
         )}

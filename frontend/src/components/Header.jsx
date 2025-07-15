@@ -7,28 +7,33 @@ const Header = () => {
   const navigate = useNavigate();
    const handleNavigation = (e, item) => {
     e.preventDefault();
-    if (item === 'Profil') {
-      navigate('/profil'); // <- ke /profil, bukan /profile
-    } else if (item === 'Beranda') {
+    switch(item) {
+    case 'Prestasi':
+      window.open('https://sangjuara.semarangkota.go.id/', '_blank');
+      break;
+    case 'Beranda':
       navigate('/');
-    } else if (item === 'Berita') {
+      break;
+    case 'Profil':
+      navigate('/profil');
+      break;
+    case 'Guru':
+      navigate('/guru');
+      break;
+    case 'Berita':
       navigate('/berita');
-    } else if (item === 'Prestasi') {
-      navigate('/prestasi');
-    } else if (item === 'Guru')
-      navigate('/guru')
-      else if (item === 'Saran')
-      navigate('/saran')
-      else if (item === 'Akademik')
-      navigate('/akademik')
-    else {
-      navigate(`/${item.toLowerCase()}`);
-    }
+      break;
+    case 'Kontak':
+      navigate('/kontak');
+      break;
+    case 'Akademik':
+      navigate('/akademik');
+      break;
+    default:
+      navigate('/');
+  }
   };
-    const handleKontak = (e) => {
-    e.preventDefault();
-    navigate('/kontak');
-    }
+    
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -42,7 +47,7 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Kontak', 'Akademik' ].map((item) => (
+            {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Akademik', 'Kontak'].map((item) => (
                 <button
           key={item}
           onClick={(e) => handleNavigation(e, item)}
@@ -79,18 +84,15 @@ const Header = () => {
                 {label: 'Beranda', href: '/beranda'}, 
                 {label:'Profil', href: '/profil'}, 
                 {label:'Guru', href: '/guru'}, 
-                {label:'Prestasi', href: '/prestasi'}, 
+                {label:'Prestasi', href: 'https://sangjuara.semarangkota.go.id/'}, 
                 {label:'Berita', href: '/berita'}, 
+                {label:'Akademik', href: '/akademik'},
                 {label:'Kontak', href: '/kontak'}, 
-                {label:'Akademik', href: '/akademik'}, 
               ].map((item) => (
                 <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-blue-600">
                   {item.label}
                 </a>
               ))}
-              <button className="w-full mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Masuk
-              </button>
             </div>
           </div>
         )}

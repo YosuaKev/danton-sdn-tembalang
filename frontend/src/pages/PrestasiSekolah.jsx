@@ -19,10 +19,6 @@ const Prestasi = () => {
     e.preventDefault();
     navigate('/guru')
     }
-    const handlePrestasi = (e) => {
-    e.preventDefault();
-    navigate('/prestasi')
-    }
     const handleBerita = (e) => {
     e.preventDefault();
     navigate('/berita')

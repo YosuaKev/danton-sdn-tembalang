@@ -19,7 +19,7 @@ const Profil = () => {
     }
     const handlePrestasi = (e) => {
     e.preventDefault();
-    navigate('/prestasi')
+    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
     }
     const handleBerita = (e) => {
     e.preventDefault();
@@ -48,8 +48,8 @@ const Profil = () => {
               <button href="#" onClick={handleGuru} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
               <button href="#" onClick={handleBerita} className="hover:text-blue-200 transition-colors duration-200">Berita</button>
               <button href="#" onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <button href="#" onClick={handleKontak} className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
               <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
+              <button href="#" onClick={handleKontak} className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
             </nav>
             
             {/* Mobile Menu Button */}
