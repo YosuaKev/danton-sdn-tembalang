@@ -30,7 +30,6 @@ const BeritaAdmin = () => {
   };
 
   const [beritas, setBeritas] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -66,11 +65,11 @@ const BeritaAdmin = () => {
 
       const data = await response.json();
       setBeritas(data);
-      setLoading(false);
+      
     } catch (err) {
       console.error("Fetch error:", err);
       setError(err.message);
-      setLoading(false);
+      
     }
   };
 
@@ -99,81 +98,7 @@ const BeritaAdmin = () => {
   };
 
   // Handle file upload with base64
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    const formDataToSend = {
-      judul: formData.judul,
-      isi: formData.isi,
-      gambar_utama: formData.gambar_utama,
-      ...(formData.gambar1 && { gambar1: formData.gambar1 }),
-      ...(formData.gambar2 && { gambar2: formData.gambar2 }),
-      ...(formData.gambar3 && { gambar3: formData.gambar3 }),
-      ...(formData.gambar4 && { gambar4: formData.gambar4 }),
-      ...(formData.gambar5 && { gambar5: formData.gambar5 })
-    };
-    if (!file) return;
-
-    // Validation
-    if (file.size > 5 * 1024 * 1024) {
-      setError("File size too large (max 5MB)");
-      return;
-    }
-
-    // Validtypes
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      setError('Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image.');
-      return;
-    }
-
-    try {
-      // Convert to Base64
-      const base64String = await convertToBase64(file);
-
-      setFormData((prev) => ({
-        ...prev,
-        gambar_utama: base64String,
-      }));
-
-      setImagePreview(base64String);
-      setError(null);
-    } catch (error) {
-      console.error("Conversion error:", error);
-      setError("Failed to process image");
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append('judul', formDataToSend.judul);
-      formData.append('isi', formDataToSend.isi);
-      formData.append('tanggal_publikasi', formDataToSend.tanggal_publikasi);
-      formData.append('gambar_utama', formDataToSend.gambar_utama); // base64 string
-
-      // hanya tambahkan jika tidak kosong
-      ['gambar1', 'gambar2', 'gambar3', 'gambar4', 'gambar5'].forEach((field) => {
-        if (formDataToSend[field]) {
-          formData.append(field, formDataToSend[field]);
-        }
-      });
-
-      const response = await fetch(url, {
-        
-        body: formData, // jangan pakai JSON.stringify di sini
-      });
-
-      if (!response.ok) throw new Error("Upload failed");
-
-      const { url } = await response.json();
-      setFormData((prev) => ({
-        ...prev,
-        gambar_utama: url,
-      }));
-      setImagePreview(url);
-    } catch (error) {
-      console.error("Upload error:", error);
-      // Show error message to user
-    }
-  };
+  
 
   // Handle upload method change
   const handleUploadMethodChange = (method) => {
@@ -320,18 +245,7 @@ const BeritaAdmin = () => {
     }
   };
 
-  function convertToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  }
+  
   
   // Featured article (first item for demo)
   const featuredArticle = beritas.length > 0 ? beritas[0] : null;
