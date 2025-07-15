@@ -77,7 +77,7 @@ const BeritaAdmin = () => {
 
   useEffect(() => {
     fetchBeritas();
-  }, []);
+  }, );
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -101,6 +101,16 @@ const BeritaAdmin = () => {
   // Handle file upload with base64
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    const formDataToSend = {
+      judul: formData.judul,
+      isi: formData.isi,
+      gambar_utama: formData.gambar_utama,
+      ...(formData.gambar1 && { gambar1: formData.gambar1 }),
+      ...(formData.gambar2 && { gambar2: formData.gambar2 }),
+      ...(formData.gambar3 && { gambar3: formData.gambar3 }),
+      ...(formData.gambar4 && { gambar4: formData.gambar4 }),
+      ...(formData.gambar5 && { gambar5: formData.gambar5 })
+    };
     if (!file) return;
 
     // Validation
@@ -147,7 +157,7 @@ const BeritaAdmin = () => {
       });
 
       const response = await fetch(url, {
-        method,
+        
         body: formData, // jangan pakai JSON.stringify di sini
       });
 
