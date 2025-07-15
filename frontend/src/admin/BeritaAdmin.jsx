@@ -37,7 +37,9 @@ const BeritaAdmin = () => {
   const [uploadMethod, setUploadMethod] = useState("url");
   const [imagePreview, setImagePreview] = useState(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-
+  const getAuthToken = () => {
+    return localStorage.getItem('token'); 
+  };
   const [formData, setFormData] = useState({
     judul: "",
     isi: "",
@@ -53,16 +55,25 @@ const BeritaAdmin = () => {
   // Fetch all news
   const fetchBeritas = async () => {
     try {
+       const token = getAuthToken();
+      if (!token) throw new Error('No authentication token found');
       const response = await fetch("http://localhost:5000/api/berita");
-      if (!response.ok) throw new Error("Failed to fetch news");
+
+      if (!response.ok) {
+        const text = await response.text(); // baca response sebagai text dulu
+        throw new Error(`Failed to fetch news. Status: ${response.status}\n${text}`);
+      }
+
       const data = await response.json();
       setBeritas(data);
       setLoading(false);
     } catch (err) {
+      console.error("Fetch error:", err);
       setError(err.message);
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchBeritas();
@@ -121,27 +132,37 @@ const BeritaAdmin = () => {
       setError("Failed to process image");
     }
 
-    // try {
-      //const formData = new FormData();
-      //formData.append("image", file);
+    try {
+      const formData = new FormData();
+      formData.append('judul', formDataToSend.judul);
+      formData.append('isi', formDataToSend.isi);
+      formData.append('tanggal_publikasi', formDataToSend.tanggal_publikasi);
+      formData.append('gambar_utama', formDataToSend.gambar_utama); // base64 string
 
-      //const response = await fetch("/api/upload", {
-        //method: "POST",
-       // body: formData,
-      //});
+      // hanya tambahkan jika tidak kosong
+      ['gambar1', 'gambar2', 'gambar3', 'gambar4', 'gambar5'].forEach((field) => {
+        if (formDataToSend[field]) {
+          formData.append(field, formDataToSend[field]);
+        }
+      });
 
-    //   if (!response.ok) throw new Error("Upload failed");
+      const response = await fetch(url, {
+        method,
+        body: formData, // jangan pakai JSON.stringify di sini
+      });
 
-    //   const { url } = await response.json();
-    //   setFormData((prev) => ({
-    //     ...prev,
-    //     gambar_utama: url,
-    //   }));
-    //   setImagePreview(url);
-    // } catch (error) {
-    //   console.error("Upload error:", error);
-    //   // Show error message to user
-    // }
+      if (!response.ok) throw new Error("Upload failed");
+
+      const { url } = await response.json();
+      setFormData((prev) => ({
+        ...prev,
+        gambar_utama: url,
+      }));
+      setImagePreview(url);
+    } catch (error) {
+      console.error("Upload error:", error);
+      // Show error message to user
+    }
   };
 
   // Handle upload method change
@@ -182,11 +203,12 @@ const BeritaAdmin = () => {
   const tanggalPublikasi = new Date(formData.tanggal_publikasi).toISOString();
 
   try {
-    let url = 'http://localhost:5000/api/beritas';
+    let url = 'http://localhost:5000/api/berita';
     let method = 'POST';
+     
 
-    // Create the base formData
-    const formData = {
+    // Ganti nama variabel ini agar tidak bentrok
+    const formDataToSend = {
       judul: formData.judul,
       isi: formData.isi,
       tanggal_publikasi: tanggalPublikasi,
@@ -201,20 +223,27 @@ const BeritaAdmin = () => {
     if (editingId) {
       url += `/${editingId}`;
       method = 'PUT';
-       formData.id_berita = editingId;
+      formDataToSend.id_berita = editingId;
     } else {
-      // For create, generate a temporary ID if backend requires
-      formData.id_berita = `temp-${Date.now()}`;
+      let nextId = 1;
+      if (beritas.length > 0) {
+        const ids = beritas.map(b => b.id_berita);
+        for (let i = 1; ; i++) {
+          if (!ids.includes(i)) {
+            nextId = i;
+            break;
+          }
+        }
+      }
+      formDataToSend.id_berita = nextId;
     }
 
-    console.log('Submitting:', { url, method, formData })
-    
     const response = await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(formDataToSend),
     });
 
     if (!response.ok) {
@@ -223,9 +252,9 @@ const BeritaAdmin = () => {
     }
 
     const result = await response.json();
-    
+
     if (editingId) {
-      setBeritas(beritas.map(item => 
+      setBeritas(beritas.map(item =>
         item.id_berita === editingId ? result : item
       ));
     } else {
@@ -363,12 +392,14 @@ const BeritaAdmin = () => {
             <div className="flex items-center space-x-4">
               {/* Add News Button */}
               <div className="container mx-auto px-4 pt-8">
+                {localStorage.getItem('token') && (
                 <button
                   onClick={() => setShowForm(true)}
                   className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors duration-200"
                 >
                   Add News
-                </button>
+                </button>)}
+                {error && <span className="text-red-600 ml-2">{error}</span>}
               </div>
 
               {/* Profile/Logout */}
@@ -542,11 +573,26 @@ const BeritaAdmin = () => {
                     <div className="space-y-2">
                       <input
                         type="file"
-                        accept=".jpeg, .png, .svg, .jpg"
-                        name="myFile"
-                        label="image"
-                        id="file-upload"
-                        onChange={handleFileChange}
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+
+                            reader.onloadend = () => {
+                              const base64String = reader.result.split(",")[1];
+
+                              setFormData((prev) => ({
+                                ...prev,
+                                gambar_utama: base64String,
+                              }));
+
+                              setImagePreview(reader.result); // ⬅️ untuk preview gambar
+                            };
+
+                            reader.readAsDataURL(file);
+                          }
+                        }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                       <p className="text-xs text-gray-500">
@@ -571,11 +617,7 @@ const BeritaAdmin = () => {
                             e.target.nextSibling.style.display = "block";
                           }}
                         />
-                        <div className=" w-full h-48 bg-gray-100 rounded-md border border-gray-300 flex items-center justify-center">
-                          <span className="text-gray-500">
-                            Failed to load image
-                          </span>
-                        </div>
+                        
                       </div>
                     </div>
                   )}
@@ -630,7 +672,7 @@ const BeritaAdmin = () => {
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="relative h-64 md:h-auto">
                   <img
-                    src={featuredArticle.gambar_utama}
+                    src={`data:image/jpeg;base64,${featuredArticle.gambar_utama}`}
                     alt={featuredArticle.judul}
                     className="w-full h-full object-cover"
                   />
@@ -682,11 +724,7 @@ const BeritaAdmin = () => {
                     <Trash2 size={16} />
                   </button>
                 </div>
-                <img
-                  src={berita.gambar_utama}
-                  alt={berita.judul}
-                  className="w-full h-48 object-cover"
-                />
+               
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-3 mt-2">
                     {berita.judul}
