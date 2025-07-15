@@ -53,7 +53,7 @@ const BeritaAdmin = () => {
   // Fetch all news
   const fetchBeritas = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/berita");
+      const response = await fetch("http://localhost:5000/api/beritas");
       if (!response.ok) throw new Error("Failed to fetch news");
       const data = await response.json();
       setBeritas(data);
