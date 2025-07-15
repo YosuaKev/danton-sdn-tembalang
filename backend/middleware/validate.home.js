@@ -23,18 +23,19 @@ export default [
     
     .isLength({ max: 1000 }).withMessage('Description cannot exceed 1000 characters'),
 
-//   body('gambar')
-//     .trim()
-//     .isURL().withMessage('Invalid image URL format'),
+  body('gambar')
+  .trim()
+  .notEmpty().withMessage('Image URL is required')
+  .isURL().withMessage('Must be a valid URL')
+  .matches(/\.(jpg|jpeg|png|gif|webp)$/i).withMessage('URL must point to an image file'),
 
   // Stats Validation
   body('namajumlah')
-    .trim()
-    
-    .isLength({ max: 50 }).withMessage('Stat name cannot exceed 50 characters'),
+  .trim()
+  .isLength({ max: 50 }).withMessage('Stat name cannot exceed 50 characters'),
 
-  body('jumlah')
-    .isInt({ min: 0 }).withMessage('Stat value must be a positive integer'),
+body('jumlah')
+  .isInt({ min: 0 }).withMessage('Stat value must be a positive integer'),
 
   // Features Validation
   ...['1', '2', '3', '4'].map(num => [
