@@ -1,47 +1,211 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { BookOpen, Users, Wrench, Trophy, Edit, X, Check, Loader2 } from 'lucide-react';
 
-import { Menu, X, User, BookOpen, Users, Trophy, Newspaper, UserCheck, Phone, Mail, MapPin, Facebook, Instagram, Youtube, ChevronRight, GraduationCap, Monitor, Wrench, Calculator, Palette, Camera, Heart, Star } from 'lucide-react';
+const FeatureSection = () => {
+  const [features, setFeatures] = useState({
+    judulfeature: "",
+    feature1: "",
+    deskripsifeature1: "",
+    feature2: "",
+    deskripsifeature2: "",
+    feature3: "",
+    deskripsifeature3: "",
+    feature4: "",
+    deskripsifeature4: ""
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempFeatures, setTempFeatures] = useState({ ...features });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
-const FeaturesSection = () => {
-  const features = [
-    {
-      icon: <BookOpen className="w-8 h-8 text-blue-600" />,
-      title: "Kurikulum Berbasis Industri",
-      description: "Program pembelajaran yang disesuaikan dengan kebutuhan industri modern untuk mempersiapkan lulusan yang siap kerja."
-    },
-    {
-      icon: <Users className="w-8 h-8 text-blue-600" />,
-      title: "Tenaga Pengajar Berpengalaman",
-      description: "Guru-guru profesional dengan pengalaman industri yang akan membimbing siswa mencapai potensi terbaik."
-    },
-    {
-      icon: <Wrench className="w-8 h-8 text-blue-600" />,
-      title: "Fasilitas Lengkap",
-      description: "Laboratorium dan workshop modern dengan peralatan terkini untuk mendukung proses pembelajaran praktik."
-    },
-    {
-      icon: <Trophy className="w-8 h-8 text-blue-600" />,
-      title: "Prestasi Gemilang",
-      description: "Meraih berbagai prestasi di tingkat regional dan nasional dalam kompetisi akademik dan non-akademik."
+  useEffect(() => {
+    const fetchFeatures = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/home');
+        if (!response.ok) throw new Error('Failed to fetch features');
+        const data = await response.json();
+        
+        setFeatures({
+          judulfeature: data.judulfeature || "Kenapa Harus SD Negeri Tembalang?",
+          feature1: data.feature1 || "Kurikulum Berbasis Industri",
+          deskripsifeature1: data.deskripsifeature1 || "Program pembelajaran yang disesuaikan dengan kebutuhan industri modern.",
+          feature2: data.feature2 || "Tenaga Pengajar Berpengalaman",
+          deskripsifeature2: data.deskripsifeature2 || "Guru-guru profesional dengan pengalaman industri.",
+          feature3: data.feature3 || "Fasilitas Lengkap",
+          deskripsifeature3: data.deskripsifeature3 || "Laboratorium dan workshop modern dengan peralatan terkini.",
+          feature4: data.feature4 || "Prestasi Gemilang",
+          deskripsifeature4: data.deskripsifeature4 || "Meraih berbagai prestasi di tingkat regional dan nasional."
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        setError('Failed to load features');
+      }
+    };
+    fetchFeatures();
+  }, []);
+
+  const handleEditClick = () => {
+    setTempFeatures({ ...features });
+    setIsEditing(true);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    setError('');
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setTempFeatures(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError('');
+    setMessage('');
+
+    try {
+      const currentData = await fetch('http://localhost:5000/api/home').then(res => res.json());
+      
+      const response = await fetch('http://localhost:5000/api/home', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          ...currentData,
+          ...tempFeatures
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.errors?.[0]?.msg || 'Failed to update features');
+      }
+
+      const data = await response.json();
+      setFeatures({
+        judulfeature: data.judulfeature,
+        feature1: data.feature1,
+        deskripsifeature1: data.deskripsifeature1,
+        feature2: data.feature2,
+        deskripsifeature2: data.deskripsifeature2,
+        feature3: data.feature3,
+        deskripsifeature3: data.deskripsifeature3,
+        feature4: data.feature4,
+        deskripsifeature4: data.deskripsifeature4
+      });
+      alert('Features updated successfully!');
+      setIsEditing(false);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const featureIcons = [
+    <BookOpen className="w-8 h-8 text-blue-600" />,
+    <Users className="w-8 h-8 text-blue-600" />,
+    <Wrench className="w-8 h-8 text-blue-600" />,
+    <Trophy className="w-8 h-8 text-blue-600" />
   ];
 
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Kenapa Harus SD Negeri Tembalang?
-          </h2>
+          {isEditing ? (
+            <div className="flex flex-col items-center">
+              <input
+                type="text"
+                name="judulfeature"
+                value={tempFeatures.judulfeature}
+                onChange={handleInputChange}
+                className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 text-center w-full max-w-2xl p-2 border rounded"
+              />
+              {localStorage.getItem('token') && (
+                <div className="flex space-x-2 mt-4">
+                  <button
+                    onClick={handleCancelClick}
+                    className="bg-gray-500 text-white px-4 py-2 rounded flex items-center"
+                  >
+                    <X className="mr-2 h-4 w-4" /> Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Check className="mr-2 h-4 w-4" />
+                    )}
+                    Save
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                {features.judulfeature}
+              </h2>
+              {localStorage.getItem('token') && (
+                <button
+                  onClick={handleEditClick}
+                  className="ml-4 bg-blue-500 text-white p-2 rounded-full"
+                >
+                  <Edit className="h-5 w-5" />
+                </button>
+              )}
+            </div>
+          )}
+          {error && <p className="text-red-600 mt-2">{error}</p>}
+          {message && <p className="text-green-600 mt-2">{message}</p>}
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
+          {[1, 2, 3, 4].map((num, index) => (
             <div key={index} className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow">
               <div className="flex justify-center mb-4">
-                {feature.icon}
+                {featureIcons[index]}
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
+              {isEditing ? (
+                <>
+                  <input
+                    type="text"
+                    name={`feature${num}`}
+                    value={tempFeatures[`feature${num}`]}
+                    onChange={handleInputChange}
+                    className="text-xl font-semibold text-gray-900 mb-3 w-full p-2 border rounded"
+                  />
+                  <textarea
+                    name={`deskripsifeature${num}`}
+                    value={tempFeatures[`deskripsifeature${num}`]}
+                    onChange={handleInputChange}
+                    className="text-gray-600 w-full p-2 border rounded"
+                    rows="3"
+                  />
+                </>
+              ) : (
+                <>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                    {features[`feature${num}`]}
+                  </h3>
+                  <p className="text-gray-600">
+                    {features[`deskripsifeature${num}`]}
+                  </p>
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -50,4 +214,4 @@ const FeaturesSection = () => {
   );
 };
 
-export default FeaturesSection
+export default FeatureSection;

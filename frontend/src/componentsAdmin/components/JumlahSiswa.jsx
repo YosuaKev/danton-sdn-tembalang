@@ -1,158 +1,181 @@
 import { useState, useEffect } from 'react';
 
 const JumlahSiswa = () => {
-  const [stats, setStats] = useState([]);
-  const [editStats, setEditStats] = useState([]);
+  const [stats, setStats] = useState({
+    namajumlah1: '',
+    jumlah1: 0,
+    namajumlah2: '',
+    jumlah2: 0,
+    namajumlah3: '',
+    jumlah3: 0
+  });
   const [isEditing, setIsEditing] = useState(false);
+  const [tempStats, setTempStats] = useState({ ...stats });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [status, setStatus] = useState({ error: null, success: null });
-  const getAuthToken = () => {
-    return localStorage.getItem('token'); 
-  };
-
-  
-  const fetchStats = async () => {
-    try {
-      const token = getAuthToken();
-      if (!token) throw new Error('No authentication token found');
-      const response = await fetch("http://localhost:5000/api/home");
-      if (!response.ok) throw new Error("Gagal memuat data statistik");
-      
-      const data = await response.json();
-      
-      // Ensure we have statistics data or initialize with defaults
-      const statistics = data.statistics || [
-        { namajumlah: 'Jumlah Siswa SDN TEMBALANG', jumlah: 999 },
-        { namajumlah: 'Jumlah Guru SDN TEMBALANG', jumlah: 50 },
-        { namajumlah: 'Jumlah Tenaga SDN TEMBALANG', jumlah: 30 }
-      ];
-      
-      setStats(statistics);
-      setEditStats([...statistics]);
-    } catch (error) {
-      setStatus(prev => ({ ...prev, error: error.message }));
-    }
-  };
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/home');
+        if (!response.ok) throw new Error('Failed to fetch stats');
+        const data = await response.json();
+        
+        setStats({
+          namajumlah1: data.namajumlah1 || '',
+          jumlah1: data.jumlah1 || 0,
+          namajumlah2: data.namajumlah2 || '',
+          jumlah2: data.jumlah2 || 0,
+          namajumlah3: data.namajumlah3 || '',
+          jumlah3: data.jumlah3 || 0
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        setError('Failed to load stats');
+      }
+    };
     fetchStats();
   }, []);
 
-  const handleSubmit = async () => {
+  const handleEditClick = () => {
+    setTempStats({ ...stats });
+    setIsEditing(true);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    setError('');
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setTempStats(prev => ({
+      ...prev,
+      [name]: name.startsWith('jumlah') ? parseInt(value) || 0 : value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setIsSubmitting(true);
-    setStatus({ error: null, success: null });
+    setError('');
+    setMessage('');
 
     try {
-      // Prepare data according to your validation schema
-      const requestData = {
-        statistics: editStats.map(stat => ({
-          namajumlah: stat.namajumlah.trim(),
-          jumlah: stat.jumlah
-        }))
-      };
-
-      const token = getAuthToken();
-      if (!token) throw new Error('No authentication token found');
-
-      const response = await fetch("http://localhost:5000/api/home", {
+      // First get the current document to preserve other fields
+      const currentData = await fetch('http://localhost:5000/api/home').then(res => res.json());
+      
+      const response = await fetch('http://localhost:5000/api/home', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify({
+          ...currentData,
+          ...tempStats
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || errorData.error || "Gagal memperbarui data statistik");
+        throw new Error(errorData.errors?.[0]?.msg || 'Failed to update stats');
       }
 
       const data = await response.json();
-      setStats(data.statistics);
+      setStats({
+        namajumlah1: data.namajumlah1,
+        jumlah1: data.jumlah1,
+        namajumlah2: data.namajumlah2,
+        jumlah2: data.jumlah2,
+        namajumlah3: data.namajumlah3,
+        jumlah3: data.jumlah3
+      });
+      alert('Data updated successfully!');
       setIsEditing(false);
-      setStatus(prev => ({ ...prev, success: "Data berhasil diperbarui!" }));
     } catch (error) {
-      setStatus(prev => ({ ...prev, error: error.message }));
+      setError(error.message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleStatChange = (index, field, value) => {
-    const newStats = [...editStats];
-    newStats[index][field] = field === 'jumlah' ? parseInt(value) || 0 : value;
-    setEditStats(newStats);
-  };
-
   return (
-    <section className="py-16 bg-white relative">
-      <button
-        onClick={() => setIsEditing(!isEditing)}
-        className="absolute top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-      >
-        {isEditing ? 'Batal' : 'Edit'}
-      </button>
+    <div className="p-4 bg-white rounded-lg shadow">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Student Statistics</h2>
+        {localStorage.getItem('token') && !isEditing && (
+          <button
+            onClick={handleEditClick}
+            className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+          >
+            Edit
+          </button>
+        )}
+      </div>
 
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-3 gap-8">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              {isEditing ? (
-                <>
-                  <input
-                    type="text"
-                    value={editStats[index]?.namajumlah || ''}
-                    onChange={(e) => handleStatChange(index, 'namajumlah', e.target.value)}
-                    className="w-full px-3 py-2 border rounded mb-2 focus:ring-2 focus:ring-blue-500"
-                    maxLength={50}
-                  />
-                  <input
-                    type="number"
-                    value={editStats[index]?.jumlah || 0}
-                    onChange={(e) => handleStatChange(index, 'jumlah', e.target.value)}
-                    min="0"
-                    className="w-full px-3 py-2 border rounded text-2xl font-bold focus:ring-2 focus:ring-blue-500"
-                  />
-                </>
-              ) : (
-                <>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                    {stat.namajumlah}
-                  </h3>
-                  <div className="text-4xl font-bold text-blue-600">
-                    {stat.jumlah}
-                  </div>
-                </>
-              )}
+      {error && <div className="text-red-600 mb-4">{error}</div>}
+      {message && <div className="text-green-600 mb-4">{message}</div>}
+
+      {isEditing ? (
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[1, 2, 3].map((num) => (
+              <div key={num} className="space-y-2">
+                <input
+                  type="text"
+                  name={`namajumlah${num}`}
+                  value={tempStats[`namajumlah${num}`]}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                  placeholder={`Stat ${num} Name`}
+                />
+                <input
+                  type="number"
+                  name={`jumlah${num}`}
+                  value={tempStats[`jumlah${num}`]}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                  placeholder={`Stat ${num} Value`}
+                  min="0"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-end space-x-2 mt-4">
+            <button
+              type="button"
+              onClick={handleCancelClick}
+              className="bg-gray-500 text-white px-4 py-2 rounded"
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map((num) => (
+            <div key={num} className="text-center p-8 bg-gray-50 rounded">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {stats[`namajumlah${num}`] || `Stat ${num}`}
+              </h3>
+              <div className="text-3xl font-bold text-blue-600">
+                {stats[`jumlah${num}`]}
+              </div>
             </div>
           ))}
         </div>
-
-        {isEditing && (
-          
-          <div className="mt-8 space-y-4">
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="w-full md:w-auto mx-auto px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 transition"
-            >
-              {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
-            </button>
-            
-            {status.error && (
-              <div className="p-3 bg-red-100 text-red-800 rounded-md">
-                {status.error}
-              </div>
-            )}
-            {status.success && (
-              <div className="p-3 bg-green-100 text-green-800 rounded-md">
-                {status.success}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </section>
+      )}
+    </div>
   );
 };
 

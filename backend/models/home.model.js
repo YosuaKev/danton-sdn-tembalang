@@ -17,7 +17,7 @@ const berandaSchema = new Schema(
       
     },
     subjudul: {
-      type: String,
+      type: String, 
       
     },
     deskripsi: {
@@ -28,11 +28,27 @@ const berandaSchema = new Schema(
       type: String,
       
     },
-    namajumlah: {
+    namajumlah1: {
       type: String,
       
     },
-    jumlah: {
+    jumlah1: {
+      type: Number,
+      
+    },
+    namajumlah2: {
+      type: String,
+      
+    },
+    jumlah2: {
+      type: Number,
+      
+    },
+    namajumlah3: {
+      type: String,
+      
+    },
+    jumlah3: {
       type: Number,
       
     },
