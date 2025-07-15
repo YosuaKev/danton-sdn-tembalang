@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Search, Calendar, MapPin, Clock, Users, Plus, Edit, Menu, Trash2, X, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,135 +10,33 @@ const AkademikAdmin = () => {
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [editingActivity, setEditingActivity] = useState(null);
+  const [academicEvents, setAcademicEvents] = useState([]);
+  const [upcomingActivities, setUpcomingActivities] = useState([]);
   const navigate = useNavigate();
 
+  // Navigation handlers
   const handleProfilAdmin = (e) => {
     e.preventDefault();
-    navigate('/profiladmin')
-  }
+    navigate('/profiladmin');
+  };
   const handleGuruAdmin = (e) => {
     e.preventDefault();
-    navigate('/guruadmin')
-  }
+    navigate('/guruadmin');
+  };
   const handlePrestasi = (e) => {
     e.preventDefault();
-    navigate('/prestasiadmin')
-  }
+    navigate('/prestasiadmin');
+  };
   const handleBeritaAdmin = (e) => {
     e.preventDefault();
-    navigate('/beritaadmin')
-  }
+    navigate('/beritaadmin');
+  };
   const handleAkademikAdmin = (e) => {
     e.preventDefault();
-    navigate('/akademikadmin')
-  }
+    navigate('/akademikadmin');
+  };
 
-  const [academicEvents, setAcademicEvents] = useState([
-    {
-      id: 1,
-      title: "Upacara Bendera Mingguan",
-      date: "2025-07-14",
-      time: "07:00 - 08:00",
-      location: "Lapangan Sekolah",
-      category: "Upacara",
-      description: "Upacara bendera rutin setiap hari Senin"
-    },
-    {
-      id: 2,
-      title: "Ulangan Harian Matematika",
-      date: "2025-07-15",
-      time: "08:00 - 09:30",
-      location: "Ruang Kelas",
-      category: "Akademik",
-      description: "Ulangan harian mata pelajaran Matematika untuk kelas 4-6"
-    },
-    {
-      id: 3,
-      title: "Pelatihan Pramuka",
-      date: "2025-07-16",
-      time: "14:00 - 16:00",
-      location: "Aula Sekolah",
-      category: "Ekstrakurikuler",
-      description: "Kegiatan pelatihan pramuka untuk siswa kelas 3-6"
-    },
-    {
-      id: 4,
-      title: "Rapat Komite Sekolah",
-      date: "2025-07-17",
-      time: "19:00 - 21:00",
-      location: "Ruang Kepala Sekolah",
-      category: "Rapat",
-      description: "Rapat bulanan komite sekolah dengan orang tua"
-    },
-    {
-      id: 5,
-      title: "Lomba Mewarnai Kelas 1-2",
-      date: "2025-07-18",
-      time: "09:00 - 11:00",
-      location: "Ruang Kelas 1-2",
-      category: "Kompetisi",
-      description: "Lomba mewarnai untuk siswa kelas 1 dan 2"
-    },
-    {
-      id: 6,
-      title: "Senam Pagi Bersama",
-      date: "2025-07-19",
-      time: "06:30 - 07:30",
-      location: "Lapangan Sekolah",
-      category: "Olahraga",
-      description: "Senam pagi bersama untuk seluruh siswa"
-    },
-    {
-      id: 7,
-      title: "Ulangan Tengah Semester",
-      date: "2025-07-21",
-      time: "08:00 - 10:00",
-      location: "Ruang Kelas",
-      category: "Akademik",
-      description: "Ulangan tengah semester untuk semua mata pelajaran"
-    },
-    {
-      id: 8,
-      title: "Bakti Sosial",
-      date: "2025-07-25",
-      time: "08:00 - 12:00",
-      location: "Desa Tembalang",
-      category: "Sosial",
-      description: "Kegiatan bakti sosial di lingkungan sekitar sekolah"
-    }
-  ]);
-
-  const [upcomingActivities, setUpcomingActivities] = useState([
-    {
-      id: 1,
-      title: "Persiapan Lomba Olimpiade Sains",
-      date: "2025-08-01",
-      participants: "15 siswa",
-      status: "Pendaftaran"
-    },
-    {
-      id: 2,
-      title: "Pelatihan Guru Kurikulum Merdeka",
-      date: "2025-08-05",
-      participants: "20 guru",
-      status: "Berlangsung"
-    },
-    {
-      id: 3,
-      title: "Kunjungan Perpustakaan Daerah",
-      date: "2025-08-10",
-      participants: "60 siswa",
-      status: "Perencanaan"
-    },
-    {
-      id: 4,
-      title: "Festival Seni Budaya",
-      date: "2025-08-17",
-      participants: "150 siswa",
-      status: "Persiapan"
-    }
-  ]);
-
+  // Form states
   const [eventForm, setEventForm] = useState({
     title: '',
     date: '',
@@ -155,9 +53,27 @@ const AkademikAdmin = () => {
     status: 'Perencanaan'
   });
 
+  // Categories and statuses
   const categories = ["Upacara", "Akademik", "Ekstrakurikuler", "Rapat", "Kompetisi", "Olahraga", "Sosial"];
   const statuses = ["Perencanaan", "Pendaftaran", "Berlangsung", "Persiapan", "Selesai"];
 
+  // Fetch data from backend
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/calendar');
+        if (!response.ok) throw new Error('Failed to fetch events');
+        const data = await response.json();
+        setAcademicEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // Calendar helper functions
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -182,13 +98,16 @@ const AkademikAdmin = () => {
   const getEventsForDate = (day) => {
     if (!day) return [];
     const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return academicEvents.filter(event => event.date === dateStr);
+    return academicEvents.filter(event => {
+      const eventDate = new Date(event.date).toISOString().split('T')[0];
+      return eventDate === dateStr;
+    });
   };
 
   const filteredEvents = academicEvents.filter(event =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    event.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    event.location.toLowerCase().includes(searchTerm.toLowerCase())
+    (event.category && event.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (event.location && event.location.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const navigateMonth = (direction) => {
@@ -197,6 +116,7 @@ const AkademikAdmin = () => {
     setCurrentDate(newDate);
   };
 
+  // Event handlers
   const handleAddEvent = () => {
     setEditingEvent(null);
     setEventForm({
@@ -214,43 +134,88 @@ const AkademikAdmin = () => {
     setEditingEvent(event);
     setEventForm({
       title: event.title,
-      date: event.date,
-      time: event.time,
-      location: event.location,
-      category: event.category,
-      description: event.description
+      date: new Date(event.date).toISOString().split('T')[0],
+      time: event.time || '',
+      location: event.location || '',
+      category: event.category || 'Akademik',
+      description: event.description || ''
     });
     setShowEventModal(true);
   };
 
-  const handleDeleteEvent = (eventId) => {
+  const handleDeleteEvent = async (eventId) => {
     if (window.confirm('Apakah Anda yakin ingin menghapus kegiatan ini?')) {
-      setAcademicEvents(academicEvents.filter(event => event.id !== eventId));
+      try {
+        const response = await fetch(`/api/calendar/${eventId}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) throw new Error('Failed to delete event');
+        
+        setAcademicEvents(academicEvents.filter(event => event._id !== eventId));
+      } catch (error) {
+        console.error('Error deleting event:', error);
+        alert('Gagal menghapus kegiatan');
+      }
     }
   };
 
-  const handleSaveEvent = () => {
-    if (!eventForm.title || !eventForm.date || !eventForm.time || !eventForm.location) {
+  const handleSaveEvent = async () => {
+    if (!eventForm.title || !eventForm.date) {
       alert('Mohon lengkapi semua field yang wajib diisi');
       return;
     }
 
-    if (editingEvent) {
-      setAcademicEvents(academicEvents.map(event =>
-        event.id === editingEvent.id
-          ? { ...event, ...eventForm }
-          : event
-      ));
-    } else {
-      const newEvent = {
-        id: Math.max(...academicEvents.map(e => e.id)) + 1,
-        ...eventForm
+    try {
+      const eventData = {
+        title: eventForm.title,
+        date: eventForm.date,
+        description: eventForm.description,
+        // Additional fields for your frontend
+        time: eventForm.time,
+        location: eventForm.location,
+        category: eventForm.category
       };
-      setAcademicEvents([...academicEvents, newEvent]);
+
+      let response;
+      if (editingEvent) {
+        response = await fetch(`/api/calendar/${editingEvent._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(eventData)
+        });
+      } else {
+        response = await fetch('/api/calendar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(eventData)
+        });
+      }
+
+      if (!response.ok) throw new Error(editingEvent ? 'Failed to update event' : 'Failed to create event');
+
+      const savedEvent = await response.json();
+
+      if (editingEvent) {
+        setAcademicEvents(academicEvents.map(event => 
+          event._id === editingEvent._id ? savedEvent : event
+        ));
+      } else {
+        setAcademicEvents([...academicEvents, savedEvent]);
+      }
+
+      setShowEventModal(false);
+    } catch (error) {
+      console.error('Error saving event:', error);
+      alert('Gagal menyimpan kegiatan');
     }
-    setShowEventModal(false);
   };
 
+  // Activity handlers (these would need their own backend endpoints)
   const handleAddActivity = () => {
     setEditingActivity(null);
     setActivityForm({
@@ -293,7 +258,7 @@ const AkademikAdmin = () => {
       ));
     } else {
       const newActivity = {
-        id: Math.max(...upcomingActivities.map(a => a.id)) + 1,
+        id: Math.max(...upcomingActivities.map(a => a.id), 0) + 1,
         ...activityForm
       };
       setUpcomingActivities([...upcomingActivities, newActivity]);
@@ -301,6 +266,7 @@ const AkademikAdmin = () => {
     setShowActivityModal(false);
   };
 
+  // Helper functions
   const monthNames = [
     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
@@ -328,50 +294,50 @@ const AkademikAdmin = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-                <div className="flex-shrink-0 flex items-center"></div>
+              <div className="flex-shrink-0 flex items-center">
                 <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-              <span className="font-bold text-xl text-gray-900">
+                <span className="font-bold text-xl text-gray-900">
                   SDN NGAWI
                 </span>
                 <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
                   Admin
                 </span>
-            </div>
-            
-            <nav className="hidden md:flex space-x-6">
-              <button className="hover:text-blue-600 transition-colors duration-200">Beranda</button>
-              <button onClick={handleProfilAdmin} className="hover:text-blue-600 transition-colors duration-200">Profil</button>
-              <button onClick={handleGuruAdmin} className="hover:text-blue-600 transition-colors duration-200">Guru</button>
-              <button onClick={handleBeritaAdmin} className="hover:text-blue-600 transition-colors duration-200">Berita</button>
-              <button onClick={handlePrestasi} className="hover:text-blue-600 transition-colors duration-200">Prestasi</button>
-              <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400">Akademik</button>
-            </nav>
-            
-            <button className="md:hidden">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-         {/* Right side items */}
-            <div className="flex items-center space-x-4"></div>
-            {/* Profile/Logout */}
-              <div className="relative">
-                <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
-                  <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                  <span className="hidden md:block text-sm font-medium">
-                    Admin
-                  </span>
-                </button>
               </div>
+            </div>
 
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setShowMobileMenu(!showMobileMenu)}
-                className="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <Menu size={20} />
+            <nav className="hidden md:flex space-x-6">
+              <button className="hover:text-blue-600 transition-colors duration-200">
+                Beranda
               </button>
+              <button className="hover:text-blue-600 transition-colors duration-200">
+                Profil
+              </button>
+              <button className="hover:text-blue-600 transition-colors duration-200">
+                Guru
+              </button>
+              <button className="hover:text-blue-600 transition-colors duration-200">
+                Berita
+              </button>
+              <button className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400">
+                Siswa
+              </button>
+              <button className="hover:text-blue-600 transition-colors duration-200">
+                Prestasi
+              </button>
+              <button className="hover:text-blue-600 transition-colors duration-200">
+                Akademik
+              </button>
+            </nav>
+
+            <div className="relative">
+              <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
+                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                <span className="hidden md:block text-sm font-medium">
+                  Admin
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -467,7 +433,7 @@ const AkademikAdmin = () => {
                           <div className="font-semibold text-sm mb-1">{day}</div>
                           {events.slice(0, 2).map(event => (
                             <div
-                              key={event.id}
+                              key={event._id}
                               className={`text-xs px-2 py-1 rounded mb-1 ${getCategoryColor(event.category)}`}
                             >
                               {event.title.substring(0, 15)}...
@@ -487,56 +453,68 @@ const AkademikAdmin = () => {
             {/* Events List */}
             <div className="mt-8">
               <h3 className="text-2xl font-bold text-blue-900 mb-6">Daftar Kegiatan</h3>
-              <div className="space-y-4">
-                {filteredEvents.map(event => (
-                  <div key={event.id} className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center mb-2">
-                          <h4 className="text-lg font-semibold text-gray-900 mr-3">{event.title}</h4>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
-                            {event.category}
-                          </span>
+              {filteredEvents.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  Tidak ada kegiatan yang ditemukan
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredEvents.map(event => (
+                    <div key={event._id} className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center mb-2">
+                            <h4 className="text-lg font-semibold text-gray-900 mr-3">{event.title}</h4>
+                            {event.category && (
+                              <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
+                                {event.category}
+                              </span>
+                            )}
+                          </div>
+                          {event.description && <p className="text-gray-600 mb-3">{event.description}</p>}
+                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <Calendar className="w-4 h-4 mr-1" />
+                              {new Date(event.date).toLocaleDateString('id-ID', { 
+                                weekday: 'long', 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                              })}
+                            </div>
+                            {event.time && (
+                              <div className="flex items-center">
+                                <Clock className="w-4 h-4 mr-1" />
+                                {event.time}
+                              </div>
+                            )}
+                            {event.location && (
+                              <div className="flex items-center">
+                                <MapPin className="w-4 h-4 mr-1" />
+                                {event.location}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <p className="text-gray-600 mb-3">{event.description}</p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <div className="flex items-center">
-                            <Calendar className="w-4 h-4 mr-1" />
-                            {new Date(event.date).toLocaleDateString('id-ID', { 
-                              weekday: 'long', 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
-                            })}
-                          </div>
-                          <div className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            {event.time}
-                          </div>
-                          <div className="flex items-center">
-                            <MapPin className="w-4 h-4 mr-1" />
-                            {event.location}
-                          </div>
+                        <div className="flex space-x-2 ml-4">
+                          <button
+                            onClick={() => handleEditEvent(event)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteEvent(event._id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
-                      </div>
-                      <div className="flex space-x-2 ml-4">
-                        <button
-                          onClick={() => handleEditEvent(event)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteEvent(event.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -632,6 +610,7 @@ const AkademikAdmin = () => {
                   onChange={(e) => setEventForm({...eventForm, title: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Masukkan judul kegiatan"
+                  required
                 />
               </div>
               
@@ -644,12 +623,13 @@ const AkademikAdmin = () => {
                   value={eventForm.date}
                   onChange={(e) => setEventForm({...eventForm, date: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Waktu *
+                  Waktu
                 </label>
                 <input
                   type="time"
@@ -662,7 +642,7 @@ const AkademikAdmin = () => {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Lokasi *
+                  Lokasi
                 </label>
                 <input
                   type="text"
@@ -675,7 +655,7 @@ const AkademikAdmin = () => {
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Kategori *
+                  Kategori
                 </label>
                 <select
                   value={eventForm.category}

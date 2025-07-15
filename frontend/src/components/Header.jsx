@@ -58,13 +58,6 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Kontak Button */}
-          <div className="hidden md:flex">
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              Masuk
-            </button>
-          </div>
-
           {/* Mobile menu button */}
           <div className="md:hidden">
             <button

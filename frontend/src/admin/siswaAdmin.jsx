@@ -105,17 +105,6 @@ const SiswaAdmin = () => {
   };
 
   const studentsByClass = groupStudentsByClass(filteredStudents);
-
-  // Sort classes (I-A, I-B, ..., VI-C)
-  const sortedClasses = Object.keys(studentsByClass).sort((a, b) => {
-    const gradeA = parseInt(a.split('-')[0].replace('I', '1').replace('II', '2').replace('III', '3').replace('IV', '4').replace('V', '5').replace('VI', '6'));
-    const gradeB = parseInt(b.split('-')[0].replace('I', '1').replace('II', '2').replace('III', '3').replace('IV', '4').replace('V', '5').replace('VI', '6'));
-    const classA = a.split('-')[1];
-    const classB = b.split('-')[1];
-    
-    return gradeA - gradeB || classA.localeCompare(classB);
-  });
-
   // Toggle expand/collapse for class
   const toggleClass = (kelas) => {
     setExpandedClasses(prev => ({
