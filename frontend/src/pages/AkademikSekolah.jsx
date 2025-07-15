@@ -25,17 +25,12 @@ const Akademik = () => {
     }
     const handlePrestasi = (e) => {
     e.preventDefault();
-    navigate('/prestasi')
+    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
     }
     const handleBerita = (e) => {
     e.preventDefault();
     navigate('/berita')
     }
-    const handleAkademik = (e) => {
-    e.preventDefault();
-    navigate('/akademik')
-    }
-
 
   const academicEvents = [
     {

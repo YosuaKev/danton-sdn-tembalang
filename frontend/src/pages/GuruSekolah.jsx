@@ -23,7 +23,7 @@ const DataGuruPage = () => {
     }
     const handlePrestasi = (e) => {
     e.preventDefault();
-    navigate('/prestasi')
+    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
     }
     const handleBerita = (e) => {
     e.preventDefault();
@@ -131,8 +131,8 @@ const DataGuruPage = () => {
               <a href="#" className="text-white hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Guru</a>
               <button href="#" onClick={handleBerita} className="text-white hover:text-blue-200 transition-colors duration-200">Berita</button>
               <button href="#" onClick={handlePrestasi} className="text-white hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <button href="#" onClick={handleKontak} className="text-white hover:text-blue-200 transition-colors duration-200">Kontak</button>
               <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
+              <button href="#" onClick={handleKontak} className="text-white hover:text-blue-200 transition-colors duration-200">Kontak</button>
             </nav>
 
             {/* Mobile Menu Button */}

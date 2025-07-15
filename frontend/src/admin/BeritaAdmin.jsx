@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Plus,
   Edit,
@@ -16,18 +16,18 @@ import {
   Menu,
   Bell,
 } from "lucide-react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const BeritaAdmin = () => {
   const navigate = useNavigate();
-    const handleGuruAdmin = (e) => {
+  const handleGuruAdmin = (e) => {
     e.preventDefault();
-    navigate('/guruadmin')
-    }
-    const handleProfilAdmin = (e) => {
+    navigate("/guruadmin");
+  };
+  const handleProfilAdmin = (e) => {
     e.preventDefault();
-    navigate('/profiladmin')
-    }
+    navigate("/profiladmin");
+  };
 
   const [beritas, setBeritas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,22 +39,22 @@ const BeritaAdmin = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const [formData, setFormData] = useState({
-    judul: '',
-    isi: '',
-    tanggal_publikasi: new Date().toISOString().split('T')[0],
-    gambar_utama: '',
-    gambar1: '',
-    gambar2: '',
-    gambar3: '',
-    gambar4: '',
-    gambar5: ''
+    judul: "",
+    isi: "",
+    tanggal_publikasi: new Date().toISOString().split("T")[0],
+    gambar_utama: "",
+    gambar1: "",
+    gambar2: "",
+    gambar3: "",
+    gambar4: "",
+    gambar5: "",
   });
 
   // Fetch all news
   const fetchBeritas = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/berita');
-      if (!response.ok) throw new Error('Failed to fetch news');
+      const response = await fetch("http://localhost:5000/api/berita");
+      if (!response.ok) throw new Error("Failed to fetch news");
       const data = await response.json();
       setBeritas(data);
       setLoading(false);
@@ -67,13 +67,13 @@ const BeritaAdmin = () => {
   useEffect(() => {
     fetchBeritas();
   }, []);
-  // Handle input changes
 
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -82,70 +82,66 @@ const BeritaAdmin = () => {
     const value = e.target.value;
     setFormData({
       ...formData,
-      gambar_utama: value
+      gambar_utama: value,
     });
     setImagePreview(value);
   };
 
-  // Handle file upload
+  // Handle file upload with base64
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
-    try {
-    const base64String = await convertToBase64(file);
-    setFormData(prev => ({
-      ...prev,
-      gambar_utama: base64String
-    }));
-    setImagePreview(base64String);
-  } catch (error) {
-    console.error('Conversion error:', error);
-    setError('Failed to convert image');
-  }
-    try {
-    // Upload file to your server and get the URL
-    const formData = new FormData();
-    formData.append('image', file);
 
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+    // Validation
+    if (file.size > 5 * 1024 * 1024) {
+      setError("File size too large (max 5MB)");
+      return;
+    }
 
-    if (!response.ok) throw new Error('Upload failed');
-
-    const { url } = await response.json();
-    setFormData(prev => ({
-      ...prev,
-      gambar_utama: url
-    }));
-    setImagePreview(url);
-  } catch (error) {
-    console.error('Upload error:', error);
-    // Show error message to user
-  }
-
-    // Client-side preview
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
+    // Validtypes
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      setError('Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image.');
+      return;
+    }
 
     try {
-    // Simulasikan upload (ganti dengan API upload sebenarnya)
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const mockUrl = `https://example.com/uploads/${file.name}`;
-    setFormData(prev => ({
-      ...prev,
-      gambar_utama: mockUrl
-    }));
-    setImagePreview(mockUrl);
-  } catch (error) {
-    console.error('Upload error:', error);
-    setError('Gagal mengunggah gambar');
-  }
+      // Convert to Base64
+      const base64String = await convertToBase64(file);
+
+      setFormData((prev) => ({
+        ...prev,
+        gambar_utama: base64String,
+      }));
+
+      setImagePreview(base64String);
+      setError(null);
+    } catch (error) {
+      console.error("Conversion error:", error);
+      setError("Failed to process image");
+    }
+
+    // try {
+      //const formData = new FormData();
+      //formData.append("image", file);
+
+      //const response = await fetch("/api/upload", {
+        //method: "POST",
+       // body: formData,
+      //});
+
+    //   if (!response.ok) throw new Error("Upload failed");
+
+    //   const { url } = await response.json();
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     gambar_utama: url,
+    //   }));
+    //   setImagePreview(url);
+    // } catch (error) {
+    //   console.error("Upload error:", error);
+    //   // Show error message to user
+    // }
   };
 
   // Handle upload method change
@@ -154,7 +150,7 @@ const BeritaAdmin = () => {
     setImagePreview(null);
     setFormData({
       ...formData,
-      gambar_utama: ''
+      gambar_utama: "",
     });
   };
 
@@ -164,77 +160,85 @@ const BeritaAdmin = () => {
     setEditingId(null);
     setImagePreview(null);
     setFormData({
-      judul: '',
-      isi: '',
-      tanggal_publikasi: new Date().toISOString().split('T')[0],
-      gambar_utama: '',
-      gambar1: '',
-      gambar2: '',
-      gambar3: '',
-      gambar4: '',
-      gambar5: ''
+      judul: "",
+      isi: "",
+      tanggal_publikasi: new Date().toISOString().split("T")[0],
+      gambar_utama: "",
+      gambar1: "",
+      gambar2: "",
+      gambar3: "",
+      gambar4: "",
+      gambar5: "",
     });
   };
 
   // Handle form submission
   const handleSubmit = async () => {
-    if (!formData.judul || !formData.isi || !formData.tanggal_publikasi || !formData.gambar_utama) {
-      setError('Please fill all required fields');
-      return;
-    }
+  if (!formData.judul || !formData.isi || !formData.tanggal_publikasi || !formData.gambar_utama) {
+    setError('Please fill all required fields');
+    return;
+  }
 
-    try {
-      let url = 'http://localhost:5000/api/berita';
-      let method = 'POST';
+  const tanggalPublikasi = new Date(formData.tanggal_publikasi).toISOString();
 
-      if (editingId) {
-        url += `/${editingId}`;
-        method = 'PUT';
-        payload.id_berita = editingId;
-      }
+  try {
+    let url = 'http://localhost:5000/api/beritas';
+    let method = 'POST';
 
-      const payload = {
+    // Create the base formData
+    const formData = {
       judul: formData.judul,
       isi: formData.isi,
-      tanggal_publikasi: new Date (formData.tanggal_publikasi).toISOString(),
+      tanggal_publikasi: tanggalPublikasi,
       gambar_utama: formData.gambar_utama,
       ...(formData.gambar1 && { gambar1: formData.gambar1 }),
       ...(formData.gambar2 && { gambar2: formData.gambar2 }),
       ...(formData.gambar3 && { gambar3: formData.gambar3 }),
       ...(formData.gambar4 && { gambar4: formData.gambar4 }),
       ...(formData.gambar5 && { gambar5: formData.gambar5 })
-      };
-    
-      
-      const response = await fetch(url, {
-        method,
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload),
-      });
+    };
 
-      const result = await response.json();
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save news');
-      }
-
-      if (editingId) {
-        setBeritas(beritas.map(item => 
-          item.id_berita === editingId ? result : item
-        ));
-      } else {
-        setBeritas([result, ...beritas]);
-      }
-
-      resetForm();
-      setError(null);
-    } catch (err) {
-      setError(err.message || 'Terjadi kesalahan saat menyimpan berita');
-      console.error('Error saving news', err);
+    if (editingId) {
+      url += `/${editingId}`;
+      method = 'PUT';
+       formData.id_berita = editingId;
+    } else {
+      // For create, generate a temporary ID if backend requires
+      formData.id_berita = `temp-${Date.now()}`;
     }
+
+    console.log('Submitting:', { url, method, formData })
     
-  };
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to save news');
+    }
+
+    const result = await response.json();
+    
+    if (editingId) {
+      setBeritas(beritas.map(item => 
+        item.id_berita === editingId ? result : item
+      ));
+    } else {
+      setBeritas([result, ...beritas]);
+    }
+
+    resetForm();
+    setError(null);
+  } catch (err) {
+    setError(err.message || 'Terjadi kesalahan saat menyimpan berita');
+    console.error('Error saving news', err);
+  }
+};
 
   // Handle edit
   const handleEdit = (berita) => {
@@ -242,53 +246,63 @@ const BeritaAdmin = () => {
     setFormData({
       judul: berita.judul,
       isi: berita.isi,
-      tanggal_publikasi: new Date(berita.tanggal_publikasi).toISOString().split('T')[0],
+      tanggal_publikasi: new Date(berita.tanggal_publikasi)
+        .toISOString()
+        .split("T")[0],
       gambar_utama: berita.gambar_utama,
-      gambar1: berita.gambar1 || '',
-      gambar2: berita.gambar2 || '',
-      gambar3: berita.gambar3 || '',
-      gambar4: berita.gambar4 || '',
-      gambar5: berita.gambar5 || ''
+      gambar1: berita.gambar1 || "",
+      gambar2: berita.gambar2 || "",
+      gambar3: berita.gambar3 || "",
+      gambar4: berita.gambar4 || "",
+      gambar5: berita.gambar5 || "",
     });
     setImagePreview(berita.gambar_utama);
     setShowForm(true);
   };
   if (editingId) {
-      handleEdit.id_berita = editingId;
-    }
-  
+    handleEdit.id_berita = editingId;
+  }
+
   // Handle delete
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this news?')) return;
-    
+    if (!window.confirm("Are you sure you want to delete this news?")) return;
+
     try {
       const response = await fetch(`http://localhost:5000/api/berita/${id}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
 
-      if (!response.ok) throw new Error('Failed to delete news');
+      if (!response.ok) throw new Error("Failed to delete news");
 
-      setBeritas(beritas.filter(item => item.id_berita !== id));
+      setBeritas(beritas.filter((item) => item.id_berita !== id));
       setError(null);
     } catch (err) {
       setError(err.message);
     }
   };
 
+  function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  }
+  
   // Featured article (first item for demo)
   const featuredArticle = beritas.length > 0 ? beritas[0] : null;
   const regularArticles = beritas.length > 1 ? beritas.slice(1) : [];
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navigation Bar */}
-
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               {/* Logo */}
@@ -302,34 +316,62 @@ const BeritaAdmin = () => {
                 </span>
               </div>
 
-            {/* Navigation Links */}
-            <nav className="hidden md:flex space-x-6 ml-50">
-              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
-              <button href="#" onClick={handleProfilAdmin} className="hover:text-blue-200 transition-colors duration-200">Profil</button>
-              <button href="#" onClick={handleGuruAdmin} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
-              <button href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Berita</button>
-              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <button href="#"  className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
-            </nav>
+              {/* Navigation Links */}
+              <nav className="hidden md:flex space-x-6 ml-50">
+                <button
+                  href="#"
+                  className="hover:text-blue-200 transition-colors duration-200"
+                >
+                  Beranda
+                </button>
+                <button
+                  href="#"
+                  onClick={handleProfilAdmin}
+                  className="hover:text-blue-200 transition-colors duration-200"
+                >
+                  Profil
+                </button>
+                <button
+                  href="#"
+                  onClick={handleGuruAdmin}
+                  className="hover:text-blue-200 transition-colors duration-200"
+                >
+                  Guru
+                </button>
+                <button
+                  href="#"
+                  className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400"
+                >
+                  Berita
+                </button>
+                <button
+                  href="#"
+                  className="hover:text-blue-200 transition-colors duration-200"
+                >
+                  Prestasi
+                </button>
+                <button
+                  href="#"
+                  className="hover:text-blue-200 transition-colors duration-200"
+                >
+                  Akademik
+                </button>
+              </nav>
             </div>
 
             {/* Right side items */}
             <div className="flex items-center space-x-4">
-
               {/* Add News Button */}
-      <div className="container mx-auto px-4 pt-8">
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors duration-200"
-        >
-          Add News
-        </button>
-      </div>
-
-      
+              <div className="container mx-auto px-4 pt-8">
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Add News
+                </button>
+              </div>
 
               {/* Profile/Logout */}
-              
 
               {/* Mobile menu button */}
               <button
@@ -435,19 +477,19 @@ const BeritaAdmin = () => {
                     placeholder="Enter news content"
                   />
                 </div>
-<div>
+                <div>
                   <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Publication Date
-                  </label>
-                  <input
-                    type="date"
-                    name="tanggal_publikasi"
-                    value={formData.tanggal_publikasi}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Publication Date
+                    </label>
+                    <input
+                      type="date"
+                      name="tanggal_publikasi"
+                      value={formData.tanggal_publikasi}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
                   </div>
                 </div>
 
@@ -488,7 +530,7 @@ const BeritaAdmin = () => {
                   {uploadMethod === "url" && (
                     <input
                       type="url"
-                      value={formData.gambar_Utama}
+                      value={formData.gambar_utama}
                       onChange={handleImageUrlChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="https://example.com/image.jpg"
@@ -503,7 +545,7 @@ const BeritaAdmin = () => {
                         accept=".jpeg, .png, .svg, .jpg"
                         name="myFile"
                         label="image"
-                        id='file-upload'
+                        id="file-upload"
                         onChange={handleFileChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
@@ -601,7 +643,9 @@ const BeritaAdmin = () => {
                     {featuredArticle.isi}
                   </p>
                   <div className="text-sm text-gray-500">
-                    {new Date(featuredArticle.tanggal_publikasi).toLocaleDateString()}
+                    {new Date(
+                      featuredArticle.tanggal_publikasi
+                    ).toLocaleDateString()}
                   </div>
                 </div>
               </div>
@@ -798,16 +842,3 @@ const BeritaAdmin = () => {
 };
 
 export default BeritaAdmin;
-
-function convertToBase64(file){
-  return new Promise((resolvePath, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onload = () => {
-    resolvePath(fileReader.result)
-  };
-  fileReader.onError = (error) => {
-    reject(error)
-  }
-  })
-}

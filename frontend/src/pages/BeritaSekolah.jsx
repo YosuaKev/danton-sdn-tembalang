@@ -22,11 +22,7 @@ const Berita = () => {
     }
     const handlePrestasi = (e) => {
     e.preventDefault();
-    navigate('/prestasi')
-    }
-    const handleBerita = (e) => {
-    e.preventDefault();
-    navigate('/berita')
+    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
     }
     const handleAkademik = (e) => {
     e.preventDefault();
@@ -52,8 +48,8 @@ const Berita = () => {
               <button href="#" onClick={handleGuru} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
               <a href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Berita</a>
               <button href="#" onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <button href="#" onClick={handleKontak}className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
               <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
+              <button href="#" onClick={handleKontak}className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
             </nav>
             
             {/* Mobile Menu Button */}
