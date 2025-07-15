@@ -8,13 +8,18 @@ export const getHomeContent = async (req, res) => {
     if (!homeContent) {
       // Return default structure if no content exists
       return res.status(200).json({
-        header: "SD Negeri Tembalang",
+        header: "",
         judul: "",
         subjudul: "",
         deskripsi: "",
         gambar: "",
-        namajumlah: "",
-        jumlah: 0,
+        namajumlah1: "",
+        jumlah1: 0,
+        namajumlah2: "",
+        jumlah2: 0,
+        namajumlah3: "",
+        jumlah3: 0,
+        judulfeature: "",
         feature1: "",
         deskripsifeature1: "",
         feature2: "",
@@ -42,7 +47,8 @@ export const updateHomeContent = async (req, res) => {
       { 
         new: true,
         upsert: true,
-        runValidators: true 
+        runValidators: true,
+        setDefaultsOnInsert: true
       }
     );
 
