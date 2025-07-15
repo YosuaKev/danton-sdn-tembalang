@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit, Trash2, Save, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  Search, 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Save, 
+  X, 
+  ChevronLeft, 
+  ChevronRight,
+  ChevronDown,
+  ChevronUp
+} from 'lucide-react';
 
 const SiswaAdmin = () => {
   const [students, setStudents] = useState([]);
@@ -8,8 +19,6 @@ const SiswaAdmin = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredStudents, setFilteredStudents] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [studentsPerPage] = useState(10);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState('add');
   const [currentStudent, setCurrentStudent] = useState({
@@ -20,7 +29,6 @@ const SiswaAdmin = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
 
-  // configure API host
   const API_URL = 'http://localhost:5000/api/siswas';
 
   const kelasOptions = [
@@ -32,7 +40,7 @@ const SiswaAdmin = () => {
     'VI-A', 'VI-B', 'VI-C',
   ];
 
-  // helper error HTTP
+  // Helper function for HTTP errors
   const handleApiError = async (response) => {
     if (!response.ok) {
       const errorData = await response.json();
@@ -45,7 +53,7 @@ const SiswaAdmin = () => {
     return response.json();
   };
 
-  // fetch students
+  // Fetch students
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -54,6 +62,16 @@ const SiswaAdmin = () => {
         const data = await handleApiError(response);
         setStudents(data);
         setFilteredStudents(data);
+        
+        // Initialize all classes as expanded
+        const initialExpanded = {};
+        data.forEach(student => {
+          if (!initialExpanded[student.kelas]) {
+            initialExpanded[student.kelas] = true;
+          }
+        });
+        setExpandedClasses(initialExpanded);
+        
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -69,23 +87,45 @@ const SiswaAdmin = () => {
     const filtered = students.filter(student =>
       student.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.kelas.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.nisn.includes(searchTerm)
+      student.nisn.toString().includes(searchTerm)
     );
     setFilteredStudents(filtered);
-    setCurrentPage(1);
   }, [searchTerm, students]);
 
-  // Pagination
-  const indexOfLastStudent = currentPage * studentsPerPage;
-  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
-  const currentStudents = filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent);
-  const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  // Group students by class
+  const groupStudentsByClass = (students) => {
+    return students.reduce((groups, student) => {
+      const kelas = student.kelas;
+      if (!groups[kelas]) {
+        groups[kelas] = [];
+      }
+      groups[kelas].push(student);
+      return groups;
+    }, {});
   };
 
-  // Open Add Modal
+  const studentsByClass = groupStudentsByClass(filteredStudents);
+
+  // Sort classes (I-A, I-B, ..., VI-C)
+  const sortedClasses = Object.keys(studentsByClass).sort((a, b) => {
+  const gradeA = parseInt(a.split('-')[0].replace('I', '1').replace('II', '2').replace('III', '3').replace('IV', '4').replace('V', '5').replace('VI', '6'));
+  const gradeB = parseInt(b.split('-')[0].replace('I', '1').replace('II', '2').replace('III', '3').replace('IV', '4').replace('V', '5').replace('VI', '6'));
+  const classA = a.split('-')[1];
+  const classB = b.split('-')[1];
+  
+  // Ubah urutan gradeB - gradeA untuk descending
+  return gradeB - gradeA || classA.localeCompare(classB);
+});
+
+  // Toggle expand/collapse for class
+  const toggleClass = (kelas) => {
+    setExpandedClasses(prev => ({
+      ...prev,
+      [kelas]: !prev[kelas]
+    }));
+  };
+
+  // CRUD Operations
   const handleAddStudent = () => {
     setModalMode('add');
     setCurrentStudent({
@@ -96,7 +136,6 @@ const SiswaAdmin = () => {
     setShowModal(true);
   };
 
-  // Open Edit Modal
   const handleEditStudent = (student) => {
     setModalMode('edit');
     setCurrentStudent({
@@ -108,7 +147,6 @@ const SiswaAdmin = () => {
     setShowModal(true);
   };
 
-  // Save Student (Add or Edit)
   const handleSaveStudent = async () => {
     if (!currentStudent.nama || !currentStudent.kelas || !currentStudent.nisn) {
       alert('Semua field harus diisi!');
@@ -116,38 +154,36 @@ const SiswaAdmin = () => {
     }
 
     try {
-      let response, data;
+      let response;
       const headers = {
         'Content-Type': 'application/json'
       };
 
-    if (modalMode === 'add') {
+      if (modalMode === 'add') {
         response = await fetch(API_URL, {
-            method: 'POST',
-            headers,
-            body : JSON.stringify(currentStudent)
+          method: 'POST',
+          headers,
+          body: JSON.stringify(currentStudent)
         });
-        data = await handleApiError(response);
-        setStudents([...students, data]);
+        const newStudent = await handleApiError(response);
+        setStudents([...students, newStudent]);
       } else {
         response = await fetch(`${API_URL}/${currentStudent._id}`, {
           method: 'PUT',
           headers,
           body: JSON.stringify(currentStudent)
         });
-        data = await handleApiError(response);
+        const updatedStudent = await handleApiError(response);
         setStudents(students.map(student => 
-          student._id === currentStudent._id ? data : student
+          student._id === currentStudent._id ? updatedStudent : student
         ));
       }
-
-    setShowModal(false);
+      setShowModal(false);
     } catch (err) {
-        alert(err.message);
+      alert(err.message);
     }
-    };
-  
-  // Delete Student
+  };
+
   const handleDeleteStudent = (student) => {
     setStudentToDelete(student);
     setShowDeleteConfirm(true);
@@ -155,10 +191,9 @@ const SiswaAdmin = () => {
 
   const confirmDeleteStudent = async () => {
     try {
-      const response = await fetch(`${API_URL}/${studentToDelete._id}`, {
+      await fetch(`${API_URL}/${studentToDelete._id}`, {
         method: 'DELETE'
       });
-      await handleApiError(response);
       setStudents(students.filter(student => student._id !== studentToDelete._id));
       setShowDeleteConfirm(false);
       setStudentToDelete(null);
@@ -167,29 +202,7 @@ const SiswaAdmin = () => {
     }
   };
 
-  // Generate pagination buttons
-  const generatePaginationButtons = () => {
-    const buttons = [];
-    const maxButtons = 5;
-    
-    if (totalPages <= maxButtons) {
-      for (let i = 1; i <= totalPages; i++) {
-        buttons.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        buttons.push(1, 2, 3, 4, 5);
-      } else if (currentPage >= totalPages - 2) {
-        buttons.push(totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
-      } else {
-        buttons.push(currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2);
-      }
-    }
-    
-    return buttons;
-  };
-
-  if (loading) { 
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -223,7 +236,6 @@ const SiswaAdmin = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
                 <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
                 <span className="font-bold text-xl text-gray-900">
@@ -236,68 +248,37 @@ const SiswaAdmin = () => {
             </div>
 
             <nav className="hidden md:flex space-x-6">
-              <button
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
+              <button className="hover:text-blue-600 transition-colors duration-200">
                 Beranda
               </button>
-              <a
-                href="#"
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
+              <button className="hover:text-blue-600 transition-colors duration-200">
                 Profil
-              </a>
-              <button
-                
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
+              </button>
+              <button className="hover:text-blue-600 transition-colors duration-200">
                 Guru
               </button>
-              <button
-                
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
+              <button className="hover:text-blue-600 transition-colors duration-200">
                 Berita
               </button>
-              <button
-                
-                className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400"
-              >
+              <button className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400">
                 Siswa
               </button>
-              <button
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
+              <button className="hover:text-blue-600 transition-colors duration-200">
                 Prestasi
               </button>
-              <button href="#" className="hover:text-blue-600 transition-colors duration-200">Akademik</button>
+              <button className="hover:text-blue-600 transition-colors duration-200">
+                Akademik
+              </button>
             </nav>
 
-            <button className="md:hidden">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-            
-            {/* Profile/Logout */}
-              <div className="relative">
-                <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
-                  <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                  <span className="hidden md:block text-sm font-medium">
-                    Admin
-                  </span>
-                </button>
-              </div>
+            <div className="relative">
+              <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
+                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                <span className="hidden md:block text-sm font-medium">
+                  Admin
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -324,113 +305,87 @@ const SiswaAdmin = () => {
             Tambah Siswa
           </button>
         </div>
-        
-        {/* Students Table */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nama
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kelas
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    NISN
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {currentStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {student.nama}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.kelas}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.nisn}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleEditStudent(student)}
-                          className="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 transition-colors duration-200 flex items-center gap-1"
-                        >
-                          <Edit className="w-3 h-3" />
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteStudent(student)}
-                          className="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition-colors duration-200 flex items-center gap-1"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                          Hapus
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
+        {/* Students Grouped by Class */}
+        <div className="space-y-6">
+          {sortedClasses.map((kelas) => (
+            <div key={kelas} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div 
+                className="bg-blue-50 px-6 py-3 border-b border-blue-100 flex justify-between items-center cursor-pointer hover:bg-blue-100 transition-colors"
+                onClick={() => toggleClass(kelas)}
+              >
+                <div className="flex items-center">
+                  <h3 className="text-lg font-semibold text-blue-800 mr-3">
+                    Kelas {kelas} 
+                  </h3>
+                  <span className="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                    {studentsByClass[kelas].length} siswa
+                  </span>
+                </div>
+                {expandedClasses[kelas] ? (
+                  <ChevronUp className="w-5 h-5 text-blue-600" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-blue-600" />
+                )}
+              </div>
+              
+              {expandedClasses[kelas] && (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NISN</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {studentsByClass[kelas].map((student, index) => (
+                        <tr key={student._id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {index + 1}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {student.nama}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {student.nisn}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleEditStudent(student)}
+                                className="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 transition-colors duration-200 flex items-center gap-1"
+                              >
+                                <Edit className="w-3 h-3" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteStudent(student)}
+                                className="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition-colors duration-200 flex items-center gap-1"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                Hapus
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ))}
 
           {/* Empty State */}
-          {currentStudents.length === 0 && (
-            <div className="text-center py-12">
+          {filteredStudents.length === 0 && (
+            <div className="text-center py-12 bg-white rounded-lg shadow">
               <p className="text-gray-500">Tidak ada data siswa yang ditemukan.</p>
             </div>
           )}
         </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-6 gap-2">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`p-2 rounded-lg ${
-                currentPage === 1
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-              }`}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-
-            {generatePaginationButtons().map((pageNumber) => (
-              <button
-                key={pageNumber}
-                onClick={() => handlePageChange(pageNumber)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium ${
-                  currentPage === pageNumber
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                }`}
-              >
-                {pageNumber}
-              </button>
-            ))}
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`p-2 rounded-lg ${
-                currentPage === totalPages
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-              }`}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Add/Edit Modal */}
@@ -538,6 +493,8 @@ const SiswaAdmin = () => {
           </div>
         </div>
       )}
+
+      {/* Footer */}
       <footer className="bg-blue-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
@@ -558,34 +515,22 @@ const SiswaAdmin = () => {
               <h3 className="text-xl font-bold mb-6">Jelajah</h3>
               <ul className="space-y-2 text-blue-200">
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     Sambutan
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     Profil Sekolah
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     Berita
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     Galeri
                   </a>
                 </li>
@@ -596,42 +541,27 @@ const SiswaAdmin = () => {
               <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
               <ul className="space-y-2 text-blue-200">
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     Data Guru
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     PPDB SDN
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     Panduan PPDB
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     Lokasi
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
+                  <a href="#" className="hover:text-white transition-colors duration-200">
                     Kontak
                   </a>
                 </li>
@@ -665,6 +595,5 @@ const SiswaAdmin = () => {
     </div>
   );
 };
-
 
 export default SiswaAdmin;

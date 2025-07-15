@@ -16,20 +16,31 @@ const Header = () => {
   // Navigation handler
   const handleNavigation = (e, item) => {
     e.preventDefault();
-    if (item === "Profil") {
-      navigate("/profil");
-    } else if (item === "Beranda") {
-      navigate("/");
-    } else if (item === "Berita") {
-      navigate("/berita");
-    } else if (item === "Prestasi") {
-      navigate("/prestasi");
-    } else if (item === "Guru") navigate("/guru");
-    else if (item === "Saran") navigate("/saran");
-    else if (item === "Akademik") navigate("/akademik");
-    else {
-      navigate(`/${item.toLowerCase()}`);
-    }
+    switch(item) {
+    case 'Prestasi':
+      window.open('https://sangjuara.semarangkota.go.id/', '_blank');
+      break;
+    case 'Beranda':
+      navigate('/homeadmin');
+      break;
+    case 'Profil':
+      navigate('/profiladmin');
+      break;
+    case 'Guru':
+      navigate('/guruadmin');
+      break;
+    case 'Siswa':
+      navigate('/siswaadmin');
+      break;
+    case 'Berita':
+      navigate('/beritaadmin');
+      break;
+    case 'Akademik':
+      navigate('/akademikadmin');
+      break;
+    default:
+      navigate('/homeadmin');
+  }
   };
 
   // Fetch header data
@@ -154,10 +165,10 @@ const Header = () => {
               "Beranda",
               "Profil",
               "Guru",
+              "Siswa",
               "Prestasi",
               "Berita",
               "Akademik",
-              "Kontak",
             ].map((item) => (
               <button
                 key={item}
@@ -169,15 +180,14 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Login Button */}
-          <div className="hidden md:flex">
-            <button 
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              onClick={() => navigate('/login')}
-            >
-              Masuk
-            </button>
-          </div>
+          <div className="relative">
+              <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
+                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                <span className="hidden md:block text-sm font-medium">
+                  Admin
+                </span>
+              </button>
+            </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
@@ -198,10 +208,10 @@ const Header = () => {
                 "Beranda",
                 "Profil",
                 "Guru",
+                "Siswa",
                 "Prestasi",
                 "Berita",
                 "Akademik",
-                "Kontak",
               ].map((item) => (
                 <button
                   key={item}
