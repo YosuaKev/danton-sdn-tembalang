@@ -170,7 +170,15 @@ const GuruAdmin = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to save teacher");
+
+        // ✅ Tangani error dari express-validator (array of errors)
+        if (errorData.errors && Array.isArray(errorData.errors)) {
+          const firstError = errorData.errors[0]?.msg || "Validasi gagal";
+          throw new Error(firstError);
+        }
+
+        // ✅ Tangani error biasa
+        throw new Error(errorData.error || "Failed to create guru");
       }
 
       // Refresh the teacher list
@@ -414,7 +422,7 @@ const GuruAdmin = () => {
                 <div className="flex flex-col items-center mb-4">
                   {teacher.gambar ? (
                     <img
-                      src={teacher.gambar}
+                      src={`data:image/jpeg;base64,${teacher.gambar}`}
                       alt={teacher.nama}
                       className="w-20 h-20 rounded-full object-cover mb-3"
                     />
@@ -677,16 +685,37 @@ const GuruAdmin = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    URL Gambar Profil 
+                    Upload Gambar Profil
                   </label>
                   <input
-                    type="url"
-                    name="gambar"
-                    value={formData.gambar}
-                    onChange={handleInputChange}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            gambar: reader.result.split(',')[1], 
+                          }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="https://example.com/profile.jpg"
                   />
+
+                  {formData.gambar && (
+                    <div className="mt-3">
+                      <p className="text-sm text-gray-600 mb-1">Pratinjau Gambar:</p>
+                      <img
+                        src={`data:image/jpeg;base64,${formData.gambar}`}
+                        alt="Preview"
+                        className="w-24 h-24 rounded-full object-cover"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex gap-3 pt-4">
