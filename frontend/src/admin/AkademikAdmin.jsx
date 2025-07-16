@@ -25,15 +25,15 @@ const AkademikAdmin = () => {
   };
   const handlePrestasi = (e) => {
     e.preventDefault();
-    navigate('/prestasiadmin');
+    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
   };
   const handleBeritaAdmin = (e) => {
     e.preventDefault();
     navigate('/beritaadmin');
   };
-  const handleAkademikAdmin = (e) => {
+  const handleSiswaAdmin = (e) => {
     e.preventDefault();
-    navigate('/akademikadmin');
+    navigate('/siswaadmin');
   };
 
   // Form states
@@ -309,22 +309,22 @@ const AkademikAdmin = () => {
               <button className="hover:text-blue-600 transition-colors duration-200">
                 Beranda
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button onclick={handleProfilAdmin} className="hover:text-blue-600 transition-colors duration-200">
                 Profil
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button onclick={handleGuruAdmin} className="hover:text-blue-600 transition-colors duration-200">
                 Guru
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button onclick={handleBeritaAdmin} className="hover:text-blue-600 transition-colors duration-200">
                 Berita
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400">
+              <button onclick={handleSiswaAdmin} className="hover:text-blue-600 transition-colors duration-200 ">
                 Siswa
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button onClick={handlePrestasi} className="hover:text-blue-600 transition-colors duration-200">
                 Prestasi
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400">
                 Akademik
               </button>
             </nav>

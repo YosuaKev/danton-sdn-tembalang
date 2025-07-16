@@ -11,8 +11,30 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const SiswaAdmin = () => {
+  const navigate = useNavigate();
+    const handleGuruAdmin = (e) => {
+      e.preventDefault();
+      navigate("/guruadmin");
+    };
+    const handleProfilAdmin = (e) => {
+      e.preventDefault();
+      navigate("/profiladmin");
+    };
+      const handleBeritaAdmin = (e) => {
+      e.preventDefault();
+      navigate('/beritaadmin')
+      }
+      const handlePrestasi = (e) => {
+      e.preventDefault();
+      window.open('https://sangjuara.semarangkota.go.id/', '_blank');
+      }
+      const handleAkademikAdmin = (e) => {
+      e.preventDefault();
+      navigate('/akademikadmin')
+      }
   const [students, setStudents] = useState([]);
   const [expandedClasses, setExpandedClasses] = useState({});
   const [loading, setLoading] = useState(true);
@@ -105,6 +127,26 @@ const SiswaAdmin = () => {
   };
 
   const studentsByClass = groupStudentsByClass(filteredStudents);
+
+  // Sort classes in order: I-A, I-B, I-C, II-A, II-B, ..., VI-C
+  const sortedClasses = Object.keys(studentsByClass).sort((a, b) => {
+    const gradeA = parseInt(a.split('-')[0].replace('I', '1').replace('II', '2').replace('III', '3').replace('IV', '4').replace('V', '5').replace('VI', '6'));
+    const gradeB = parseInt(b.split('-')[0].replace('I', '1').replace('II', '2').replace('III', '3').replace('IV', '4').replace('V', '5').replace('VI', '6'));
+    const classA = a.split('-')[1];
+    const classB = b.split('-')[1];
+    const romanToNum = {
+    'I': 1,
+    'II': 2,
+    'III': 3,
+    'IV': 4,
+    'V': 5,
+    'VI': 6
+  };
+    if (romanToNum[gradeA] !== romanToNum[gradeB]) 
+    return romanToNum[gradeB] - romanToNum[gradeA];
+    return gradeB - gradeA || classB.localeCompare(classA);;
+  });
+
   // Toggle expand/collapse for class
   const toggleClass = (kelas) => {
     setExpandedClasses(prev => ({
@@ -239,22 +281,22 @@ const SiswaAdmin = () => {
               <button className="hover:text-blue-600 transition-colors duration-200">
                 Beranda
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button onClick={handleProfilAdmin} className="hover:text-blue-600 transition-colors duration-200">
                 Profil
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button onClick={handleGuruAdmin} className="hover:text-blue-600 transition-colors duration-200">
                 Guru
-              </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
-                Berita
               </button>
               <button className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400">
                 Siswa
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button onClick={handlePrestasi} className="hover:text-blue-600 transition-colors duration-200">
                 Prestasi
               </button>
-              <button className="hover:text-blue-600 transition-colors duration-200">
+              <button onClick={handleBeritaAdmin} className="hover:text-blue-600 transition-colors duration-200">
+                Berita
+              </button>
+              <button onClick={handleAkademikAdmin} className="hover:text-blue-600 transition-colors duration-200">
                 Akademik
               </button>
             </nav>
@@ -319,28 +361,28 @@ const SiswaAdmin = () => {
               
               {expandedClasses[kelas] && (
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full table-fixed">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">No</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NISN</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">NISN</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Aksi</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {studentsByClass[kelas].map((student, index) => (
                         <tr key={student._id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-12">
                             {index + 1}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 truncate" title={student.nama}>
                             {student.nama}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/4">
                             {student.nisn}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium w-1/4">
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleEditStudent(student)}
