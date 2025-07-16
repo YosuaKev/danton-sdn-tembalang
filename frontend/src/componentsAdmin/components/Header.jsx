@@ -154,13 +154,13 @@ const Header = () => {
               </button>
             ))}
           </nav>
-              <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
-                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                <span className="hidden md:block text-sm font-medium">
-                  Admin
-                </span>
-              </button>
-            </div>
+
+          <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
+            <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+            <span className="hidden md:block text-sm font-medium">
+              Admin
+            </span>
+          </button>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
