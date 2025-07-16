@@ -28,7 +28,18 @@ const BeritaAdmin = () => {
     e.preventDefault();
     navigate("/profiladmin");
   };
-
+    const handleSiswaAdmin = (e) => {
+    e.preventDefault();
+    navigate('/siswaadmin')
+    }
+    const handlePrestasi = (e) => {
+    e.preventDefault();
+    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
+    }
+    const handleAkademikAdmin = (e) => {
+    e.preventDefault();
+    navigate('/akademikadmin')
+    }
   const [beritas, setBeritas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,6 +48,7 @@ const BeritaAdmin = () => {
   const [uploadMethod, setUploadMethod] = useState("url");
   const [imagePreview, setImagePreview] = useState(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [selectedBerita, setSelectedBerita] = useState(null); // For showing full article
   const getAuthToken = () => {
     return localStorage.getItem('token'); 
   };
@@ -55,12 +67,16 @@ const BeritaAdmin = () => {
   // Fetch all news
   const fetchBeritas = async () => {
     try {
-       const token = getAuthToken();
+      const token = getAuthToken();
       if (!token) throw new Error('No authentication token found');
-      const response = await fetch("http://localhost:5000/api/berita");
+      const response = await fetch("http://localhost:5000/api/berita", {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
       if (!response.ok) {
-        const text = await response.text(); // baca response sebagai text dulu
+        const text = await response.text();
         throw new Error(`Failed to fetch news. Status: ${response.status}\n${text}`);
       }
 
@@ -73,7 +89,6 @@ const BeritaAdmin = () => {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchBeritas();
@@ -109,7 +124,7 @@ const BeritaAdmin = () => {
       return;
     }
 
-    // Validtypes
+    // Valid types
     const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!validTypes.includes(file.type)) {
       setError('Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image.');
@@ -130,38 +145,6 @@ const BeritaAdmin = () => {
     } catch (error) {
       console.error("Conversion error:", error);
       setError("Failed to process image");
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append('judul', formDataToSend.judul);
-      formData.append('isi', formDataToSend.isi);
-      formData.append('tanggal_publikasi', formDataToSend.tanggal_publikasi);
-      formData.append('gambar_utama', formDataToSend.gambar_utama); // base64 string
-
-      // hanya tambahkan jika tidak kosong
-      ['gambar1', 'gambar2', 'gambar3', 'gambar4', 'gambar5'].forEach((field) => {
-        if (formDataToSend[field]) {
-          formData.append(field, formDataToSend[field]);
-        }
-      });
-
-      const response = await fetch(url, {
-        method,
-        body: formData, // jangan pakai JSON.stringify di sini
-      });
-
-      if (!response.ok) throw new Error("Upload failed");
-
-      const { url } = await response.json();
-      setFormData((prev) => ({
-        ...prev,
-        gambar_utama: url,
-      }));
-      setImagePreview(url);
-    } catch (error) {
-      console.error("Upload error:", error);
-      // Show error message to user
     }
   };
 
@@ -195,79 +178,80 @@ const BeritaAdmin = () => {
 
   // Handle form submission
   const handleSubmit = async () => {
-  if (!formData.judul || !formData.isi || !formData.tanggal_publikasi || !formData.gambar_utama) {
-    setError('Please fill all required fields');
-    return;
-  }
+    if (!formData.judul || !formData.isi || !formData.tanggal_publikasi || !formData.gambar_utama) {
+      setError('Please fill all required fields');
+      return;
+    }
 
-  const tanggalPublikasi = new Date(formData.tanggal_publikasi).toISOString();
+    const tanggalPublikasi = new Date(formData.tanggal_publikasi).toISOString();
 
-  try {
-    let url = 'http://localhost:5000/api/berita';
-    let method = 'POST';
-     
+    try {
+      let url = 'http://localhost:5000/api/berita';
+      let method = 'POST';
+      const token = getAuthToken();
+      if (!token) throw new Error('No authentication token found');
 
-    // Ganti nama variabel ini agar tidak bentrok
-    const formDataToSend = {
-      judul: formData.judul,
-      isi: formData.isi,
-      tanggal_publikasi: tanggalPublikasi,
-      gambar_utama: formData.gambar_utama,
-      ...(formData.gambar1 && { gambar1: formData.gambar1 }),
-      ...(formData.gambar2 && { gambar2: formData.gambar2 }),
-      ...(formData.gambar3 && { gambar3: formData.gambar3 }),
-      ...(formData.gambar4 && { gambar4: formData.gambar4 }),
-      ...(formData.gambar5 && { gambar5: formData.gambar5 })
-    };
+      const formDataToSend = {
+        judul: formData.judul,
+        isi: formData.isi,
+        tanggal_publikasi: tanggalPublikasi,
+        gambar_utama: formData.gambar_utama,
+        ...(formData.gambar1 && { gambar1: formData.gambar1 }),
+        ...(formData.gambar2 && { gambar2: formData.gambar2 }),
+        ...(formData.gambar3 && { gambar3: formData.gambar3 }),
+        ...(formData.gambar4 && { gambar4: formData.gambar4 }),
+        ...(formData.gambar5 && { gambar5: formData.gambar5 })
+      };
 
-    if (editingId) {
-      url += `/${editingId}`;
-      method = 'PUT';
-      formDataToSend.id_berita = editingId;
-    } else {
-      let nextId = 1;
-      if (beritas.length > 0) {
-        const ids = beritas.map(b => b.id_berita);
-        for (let i = 1; ; i++) {
-          if (!ids.includes(i)) {
-            nextId = i;
-            break;
+      if (editingId) {
+        url += `/${editingId}`;
+        method = 'PUT';
+        formDataToSend.id_berita = editingId;
+      } else {
+        let nextId = 1;
+        if (beritas.length > 0) {
+          const ids = beritas.map(b => b.id_berita);
+          for (let i = 1; ; i++) {
+            if (!ids.includes(i)) {
+              nextId = i;
+              break;
+            }
           }
         }
+        formDataToSend.id_berita = nextId;
       }
-      formDataToSend.id_berita = nextId;
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formDataToSend),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save news');
+      }
+
+      const result = await response.json();
+
+      if (editingId) {
+        setBeritas(beritas.map(item =>
+          item.id_berita === editingId ? result : item
+        ));
+      } else {
+        setBeritas([result, ...beritas]);
+      }
+
+      resetForm();
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Terjadi kesalahan saat menyimpan berita');
+      console.error('Error saving news', err);
     }
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formDataToSend),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to save news');
-    }
-
-    const result = await response.json();
-
-    if (editingId) {
-      setBeritas(beritas.map(item =>
-        item.id_berita === editingId ? result : item
-      ));
-    } else {
-      setBeritas([result, ...beritas]);
-    }
-
-    resetForm();
-    setError(null);
-  } catch (err) {
-    setError(err.message || 'Terjadi kesalahan saat menyimpan berita');
-    console.error('Error saving news', err);
-  }
-};
+  };
 
   // Handle edit
   const handleEdit = (berita) => {
@@ -288,17 +272,20 @@ const BeritaAdmin = () => {
     setImagePreview(berita.gambar_utama);
     setShowForm(true);
   };
-  if (editingId) {
-    handleEdit.id_berita = editingId;
-  }
 
   // Handle delete
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this news?")) return;
 
     try {
+      const token = getAuthToken();
+      if (!token) throw new Error('No authentication token found');
+      
       const response = await fetch(`http://localhost:5000/api/berita/${id}`, {
         method: "DELETE",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (!response.ok) throw new Error("Failed to delete news");
@@ -308,6 +295,11 @@ const BeritaAdmin = () => {
     } catch (err) {
       setError(err.message);
     }
+  };
+
+  // Handle view full article
+  const handleViewBerita = (berita) => {
+    setSelectedBerita(berita);
   };
 
   function convertToBase64(file) {
@@ -332,7 +324,7 @@ const BeritaAdmin = () => {
       {/* Admin Navigation Bar */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between h-16">
+          <div className="flex items-center justify-between">
             <div className="flex items-center">
               {/* Logo */}
               <div className="flex-shrink-0 flex items-center">
@@ -369,18 +361,26 @@ const BeritaAdmin = () => {
                 </button>
                 <button
                   href="#"
-                  className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400"
+                  onClick={handleSiswaAdmin}
+                  className="hover:text-blue-200 transition-colors duration-200"
                 >
-                  Berita
+                  Siswa
                 </button>
+                
                 <button
-                  href="#"
+                  onClick={handlePrestasi}
                   className="hover:text-blue-200 transition-colors duration-200"
                 >
                   Prestasi
                 </button>
                 <button
                   href="#"
+                  className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400"
+                >
+                  Berita
+                </button>
+                <button
+                  onClick={handleAkademikAdmin}
                   className="hover:text-blue-200 transition-colors duration-200"
                 >
                   Akademik
@@ -391,7 +391,7 @@ const BeritaAdmin = () => {
             {/* Right side items */}
             <div className="flex items-center space-x-4">
               {/* Add News Button */}
-              <div className="container mx-auto px-4 pt-8">
+              <div className="container mx-auto px-4">
                 {localStorage.getItem('token') && (
                 <button
                   onClick={() => setShowForm(true)}
@@ -403,6 +403,14 @@ const BeritaAdmin = () => {
               </div>
 
               {/* Profile/Logout */}
+                  <div className="relative">
+                <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
+                  <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                  <span className="hidden md:block text-sm font-medium">
+                    Admin
+                  </span>
+                </button>
+              </div>
 
               {/* Mobile menu button */}
               <button
@@ -419,20 +427,6 @@ const BeritaAdmin = () => {
         {showMobileMenu && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-              {/* {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href="#"
-                  className={`flex items-center px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-                    item.active
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  <item.icon size={18} className="mr-3" />
-                  {item.label}
-                </a>
-              ))} */}
               <div className="border-t border-gray-200 pt-4">
                 <a
                   href="#"
@@ -587,7 +581,7 @@ const BeritaAdmin = () => {
                                 gambar_utama: base64String,
                               }));
 
-                              setImagePreview(reader.result); // ⬅️ untuk preview gambar
+                              setImagePreview(reader.result);
                             };
 
                             reader.readAsDataURL(file);
@@ -644,6 +638,70 @@ const BeritaAdmin = () => {
         </div>
       )}
 
+      {/* Article Detail Modal */}
+      {selectedBerita && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {selectedBerita.judul}
+                </h2>
+                <button
+                  onClick={() => setSelectedBerita(null)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {selectedBerita.gambar_utama && (
+                  <div className="mb-6">
+                    <img
+                      src={selectedBerita.gambar_utama.startsWith('http') 
+                        ? selectedBerita.gambar_utama 
+                        : `data:image/jpeg;base64,${selectedBerita.gambar_utama}`}
+                      alt={selectedBerita.judul}
+                      className="w-full h-64 object-cover rounded-md"
+                    />
+                  </div>
+                )}
+
+                <div className="text-gray-600 whitespace-pre-line">
+                  {selectedBerita.isi}
+                </div>
+
+                <div className="text-sm text-gray-500">
+                  Published: {new Date(selectedBerita.tanggal_publikasi).toLocaleDateString()}
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => {
+                      setSelectedBerita(null);
+                      handleEdit(selectedBerita);
+                    }}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedBerita(null);
+                      handleDelete(selectedBerita.id_berita);
+                    }}
+                    className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors duration-200"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         {/* Featured Article Section */}
@@ -651,19 +709,28 @@ const BeritaAdmin = () => {
           <section className="mb-16">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-bold text-gray-800">
-                Featured Article
+                Berita Terbaru
               </h2>
             </div>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 relative">
+            <div 
+              className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 relative cursor-pointer"
+              onClick={() => handleViewBerita(featuredArticle)}
+            >
               <div className="absolute top-4 right-4 z-10 flex gap-2">
                 <button
-                  onClick={() => handleEdit(featuredArticle)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(featuredArticle);
+                  }}
                   className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors duration-200"
                 >
                   <Edit size={16} />
                 </button>
                 <button
-                  onClick={() => handleDelete(featuredArticle.id_berita)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(featuredArticle.id_berita);
+                  }}
                   className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors duration-200"
                 >
                   <Trash2 size={16} />
@@ -672,7 +739,9 @@ const BeritaAdmin = () => {
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="relative h-64 md:h-auto">
                   <img
-                    src={`data:image/jpeg;base64,${featuredArticle.gambar_utama}`}
+                    src={featuredArticle.gambar_utama.startsWith('http') 
+                      ? featuredArticle.gambar_utama 
+                      : `data:image/jpeg;base64,${featuredArticle.gambar_utama}`}
                     alt={featuredArticle.judul}
                     className="w-full h-full object-cover"
                   />
@@ -682,13 +751,19 @@ const BeritaAdmin = () => {
                     {featuredArticle.judul}
                   </h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">
-                    {featuredArticle.isi}
+                    {featuredArticle.isi.substring(0, 200)}...
                   </p>
                   <div className="text-sm text-gray-500">
                     {new Date(
                       featuredArticle.tanggal_publikasi
                     ).toLocaleDateString()}
                   </div>
+                  <button
+              onClick={() => navigate(`/berita/${featuredArticle.id_berita}`)}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              Selengkapnya
+            </button>
                 </div>
               </div>
             </div>
@@ -698,7 +773,7 @@ const BeritaAdmin = () => {
         {/* Regular Articles Section */}
         <section className="mb-16">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800">All News</h2>
+            <h2 className="text-3xl font-bold text-gray-800">Berita Lain</h2>
             <span className="text-gray-600">
               {regularArticles.length} articles
             </span>
@@ -708,23 +783,41 @@ const BeritaAdmin = () => {
             {regularArticles.map((berita) => (
               <div
                 key={berita.id_berita}
-                className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 relative"
+                className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 relative cursor-pointer"
+                onClick={() => handleViewBerita(berita)}
               >
                 <div className="absolute top-4 right-4 z-10 flex gap-2">
                   <button
-                    onClick={() => handleEdit(berita)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEdit(berita);
+                    }}
                     className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors duration-200"
                   >
                     <Edit size={16} />
                   </button>
                   <button
-                    onClick={() => handleDelete(berita.id_berita)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(berita.id_berita);
+                    }}
                     className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors duration-200"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
                
+                {berita.gambar_utama && (
+                  <div className="h-48 overflow-hidden">
+                    <img
+                      src={berita.gambar_utama.startsWith('http') 
+                        ? berita.gambar_utama 
+                        : `data:image/jpeg;base64,${berita.gambar_utama}`}
+                      alt={berita.judul}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-3 mt-2">
                     {berita.judul}
@@ -735,6 +828,12 @@ const BeritaAdmin = () => {
                   <div className="text-sm text-gray-500">
                     {new Date(berita.tanggal_publikasi).toLocaleDateString()}
                   </div>
+                  <button
+          onClick={() => navigate(`/berita/${berita.id_berita}`)}
+          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+        >
+          Selengkapnya
+        </button>
                 </div>
               </div>
             ))}

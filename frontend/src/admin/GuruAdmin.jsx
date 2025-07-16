@@ -21,6 +21,18 @@ const GuruAdmin = () => {
         e.preventDefault();
         navigate('/profiladmin')
       }
+      const handleSiswaAdmin = (e) => {
+        e.preventDefault();
+        navigate('/siswaadmin')
+      }
+      const handlePrestasi = (e) => {
+      e.preventDefault();
+      window.open('https://sangjuara.semarangkota.go.id/', '_blank');
+      }
+      const handleAkademikAdmin = (e) => {
+      e.preventDefault();
+      navigate('/akademikadmin')
+      }
 
   const [teachers, setTeachers] = useState([
   ""]);
@@ -300,19 +312,21 @@ const GuruAdmin = () => {
               >
                 Guru
               </button>
+              <button onClick={handleSiswaAdmin} className="hover:text-blue-600 transition-colors duration-200">
+                Siswa
+              </button>
+              <button
+                onClick={handlePrestasi} className="hover:text-blue-600 transition-colors duration-200"
+              >
+                Prestasi
+              </button>
               <button
                 onClick={handleBeritaAdmin}
                 className="hover:text-blue-600 transition-colors duration-200"
               >
                 Berita
               </button>
-              <button
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
-                Prestasi
-              </button>
-
-              <button href="#" className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
+              <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
             </nav>
             
 
