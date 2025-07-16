@@ -14,6 +14,7 @@ import SiswaAdmin from "./admin/siswaAdmin";
 import GuruAdmin from "./admin/GuruAdmin";
 import AkademikAdmin from "./admin/AkademikAdmin";
 import DetailBerita from "./admin/detailBerita";
+import ProfilAdmin from "./admin/ProfilAdmin";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/siswaadmin" element={<SiswaAdmin/>}/>
         <Route path="/guruadmin" element={<GuruAdmin/>}/>
         <Route path="/akademikadmin" element={<AkademikAdmin/>}/>
+        <Route path="/profiladmin" element={<ProfilAdmin/>}/>
       </Routes>
     </Router>
   )

@@ -27,4 +27,8 @@ app.listen(PORT, () => {
   console.log("- GET    /api/siswas/:id");
   console.log("- PUT    /api/siswas/:id");
   console.log("- DELETE /api/siswas/:id");
+
+  console.log("\nProfil Routes:"); 
+  console.log("- GET    /api/profil");
+  console.log("- POST   /api/profil");
 });

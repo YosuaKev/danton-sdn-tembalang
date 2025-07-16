@@ -1,6 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Edit, Save, X, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+const API_URL = 'http://localhost:5000/api/profil';
+
+const fetchProfil = async () => {
+  const response = await fetch(`${API_URL}`);
+  return await response.json();
+};
+
+const updateProfil = async (data) => {
+  const response = await fetch(`${API_URL}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify(data)
+  });
+  return await response.json();
+};
 
 const ProfilAdmin = () => {
   // State for editing mode
@@ -11,6 +30,25 @@ const ProfilAdmin = () => {
     strategi: false,
   });
 
+  useEffect(() => {
+    const loadProfil = async () => {
+      try {
+        const data = await fetchProfil();
+        if (data) {
+          setSchoolData({
+            visi: data.visi || '',
+            misi: Array.isArray(data.misi) ? data.misi : [],
+            tujuan: Array.isArray(data.tujuan) ? data.tujuan : [],
+            strategi: data.strategi || ''
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load profile:', error);
+      }
+    };
+    loadProfil();
+  }, []);
+  
   const [schoolData, setSchoolData] = useState({
     visi: "Membentuk pembelajar yang akhlakul karimah, berilmu, beretika berwawasan lingkungan untuk menuju pentas dunia.",
     misi: [
@@ -49,10 +87,30 @@ const ProfilAdmin = () => {
     setTempData({ ...tempData, [section]: schoolData[section] });
   };
 
-  const handleSave = (section) => {
-    setSchoolData({ ...schoolData, [section]: tempData[section] });
-    setEditMode({ ...editMode, [section]: false });
-    setTempData({ ...tempData, [section]: undefined });
+  const handleSave = async (section) => {
+    try {
+      // Prepare data for API
+      const dataToSend = {
+        ...schoolData,
+        [section]: tempData[section] || schoolData[section]
+      };
+
+      // Send to backend
+      console.log("Data dikirim:", dataToSend);
+      await updateProfil(dataToSend); 
+      
+      // Update local state
+      setSchoolData({
+        ...schoolData,
+        [section]: tempData[section] || schoolData[section]
+      });
+      
+      setEditMode({ ...editMode, [section]: false });
+      setTempData({ ...tempData, [section]: undefined });
+    } catch (error) {
+      console.error('Failed to save:', error);
+      alert('Failed to save changes');
+    }
   };
 
   const handleCancel = (section) => {
