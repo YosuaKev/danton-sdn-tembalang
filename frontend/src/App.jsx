@@ -13,6 +13,7 @@ import HomeAdmin from "./admin/HomepageAdmin";
 import SiswaAdmin from "./admin/siswaAdmin";
 import GuruAdmin from "./admin/GuruAdmin";
 import AkademikAdmin from "./admin/AkademikAdmin";
+import DetailBerita from "./admin/detailBerita";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/akademik" element={<AkademikPage/>}/>
         <Route path="/admin" element={<LoginPage/>}/>
         <Route path="/beritaadmin" element={<BeritaAdmin/>}/>
+        <Route path="/berita/:id" element={<DetailBerita/>}/>
         <Route path="/homeadmin" element={<HomeAdmin/>}/>
         <Route path="/siswaadmin" element={<SiswaAdmin/>}/>
         <Route path="/guruadmin" element={<GuruAdmin/>}/>
