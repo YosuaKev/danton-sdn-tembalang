@@ -16,6 +16,20 @@ const Header = () => {
   // Navigation handler
   const handleNavigation = (e, item) => {
     e.preventDefault();
+    if (item === "Profil") {
+      navigate("/profiladmin");
+    } else if (item === "Beranda") {
+      navigate("/");
+    } else if (item === "Berita") {
+      navigate("/beritaadmin");
+    } else if (item === "Prestasi") {
+      window.open('https://sangjuara.semarangkota.go.id/', '_blank');
+    } else if (item === "Guru") navigate("/guruadmin");
+    else if (item === "Akademik") navigate("/akademikadmin");
+    else if (item === "Siswa") navigate("/siswaadmin");
+    else {
+      navigate(`/${item.toLowerCase()}`);
+    }
   };
 
   // Fetch header data
@@ -154,13 +168,6 @@ const Header = () => {
               </button>
             ))}
           </nav>
-
-          <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
-            <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-            <span className="hidden md:block text-sm font-medium">
-              Admin
-            </span>
-          </button>
 
           {/* Mobile menu button */}
           <div className="md:hidden">

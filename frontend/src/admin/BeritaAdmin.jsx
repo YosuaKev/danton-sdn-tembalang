@@ -41,7 +41,6 @@ const BeritaAdmin = () => {
     navigate('/akademikadmin')
     }
   const [beritas, setBeritas] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -82,17 +81,17 @@ const BeritaAdmin = () => {
 
       const data = await response.json();
       setBeritas(data);
-      setLoading(false);
+      
     } catch (err) {
       console.error("Fetch error:", err);
       setError(err.message);
-      setLoading(false);
+      
     }
   };
 
   useEffect(() => {
     fetchBeritas();
-  }, []);
+  }, );
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -111,41 +110,6 @@ const BeritaAdmin = () => {
       gambar_utama: value,
     });
     setImagePreview(value);
-  };
-
-  // Handle file upload with base64
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validation
-    if (file.size > 5 * 1024 * 1024) {
-      setError("File size too large (max 5MB)");
-      return;
-    }
-
-    // Valid types
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      setError('Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image.');
-      return;
-    }
-
-    try {
-      // Convert to Base64
-      const base64String = await convertToBase64(file);
-
-      setFormData((prev) => ({
-        ...prev,
-        gambar_utama: base64String,
-      }));
-
-      setImagePreview(base64String);
-      setError(null);
-    } catch (error) {
-      console.error("Conversion error:", error);
-      setError("Failed to process image");
-    }
   };
 
   // Handle upload method change
@@ -296,24 +260,6 @@ const BeritaAdmin = () => {
       setError(err.message);
     }
   };
-
-  // Handle view full article
-  const handleViewBerita = (berita) => {
-    setSelectedBerita(berita);
-  };
-
-  function convertToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  }
   
   // Featured article (first item for demo)
   const featuredArticle = beritas.length > 0 ? beritas[0] : null;
