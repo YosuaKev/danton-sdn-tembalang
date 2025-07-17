@@ -1,5 +1,4 @@
 import React from "react";
-import { Menu, X, User, BookOpen, Users, Trophy, Newspaper, UserCheck, Phone, Mail, MapPin, Facebook, Instagram, Youtube, ChevronRight, GraduationCap, Monitor, Wrench, Calculator, Palette, Camera, Heart, Star } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
@@ -21,14 +20,14 @@ const Footer = () => {
             {/* Logo and Contact Info */}
             <div className="md:col-span-1">
               <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-semibold text-lg">SDN TEMBALANG</span>
+                <div className="w-8 h-8 bg-blue-600 rounded mr-3"><img>logo</img></div>
+                <span className="font-semibold text-lg">nama_sekolah</span>
               </div>
               <div className="space-y-2 text-blue-200">
-                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p>
+                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p> {/* alamat */}
                 <p>Jawa Tengah 43351, Indonesia</p>
-                <p>(024)6708666</p>
-                <p>inpakan@smp1.sch.ac.id</p>
+                <p>(024)6708666</p> {/* no_telepon */}
+                <p>inpakan@smp1.sch.ac.id</p> {/* email */}
               </div>
             </div>
             
@@ -61,15 +60,15 @@ const Footer = () => {
               <div className="space-y-3">
                 <div className="flex items-center">
                   <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Facebook Icon</span>
+                  <span className="text-blue-200"><a href="https://www.facebook.com/sdn.tembalang">Facebook Icon</a></span> {/* link facebook */}
                 </div>
                 <div className="flex items-center">
                   <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Twitter Icon</span>
+                  <span className="text-blue-200"><a href="https://twitter.com/sdn_tembalang"> Twitter Icon</a></span> {/* link twitter */}
                 </div>
                 <div className="flex items-center">
                   <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Instagram Icon</span>
+                  <span className="text-blue-200"><a href="https://www.instagram.com/sdn_tembalang">Instagram Icon </a></span> {/* link instagram */}
                 </div>
               </div>
             </div>

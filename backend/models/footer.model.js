@@ -4,33 +4,37 @@ import { Schema } from "mongoose";
 
 const footerSchema = new Schema(
   {
+    logo: {
+      type: String,
+      
+    },
     nama_sekolah: {
       type: String,
-      required: true,
+      
     },
     alamat: {
       type: String,
-      required: true,
+     
     },
     no_telepon: {
       type: Number,
-      required: true,
+     
     },
     email: {
       type: String,
-      required: true,
+      
     },
     facebook: {
       type: String,
-      required: true,
+      
     },
     youtube: {
       type: String,
-      required: true,
+      
     },
     instagram: {
       type: String,
-      required: true,
+      
     },
   },
   { timestamps: true }

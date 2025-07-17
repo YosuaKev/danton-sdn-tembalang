@@ -1,16 +1,18 @@
-// footer.routes.js
 import { Router } from "express";
 const router = Router();
 import {
-  createOrUpdateFooter,
-  getFooter,
+  getFooterContent,
+  updateFooterContent,
+  deleteFooterContent
 } from "../controllers/footer.controller.js";
 import validateFooter from "../middleware/validate.footer.js";
+import { verifyToken } from "../middleware/auth.middleware.js";
 
-// Get footer
-router.get("/", getFooter);
+// Public route
+router.get("/", getFooterContent);
 
-// Create or update footer
-router.post("/", validateFooter, createOrUpdateFooter);
+// Admin-only routes
+router.put("/", verifyToken, validateFooter, updateFooterContent);
+router.delete("/", verifyToken, deleteFooterContent);
 
 export default router;

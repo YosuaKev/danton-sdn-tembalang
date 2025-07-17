@@ -31,4 +31,8 @@ app.listen(PORT, () => {
   console.log("\nProfil Routes:"); 
   console.log("- GET    /api/profil");
   console.log("- POST   /api/profil");
+
+  console.log("\nProfil Routes:"); 
+console.log("- GET    /api/footer");
+console.log("- POST   /api/footer");
 });
