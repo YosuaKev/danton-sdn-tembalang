@@ -1,6 +1,12 @@
 import { body, validationResult } from "express-validator";
 
 const validateProfil = [
+  body("deskripsi")
+    .notEmpty()
+    .withMessage("Deskripsi is required")
+    .isString()
+    .withMessage("Deskripsi must be a string"),
+
   body("visi")
     .notEmpty()
     .withMessage("Visi is required")

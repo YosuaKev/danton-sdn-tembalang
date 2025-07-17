@@ -24,6 +24,7 @@ const updateProfil = async (data) => {
 const ProfilAdmin = () => {
   // State for editing mode
   const [editMode, setEditMode] = useState({
+    deskripsi: false,
     visi: false,
     misi: false,
     tujuan: false,
@@ -36,6 +37,7 @@ const ProfilAdmin = () => {
         const data = await fetchProfil();
         if (data) {
           setSchoolData({
+            deskripsi: data.deskripsi || '',
             visi: data.visi || '',
             misi: Array.isArray(data.misi) ? data.misi : [],
             tujuan: Array.isArray(data.tujuan) ? data.tujuan : [],
@@ -50,20 +52,11 @@ const ProfilAdmin = () => {
   }, []);
   
   const [schoolData, setSchoolData] = useState({
-    visi: "Membentuk pembelajar yang akhlakul karimah, berilmu, beretika berwawasan lingkungan untuk menuju pentas dunia.",
-    misi: [
-      "Mewujudkan pendidikan dengan keteladanan",
-      "Mengembangkan budaya belajar dengan didasari pada kecintaan terhadap ilmu pengetahuan",
-      "Meningkatkan fasilitas sekolah menuju sekolah bersih, sehat dan berwawasan lingkungan",
-    ],
-    tujuan: [
-      "100% Seluruh Guru/Staf memberikan pelayanan, keteladanan kepada para pengguna jasa dengan pendekatan agama, etika, dan budaya",
-      "100% Siswa melakukan syariat agama, etika dan budaya baik di Sekolah maupun diluar",
-      "90% fasilitas sekolah mendukug Standar Nasional Pendidikan (SNP)",
-      "80% Siswa berprestasi baik ditingkat regional, nasional maupun Global",
-    ],
-    strategi:
-      "Tiada kekayaan yang paling utama daripada kekayaan jiwa, tiada kegagalan yang paling menyedihkan daripada kebodohan, dan tiada wawasan yang paling baik daripada pendidikan.",
+    deskripsi: "",
+    visi: "",
+    misi: [],
+    tujuan: [],
+    strategi: ""
   });
 
   const [tempData, setTempData] = useState({});
@@ -232,6 +225,72 @@ const ProfilAdmin = () => {
         </div>
       </div>
 
+      {/* Profil Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 bg-white p-8 rounded-lg shadow-md border border-gray-200">
+            
+            {/* Gambar di Kiri */}
+            <div className="flex justify-center items-center">
+              <img
+                src="/gambar2.jpg"
+                alt="Foto Sekolah"
+                className="rounded-lg shadow-md object-cover w-full h-auto"
+              />
+            </div>
+
+            {/* Profil Deskripsi */}
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-3xl font-bold text-blue-900">Profil</h2>
+                {!editMode.deskripsi ? (
+                  <button
+                    onClick={() => handleEdit("deskripsi")}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  >
+                    <Edit size={16} />
+                    Edit
+                  </button>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleSave("deskripsi")}
+                      className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                    >
+                      <Save size={16} />
+                      Save
+                    </button>
+                    <button
+                      onClick={() => handleCancel("deskripsi")}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                    >
+                      <X size={16} />
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {editMode.deskripsi ? (
+                <textarea
+                  value={tempData.deskripsi || ""}
+                  onChange={(e) =>
+                    setTempData({ ...tempData, deskripsi: e.target.value })
+                  }
+                  className="w-full h-40 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Masukkan profil sekolah..."
+                />
+              ) : (
+                <p className="text-gray-700 text-lg leading-relaxed">
+                  {schoolData.deskripsi}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
       {/* Visi dan Misi Section */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">

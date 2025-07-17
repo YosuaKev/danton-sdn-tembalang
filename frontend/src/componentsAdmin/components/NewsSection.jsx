@@ -1,46 +1,46 @@
-import React from "react";
-import { useState } from "react";
-import { Menu, X, User, BookOpen, Users, Trophy, Newspaper, UserCheck, Phone, Mail, MapPin, Facebook, Instagram, Youtube, ChevronRight, GraduationCap, Monitor, Wrench, Calculator, Palette, Camera, Heart, Star } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { ChevronRight } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const NewsSection = () => {
-  const news = [
-    {
-      title: "Penerimaan Siswa Baru Tahun Ajaran 2024/2025",
-      date: "15 Mei 2024",
-      image: "news1",
-      snippet: "SMK Negeri Makassar membuka pendaftaran siswa baru untuk tahun ajaran 2024/2025..."
-    },
-    {
-      title: "Prestasi Gemilang dalam Lomba Kompetensi Siswa",
-      date: "10 Mei 2024",
-      image: "news2",
-      snippet: "Siswa SMK Negeri Makassar meraih juara pertama dalam kompetisi tingkat provinsi..."
-    },
-    {
-      title: "Kerjasama dengan Industri Terkemuka",
-      date: "5 Mei 2024",
-      image: "news3",
-      snippet: "Penandatanganan MOU dengan beberapa perusahaan untuk program magang siswa..."
-    },
-    {
-      title: "Workshop Teknologi Terbaru",
-      date: "1 Mei 2024",
-      image: "news4",
-      snippet: "Menghadirkan teknologi AI dan IoT dalam pembelajaran untuk siswa..."
-    },
-    {
-      title: "Kegiatan Ekstrakurikuler Semester Genap",
-      date: "25 April 2024",
-      image: "news5",
-      snippet: "Berbagai kegiatan ekstrakurikuler untuk mengembangkan bakat siswa..."
-    },
-    {
-      title: "Pelatihan Guru Berkelanjutan",
-      date: "20 April 2024",
-      image: "news6",
-      snippet: "Program peningkatan kompetensi guru untuk memberikan pendidikan terbaik..."
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const getAuthToken = () => {
+    return localStorage.getItem('token'); 
+  };
+
+  // Fetch all news
+  useEffect(() => {
+  const fetchNews = async () => {
+    try {
+      const token = getAuthToken(); // Now using the function
+      const response = await fetch("http://localhost:5000/api/berita", {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`Failed to fetch news. Status: ${response.status}\n${text}`);
+      }
+
+      const data = await response.json();
+      setNews(data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError(err.message);
+      setLoading(false);
     }
-  ];
+  };
+
+    fetchNews();
+  }, []);
+
+  if (loading) return <div className="text-center py-12">Loading news...</div>;
+  if (error) return <div className="text-center py-12 text-red-600">Error: {error}</div>;
 
   return (
     <section className="py-20 bg-white">
@@ -51,18 +51,38 @@ const NewsSection = () => {
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {news.map((item, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="bg-gray-300 h-48 flex items-center justify-center">
-                <span className="text-gray-600">News Image {index + 1}</span>
+          {news.map((item) => (
+            <div 
+              key={item.id_berita} 
+              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+              onClick={() => navigate(`/berita/${item.id_berita}`)}
+            >
+              <div className="h-48 overflow-hidden">
+                {item.gambar_utama ? (
+                  <img
+                    src={item.gambar_utama.startsWith('http') 
+                      ? item.gambar_utama 
+                      : `data:image/jpeg;base64,${item.gambar_utama}`}
+                    alt={item.judul}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-gray-300 h-full flex items-center justify-center">
+                    <span className="text-gray-600">No Image</span>
+                  </div>
+                )}
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{item.title}</h3>
-                <p className="text-blue-600 text-sm mb-3">{item.date}</p>
-                <p className="text-gray-600 text-sm mb-4">{item.snippet}</p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{item.judul}</h3>
+                <p className="text-blue-600 text-sm mb-3">
+                  {new Date(item.tanggal_publikasi).toLocaleDateString()}
+                </p>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                  {item.isi}
+                </p>
+                <div className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
                   Baca Selengkapnya <ChevronRight className="w-4 h-4 ml-1" />
-                </a>
+                </div>
               </div>
             </div>
           ))}

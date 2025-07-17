@@ -4,6 +4,10 @@ import { Schema } from "mongoose";
 
 const profilSchema = new Schema(
   {
+    deskripsi: {
+      type: String,
+      required: true,
+    },
     visi: {
       type: String,
       required: true,
