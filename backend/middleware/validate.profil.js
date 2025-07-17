@@ -7,6 +7,12 @@ const validateProfil = [
     .isString()
     .withMessage("Deskripsi must be a string"),
 
+  body("gambar")
+    .trim()
+    .isURL()
+    .withMessage("Logo must be a valid URL")
+    .optional(),
+
   body("visi")
     .notEmpty()
     .withMessage("Visi is required")
@@ -16,13 +22,13 @@ const validateProfil = [
   body("misi")
     .isArray({ min: 1 })
     .withMessage("Misi must be an array with at least one item")
-    .custom((arr) => arr.every(item => typeof item === "string"))
+    .custom((arr) => arr.every((item) => typeof item === "string"))
     .withMessage("Each misi item must be a string"),
 
   body("tujuan")
     .isArray({ min: 1 })
     .withMessage("Tujuan must be an array with at least one item")
-    .custom((arr) => arr.every(item => typeof item === "string"))
+    .custom((arr) => arr.every((item) => typeof item === "string"))
     .withMessage("Each tujuan item must be a string"),
 
   body("strategi")

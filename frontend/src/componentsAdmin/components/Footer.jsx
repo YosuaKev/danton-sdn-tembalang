@@ -29,6 +29,7 @@ const Footer = () => {
           ...prev,
           ...data,
           logo: data.logo || "",
+
           facebook: data.facebook || "",
           instagram: data.instagram || "",
           youtube: data.youtube || ""

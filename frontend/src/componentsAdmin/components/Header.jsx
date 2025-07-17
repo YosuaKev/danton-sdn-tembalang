@@ -12,6 +12,9 @@ const Header = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [logo, setLogo] = useState('');
+  const [tempLogo, setTempLogo] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Navigation handler
   const handleNavigation = (e, item) => {
@@ -19,7 +22,7 @@ const Header = () => {
     if (item === "Profil") {
       navigate("/profiladmin");
     } else if (item === "Beranda") {
-      navigate("/");
+      navigate("/homeadmin");
     } else if (item === "Berita") {
       navigate("/beritaadmin");
     } else if (item === "Prestasi") {
@@ -34,23 +37,32 @@ const Header = () => {
 
   // Fetch header data
   useEffect(() => {
-    const fetchHeader = async () => {
+    const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/home');
         if (!response.ok) throw new Error('Failed to fetch header');
         const data = await response.json();
         setHeader(data.header || 'SD Negeri Tembalang');
+
+        const logoResponse = await fetch('http://localhost:5000/api/footer');
+        if (!logoResponse.ok) throw new Error('Failed to fetch logo');
+        const logoData = await logoResponse.json();
+        setLogo(logoData.logo || '');
+
       } catch (error) {
         console.error('Error:', error);
-        setError('Failed to load header');
+        setError('Failed to load data');
+      } finally {
+        setLoading(false);
       }
     };
-    fetchHeader();
+    fetchData();
   }, []);
 
   // Edit handlers
   const handleEditClick = () => {
     setTempHeader(header);
+    setTempLogo(logo);
     setIsEditing(true);
     setMessage('');
     setError('');
@@ -67,28 +79,40 @@ const Header = () => {
 
     try {
       // First get the current document to preserve other fields
-      const currentData = await fetch('http://localhost:5000/api/home').then(res => res.json());
-      
-      const response = await fetch('http://localhost:5000/api/home', {
+        const headerResponse = await fetch('http://localhost:5000/api/home', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({
-          ...currentData,
-          header: tempHeader
-        }),
+        body: JSON.stringify({ header: tempHeader }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
+       if (!headerResponse.ok) {
+        const errorData = await headerResponse.json();
         throw new Error(errorData.errors?.[0]?.msg || 'Failed to update header');
       }
 
-      const data = await response.json();
-      setHeader(data.header);
-      setMessage('Header updated successfully!');
+      const logoResponse = await fetch('http://localhost:5000/api/footer', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ logo: tempLogo }),
+      });
+
+      if (!logoResponse.ok) {
+        const errorData = await logoResponse.json();
+        throw new Error(errorData.errors?.[0]?.msg || 'Failed to update logo');
+      }
+
+      const headerData = await headerResponse.json();
+      const logoData = await logoResponse.json();
+
+      setHeader(headerData.header);
+      setLogo(logoData.logo);
+      setMessage('Header and logo updated successfully!');
       setIsEditing(false);
     } catch (error) {
       setError(error.message);
@@ -100,32 +124,68 @@ const Header = () => {
   // Edit mode UI
   if (isEditing) {
     return (
-      <div className="flex items-center gap-2 mb-4">
-        <input
-          type="text"
-          value={tempHeader}
-          onChange={(e) => setTempHeader(e.target.value)}
-          className="text-xl font-bold text-blue-600 border border-gray-300 p-1 rounded"
-          maxLength={100}
-          required
-        />
-        <button
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          className="bg-blue-500 text-white px-3 py-1 rounded disabled:opacity-50"
-        >
-          {isSubmitting ? 'Saving...' : 'Save'}
-        </button>
-        <button
-          onClick={handleCancelClick}
-          disabled={isSubmitting}
-          className="bg-gray-500 text-white px-3 py-1 rounded"
-        >
-          Cancel
-        </button>
-        {message && <span className="text-green-600 ml-2">{message}</span>}
-        {error && <span className="text-red-600 ml-2">{error}</span>}
+       <div className="bg-white p-4 shadow-md">
+        <div className="max-w-7xl mx-auto space-y-4">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={tempHeader}
+              onChange={(e) => setTempHeader(e.target.value)}
+              className="text-xl font-bold text-blue-600 border border-gray-300 p-1 rounded"
+              maxLength={100}
+              required
+            />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="bg-blue-500 text-white px-3 py-1 rounded disabled:opacity-50"
+              >
+                {isSubmitting ? 'Saving...' : 'Save'}
+              </button>
+              <button
+                onClick={handleCancelClick}
+                disabled={isSubmitting}
+                className="bg-gray-500 text-white px-3 py-1 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <input
+              type="url"
+              value={tempLogo}
+              onChange={(e) => setTempLogo(e.target.value)}
+              placeholder="Enter logo URL"
+              className="border border-gray-300 p-1 rounded flex-1"
+            />
+            {tempLogo && (
+              <img 
+                src={tempLogo} 
+                alt="Logo preview" 
+                className="h-8 w-8 object-contain"
+                onError={(e) => e.target.style.display = 'none'}
+              />
+            )}
+          </div>
+          
+          {message && <p className="text-green-600 text-sm">{message}</p>}
+          {error && <p className="text-red-600 text-sm">{error}</p>}
+        </div>
       </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+          <div className="w-8 h-8 bg-gray-200 rounded mr-3 animate-pulse"></div>
+          <div className="h-6 w-40 bg-gray-200 animate-pulse"></div>
+        </div>
+      </header>
     );
   }
 
@@ -136,8 +196,21 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Header */}
           <div className="flex-shrink-0 flex items-center">
-            <img className="w-8 h-8 bg-blue-600 rounded mr-3"></img>
-            <h1 className="text-xl font-bold text-blue-600">{header}</h1>
+            {logo ? (
+              <img 
+                src={logo} 
+                alt="School Logo" 
+                className="w-8 h-8 rounded mr-3 object-contain"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = ''; // Remove broken image
+                  e.target.className = 'w-8 h-8 bg-blue-600 rounded mr-3';
+                }}
+              />
+            ) : (
+              <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
+            )}
+            <h1 className="text-xl font-bold text-blue-600 mb-1">{header}</h1>
             {localStorage.getItem('token') && (
               <button
                 onClick={handleEditClick}
@@ -146,7 +219,6 @@ const Header = () => {
                 Edit
               </button>
             )}
-            {error && <span className="text-red-600 ml-2">{error}</span>}
           </div>
 
           {/* Desktop Navigation */}

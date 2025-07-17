@@ -17,29 +17,12 @@ import {
   Bell,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Header from "../componentsAdmin/components/Header";
+import Footer from "../componentsAdmin/components/Footer";
 
 const BeritaAdmin = () => {
   const navigate = useNavigate();
-  const handleGuruAdmin = (e) => {
-    e.preventDefault();
-    navigate("/guruadmin");
-  };
-  const handleProfilAdmin = (e) => {
-    e.preventDefault();
-    navigate("/profiladmin");
-  };
-    const handleSiswaAdmin = (e) => {
-    e.preventDefault();
-    navigate('/siswaadmin')
-    }
-    const handlePrestasi = (e) => {
-    e.preventDefault();
-    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
-    }
-    const handleAkademikAdmin = (e) => {
-    e.preventDefault();
-    navigate('/akademikadmin')
-    }
+  
   const [beritas, setBeritas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -47,7 +30,7 @@ const BeritaAdmin = () => {
   const [editingId, setEditingId] = useState(null);
   const [uploadMethod, setUploadMethod] = useState("url");
   const [imagePreview, setImagePreview] = useState(null);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  // const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [selectedBerita, setSelectedBerita] = useState(null); // For showing full article
   const getAuthToken = () => {
     return localStorage.getItem('token'); 
@@ -92,7 +75,7 @@ const BeritaAdmin = () => {
 
   useEffect(() => {
     fetchBeritas();
-  }, []);
+  }, );
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -114,39 +97,7 @@ const BeritaAdmin = () => {
   };
 
   // Handle file upload with base64
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validation
-    if (file.size > 5 * 1024 * 1024) {
-      setError("File size too large (max 5MB)");
-      return;
-    }
-
-    // Valid types
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      setError('Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image.');
-      return;
-    }
-
-    try {
-      // Convert to Base64
-      const base64String = await convertToBase64(file);
-
-      setFormData((prev) => ({
-        ...prev,
-        gambar_utama: base64String,
-      }));
-
-      setImagePreview(base64String);
-      setError(null);
-    } catch (error) {
-      console.error("Conversion error:", error);
-      setError("Failed to process image");
-    }
-  };
+  
 
   // Handle upload method change
   const handleUploadMethodChange = (method) => {
@@ -302,18 +253,7 @@ const BeritaAdmin = () => {
     setSelectedBerita(berita);
   };
 
-  function convertToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  }
+ 
   
   // Featured article (first item for demo)
   const featuredArticle = beritas.length > 0 ? beritas[0] : null;
@@ -322,76 +262,13 @@ const BeritaAdmin = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Navigation Bar */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              {/* Logo */}
-              <div className="flex-shrink-0 flex items-center">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-bold text-xl text-gray-900">
-                  SDN NGAWI
-                </span>
-                <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                  Admin
-                </span>
-              </div>
+      <Header/>
 
-              {/* Navigation Links */}
-              <nav className="hidden md:flex space-x-6 ml-50">
-                <button
-                  href="#"
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Beranda
-                </button>
-                <button
-                  href="#"
-                  onClick={handleProfilAdmin}
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Profil
-                </button>
-                <button
-                  href="#"
-                  onClick={handleGuruAdmin}
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Guru
-                </button>
-                <button
-                  href="#"
-                  onClick={handleSiswaAdmin}
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Siswa
-                </button>
-                
-                <button
-                  onClick={handlePrestasi}
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Prestasi
-                </button>
-                <button
-                  href="#"
-                  className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400"
-                >
-                  Berita
-                </button>
-                <button
-                  onClick={handleAkademikAdmin}
-                  className="hover:text-blue-200 transition-colors duration-200"
-                >
-                  Akademik
-                </button>
-              </nav>
-            </div>
+      <div className="container mx-auto px-4 py-8 bg-blue-600 mt-8">
+        <h1 className="text-center text-4xl font-bold text-white">Manajemen Berita</h1>
 
-            {/* Right side items */}
-            <div className="flex items-center space-x-4">
-              {/* Add News Button */}
-              <div className="container mx-auto px-4">
+      </div>
+      <div className="container mx-auto px-4 mt-5 max-w-7xl sm:px-6 lg:px-8">
                 {localStorage.getItem('token') && (
                 <button
                   onClick={() => setShowForm(true)}
@@ -401,61 +278,6 @@ const BeritaAdmin = () => {
                 </button>)}
                 {error && <span className="text-red-600 ml-2">{error}</span>}
               </div>
-
-              {/* Profile/Logout */}
-                  <div className="relative">
-                <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
-                  <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                  <span className="hidden md:block text-sm font-medium">
-                    Admin
-                  </span>
-                </button>
-              </div>
-
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setShowMobileMenu(!showMobileMenu)}
-                className="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <Menu size={20} />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {showMobileMenu && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-              <div className="border-t border-gray-200 pt-4">
-                <a
-                  href="#"
-                  className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                >
-                  <LogOut size={18} className="mr-3" />
-                  Logout
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
-      </header>
-
-      {/* Header Navigation */}
-      <header className="bg-blue-900 text-white py-4">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-center item-center text-center">
-            <div>
-              <h1 className="text-2xl font-bold bg-blue-900">
-                Manajemen Berita
-              </h1>
-              <p className="text-white">
-                Mengatur berita sekolah dan pengumuman.
-              </p>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* Form Modal */}
       {showForm && (
@@ -703,12 +525,12 @@ const BeritaAdmin = () => {
       )}
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
+      <main className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-[-30px]">
         {/* Featured Article Section */}
         {featuredArticle && (
           <section className="mb-16">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800">
+              <h2 className="text-3xl font-bold text-gray-800 ">
                 Berita Terbaru
               </h2>
             </div>
@@ -850,130 +672,7 @@ const BeritaAdmin = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-blue-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-1">
-              <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-semibold text-lg">SDN NGAWI</span>
-              </div>
-              <div className="space-y-2 text-blue-200">
-                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p>
-                <p>Jawa Tengah 43351, Indonesia</p>
-                <p>(024)6708666</p>
-                <p>inpakan@smp1.sch.ac.id</p>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Jelajah</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Sambutan
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Profil Sekolah
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Berita
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Galeri
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Data Guru
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    PPDB SDN
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Panduan PPDB
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Lokasi
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Kontak
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Media Sosial</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Facebook Icon</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Twitter Icon</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Instagram Icon</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
-            <p>&copy; 2024 SDN NGAWI. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
