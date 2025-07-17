@@ -136,6 +136,7 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Header */}
           <div className="flex-shrink-0 flex items-center">
+            <img className="w-8 h-8 bg-blue-600 rounded mr-3"></img>
             <h1 className="text-xl font-bold text-blue-600">{header}</h1>
             {localStorage.getItem('token') && (
               <button

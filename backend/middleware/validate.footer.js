@@ -1,56 +1,57 @@
-// validate.footer.js
 import { body, validationResult } from "express-validator";
 
-const validateFooter = [
-  body("nama_sekolah")
-    .notEmpty()
-    .withMessage("Nama sekolah is required")
-    .isString()
-    .withMessage("Nama sekolah must be a string"),
+export default [
+  // Logo Validation
+  body('logo')
+    .trim()
+    .isURL().withMessage('Logo must be a valid URL')
+    .optional(),
 
-  body("alamat")
-    .notEmpty()
-    .withMessage("Alamat is required")
-    .isString()
-    .withMessage("Alamat must be a string"),
+  // School Name Validation
+  body('nama_sekolah')
+    .trim()
+    .isLength({ max: 100 }).withMessage('School name cannot exceed 100 characters')
+    .optional(),
 
-  body("no_telepon")
-    .notEmpty()
-    .withMessage("No telepon is required")
-    .isNumeric()
-    .withMessage("No telepon must be a number"),
+  // Address Validation
+  body('alamat')
+    .trim()
+    .isLength({ max: 200 }).withMessage('Address cannot exceed 200 characters')
+    .optional(),
 
-  body("email")
-    .notEmpty()
-    .withMessage("Email is required")
-    .isEmail()
-    .withMessage("Invalid email format"),
+  // Phone Number Validation
+  body('no_telepon')
+    .isInt({ min: 0 }).withMessage('Phone number must be a positive integer')
+    .optional(),
 
-  body("facebook")
-    .notEmpty()
-    .withMessage("Facebook link is required")
-    .isString()
-    .withMessage("Facebook must be a string"),
+  // Email Validation
+  body('email')
+    .trim()
+    .isEmail().withMessage('Invalid email format')
+    .optional(),
 
-  body("youtube")
-    .notEmpty()
-    .withMessage("Youtube link is required")
-    .isString()
-    .withMessage("Youtube must be a string"),
+  // Social Media Validations
+  body('facebook')
+    .trim()
+    .isURL().withMessage('Facebook must be a valid URL')
+    .optional(),
 
-  body("instagram")
-    .notEmpty()
-    .withMessage("Instagram link is required")
-    .isString()
-    .withMessage("Instagram must be a string"),
+  body('youtube')
+    .trim()
+    .isURL().withMessage('YouTube must be a valid URL')
+    .optional(),
 
+  body('instagram')
+    .trim()
+    .isURL().withMessage('Instagram must be a valid URL')
+    .optional(),
+
+  // Error handling middleware
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
     next();
-  },
+  }
 ];
-
-export default validateFooter;

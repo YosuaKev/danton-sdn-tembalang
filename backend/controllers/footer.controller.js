@@ -1,33 +1,73 @@
-// footer.controller.js
-import Footer from "../models/footer.model.js";
+import FooterModel from "../models/footer.model.js";
 
-// Create or update footer (since there's typically only one footer)
-export async function createOrUpdateFooter(req, res) {
+// Get footer content
+export const getFooterContent = async (req, res) => {
   try {
-    // Assuming we only have one footer document with a fixed ID
-    const footer = await Footer.findOneAndUpdate(
-      {}, // empty filter to find first document
-      req.body,
+    const footerContent = await FooterModel.findOne();
+    
+    if (!footerContent) {
+      // Return default structure if no content exists
+      return res.status(200).json({
+        logo: "",
+        nama_sekolah: "",
+        alamat: "",
+        no_telepon: 0,
+        email: "",
+        facebook: "",
+        youtube: "",
+        instagram: ""
+      });
+    }
+
+    res.status(200).json(footerContent);
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Failed to fetch footer content", 
+      error: error.message 
+    });
+  }
+};
+
+// Update footer content
+export const updateFooterContent = async (req, res) => {
+  try {
+    // Find existing content or create new if doesn't exist
+    const footerContent = await FooterModel.findOneAndUpdate(
+      {},
+      { $set: req.body },
       { 
         new: true,
-        upsert: true // create if doesn't exist
+        upsert: true,
+        runValidators: true 
       }
     );
-    res.status(200).json(footer);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to update footer." });
-  }
-}
 
-// Get footer
-export async function getFooter(req, res) {
-  try {
-    const footer = await Footer.findOne({});
-    if (!footer) {
-      return res.status(404).json({ error: "Footer not found." });
+    res.status(200).json(footerContent);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      // Handle Mongoose validation errors
+      const errors = Object.values(error.errors).map(err => ({
+        msg: err.message,
+        param: err.path
+      }));
+      return res.status(400).json({ errors });
     }
-    res.json(footer);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch footer." });
+    res.status(500).json({ 
+      message: "Failed to update footer content", 
+      error: error.message 
+    });
   }
-}
+};
+
+// Delete footer content
+export const deleteFooterContent = async (req, res) => {
+  try {
+    await FooterModel.deleteOne({});
+    res.status(200).json({ message: "Footer content deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Failed to delete footer content", 
+      error: error.message 
+    });
+  }
+};
