@@ -8,6 +8,10 @@ const profilSchema = new Schema(
       type: String,
       required: true,
     },
+    gambar : {
+      type: String,
+      required: false,
+    },
     visi: {
       type: String,
       required: true,

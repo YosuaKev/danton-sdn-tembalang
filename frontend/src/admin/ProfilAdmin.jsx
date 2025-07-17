@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Edit, Save, X, Plus, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import Header from "../componentsAdmin/components/Header";
+import Footer from "../componentsAdmin/components/Footer";
 
-const API_URL = 'http://localhost:5000/api/profil';
+const API_URL = "http://localhost:5000/api/profil";
 
 const fetchProfil = async () => {
   const response = await fetch(`${API_URL}`);
@@ -11,12 +12,12 @@ const fetchProfil = async () => {
 
 const updateProfil = async (data) => {
   const response = await fetch(`${API_URL}`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
   return await response.json();
 };
@@ -25,6 +26,7 @@ const ProfilAdmin = () => {
   // State for editing mode
   const [editMode, setEditMode] = useState({
     deskripsi: false,
+    gambar: false,
     visi: false,
     misi: false,
     tujuan: false,
@@ -37,42 +39,33 @@ const ProfilAdmin = () => {
         const data = await fetchProfil();
         if (data) {
           setSchoolData({
-            deskripsi: data.deskripsi || '',
-            visi: data.visi || '',
+            deskripsi: data.deskripsi || "",
+            gambar: data.gambar || "",
+            visi: data.visi || "",
             misi: Array.isArray(data.misi) ? data.misi : [],
             tujuan: Array.isArray(data.tujuan) ? data.tujuan : [],
-            strategi: data.strategi || ''
+            strategi: data.strategi || "",
           });
         }
       } catch (error) {
-        console.error('Failed to load profile:', error);
+        console.error("Failed to load profile:", error);
       }
     };
     loadProfil();
   }, []);
-  
+
   const [schoolData, setSchoolData] = useState({
     deskripsi: "",
+    gambar: "",
     visi: "",
     misi: [],
     tujuan: [],
-    strategi: ""
+    strategi: "",
   });
 
   const [tempData, setTempData] = useState({});
-  const navigate = useNavigate ();
-  const handleBeritaAdmin = (e) => {
-    e.preventDefault();
-    navigate('/beritaadmin');
-  };
-  const handleGuruAdmin = (e) => {
-    e.preventDefault() ;
-    navigate('/guruadmin')
-  }
-  const handleAkademikAdmin = (e) => {
-    e.preventDefault();
-    navigate('/akademikadmin')
-  }
+  
+  
 
   // CRUD Operations
   const handleEdit = (section) => {
@@ -85,24 +78,24 @@ const ProfilAdmin = () => {
       // Prepare data for API
       const dataToSend = {
         ...schoolData,
-        [section]: tempData[section] || schoolData[section]
+        [section]: tempData[section] || schoolData[section],
       };
 
       // Send to backend
       console.log("Data dikirim:", dataToSend);
-      await updateProfil(dataToSend); 
-      
+      await updateProfil(dataToSend);
+
       // Update local state
       setSchoolData({
         ...schoolData,
-        [section]: tempData[section] || schoolData[section]
+        [section]: tempData[section] || schoolData[section],
       });
-      
+
       setEditMode({ ...editMode, [section]: false });
       setTempData({ ...tempData, [section]: undefined });
     } catch (error) {
-      console.error('Failed to save:', error);
-      alert('Failed to save changes');
+      console.error("Failed to save:", error);
+      alert("Failed to save changes");
     }
   };
 
@@ -139,82 +132,7 @@ const ProfilAdmin = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header Navigation */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              {/* Logo */}
-              <div className="flex-shrink-0 flex items-center">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-bold text-xl text-gray-900">
-                  SDN NGAWI
-                </span>
-                <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                  Admin
-                </span>
-              </div>
-            </div>
-
-            <nav className="hidden md:flex space-x-6">
-              <button
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
-                Beranda
-              </button>
-              <a
-                href="#"
-                className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400"
-              >
-                Profil
-              </a>
-              <button
-                onClick={handleGuruAdmin} 
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
-                Guru
-              </button>
-              <button
-                onClick={handleBeritaAdmin}
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
-                Berita
-              </button>
-              <button
-                className="hover:text-blue-600 transition-colors duration-200"
-              >
-                Prestasi
-              </button>
-              <button href="#" onClick={handleAkademikAdmin} className="hover:text-blue-600 transition-colors duration-200">Akademik</button>
-            </nav>
-
-            <button className="md:hidden">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-            
-            {/* Profile/Logout */}
-              <div className="relative">
-                <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
-                  <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                  <span className="hidden md:block text-sm font-medium">
-                    Admin
-                  </span>
-                </button>
-              </div>
-          </div>
-        </div>
-      </header>
+      <Header/>
 
       {/* Admin Panel Header */}
       <div className="bg-blue-900 text-white py-4">
@@ -227,21 +145,73 @@ const ProfilAdmin = () => {
 
       {/* Profil Section */}
       <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 bg-white p-8 rounded-lg shadow-md border border-gray-200">
-            
-            {/* Gambar di Kiri */}
-            <div className="flex justify-center items-center">
-              <img
-                src="/gambar2.jpg"
-                alt="Foto Sekolah"
-                className="rounded-lg shadow-md object-cover w-full h-auto"
-              />
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className=" mx-auto grid md:grid-cols-2 gap-8 bg-white p-8 rounded-lg shadow-md border border-gray-200">
+            {/* Gambar Sekolah */}
+            <div className="flex flex-col justify-start space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-blue-900">
+                  Gambar Sekolah
+                </h2>
+                {!editMode.gambar ? (
+                  <button
+                    onClick={() => handleEdit("gambar")}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  >
+                    <Edit size={16} />
+                    Edit
+                  </button>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleSave("gambar")}
+                      className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                    >
+                      <Save size={16} />
+                      Save
+                    </button>
+                    <button
+                      onClick={() => handleCancel("gambar")}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                    >
+                      <X size={16} />
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {editMode.gambar ? (
+                <>
+                  <input
+                    type="text"
+                    value={tempData.gambar || ""}
+                    onChange={(e) =>
+                      setTempData({ ...tempData, gambar: e.target.value })
+                    }
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Masukkan URL gambar sekolah"
+                  />
+                  {tempData.gambar && (
+                    <img
+                      src={tempData.gambar}
+                      alt="Preview Gambar"
+                      className="rounded-lg shadow-md object-cover w-full max-h-[300px]"
+                    />
+                  )}
+                </>
+              ) : (
+                <img
+                  src={schoolData.gambar || "/placeholder.jpg"}
+                  alt="Foto Sekolah"
+                  className="rounded-lg shadow-md object-cover w-full max-h-[300px]"
+                />
+              )}
             </div>
 
             {/* Profil Deskripsi */}
-            <div>
-              <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-bold text-blue-900">Profil</h2>
                 {!editMode.deskripsi ? (
                   <button
@@ -290,11 +260,10 @@ const ProfilAdmin = () => {
         </div>
       </section>
 
-      
       {/* Visi dan Misi Section */}
       <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8 mx-auto">
             {/* Visi Column */}
             <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
               <div className="flex items-center justify-between mb-6">
@@ -562,130 +531,7 @@ const ProfilAdmin = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-blue-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-1">
-              <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-semibold text-lg">SDN TEMBALANG</span>
-              </div>
-              <div className="space-y-2 text-blue-200">
-                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p>
-                <p>Jawa Tengah 43351, Indonesia</p>
-                <p>(024)6708666</p>
-                <p>inpakan@smp1.sch.ac.id</p>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Jelajah</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Sambutan
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Profil Sekolah
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Berita
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Galeri
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Data Guru
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    PPDB SDN
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Panduan PPDB
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Lokasi
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors duration-200"
-                  >
-                    Kontak
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Media Sosial</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Facebook Icon</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Twitter Icon</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Instagram Icon</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
-            <p>&copy; 2024 SDN TEMBALANG. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

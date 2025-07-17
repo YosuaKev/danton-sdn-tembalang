@@ -11,30 +11,11 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import { useNavigate } from "react-router-dom";
-
+import Header from "../componentsAdmin/components/Header";
+import Footer from "../componentsAdmin/components/Footer";
 const SiswaAdmin = () => {
-  const navigate = useNavigate();
-    const handleGuruAdmin = (e) => {
-      e.preventDefault();
-      navigate("/guruadmin");
-    };
-    const handleProfilAdmin = (e) => {
-      e.preventDefault();
-      navigate("/profiladmin");
-    };
-      const handleBeritaAdmin = (e) => {
-      e.preventDefault();
-      navigate('/beritaadmin')
-      }
-      const handlePrestasi = (e) => {
-      e.preventDefault();
-      window.open('https://sangjuara.semarangkota.go.id/', '_blank');
-      }
-      const handleAkademikAdmin = (e) => {
-      e.preventDefault();
-      navigate('/akademikadmin')
-      }
+  
+    
   const [students, setStudents] = useState([]);
   const [expandedClasses, setExpandedClasses] = useState({});
   const [loading, setLoading] = useState(true);
@@ -262,59 +243,10 @@ const SiswaAdmin = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 flex items-center">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-bold text-xl text-gray-900">
-                  SDN NGAWI
-                </span>
-                <span className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                  Admin
-                </span>
-              </div>
-            </div>
-
-            <nav className="hidden md:flex space-x-6">
-              <button className="hover:text-blue-600 transition-colors duration-200">
-                Beranda
-              </button>
-              <button onClick={handleProfilAdmin} className="hover:text-blue-600 transition-colors duration-200">
-                Profil
-              </button>
-              <button onClick={handleGuruAdmin} className="hover:text-blue-600 transition-colors duration-200">
-                Guru
-              </button>
-              <button className="hover:text-blue-600 transition-colors duration-200 border-b-2 border-blue-400">
-                Siswa
-              </button>
-              <button onClick={handlePrestasi} className="hover:text-blue-600 transition-colors duration-200">
-                Prestasi
-              </button>
-              <button onClick={handleBeritaAdmin} className="hover:text-blue-600 transition-colors duration-200">
-                Berita
-              </button>
-              <button onClick={handleAkademikAdmin} className="hover:text-blue-600 transition-colors duration-200">
-                Akademik
-              </button>
-            </nav>
-
-            <div className="relative">
-              <button className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2">
-                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-                <span className="hidden md:block text-sm font-medium">
-                  Admin
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header/>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search and Add Button */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
           <div className="relative flex-1 max-w-md">
@@ -525,103 +457,7 @@ const SiswaAdmin = () => {
       )}
 
       {/* Footer */}
-      <footer className="bg-blue-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-1">
-              <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-semibold text-lg">SDN TEMBALANG</span>
-              </div>
-              <div className="space-y-2 text-blue-200">
-                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p>
-                <p>Jawa Tengah 43351, Indonesia</p>
-                <p>(024)6708666</p>
-                <p>inpakan@smp1.sch.ac.id</p>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Jelajah</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    Sambutan
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    Profil Sekolah
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    Berita
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    Galeri
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    Data Guru
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    PPDB SDN
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    Panduan PPDB
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    Lokasi
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-200">
-                    Kontak
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Media Sosial</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Facebook Icon</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Twitter Icon</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Instagram Icon</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
-            <p>&copy; 2024 SDN TEMBALANG. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
