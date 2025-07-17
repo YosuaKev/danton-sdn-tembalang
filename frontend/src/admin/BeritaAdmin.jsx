@@ -47,7 +47,7 @@ const BeritaAdmin = () => {
     gambar5: "",
   });
 
-  // Fetch all news
+  // Fetch all 
   const fetchBeritas = async () => {
     try {
       const token = getAuthToken();
