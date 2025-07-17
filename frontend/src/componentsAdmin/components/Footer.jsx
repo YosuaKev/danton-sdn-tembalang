@@ -283,7 +283,7 @@ const Footer = () => {
               <li><a href="#" className="hover:text-white transition-colors duration-200">Sambutan</a></li>
               <li><a href="#about" className="cursor-pointer hover:text-white transition-colors duration-200">Profil Sekolah</a></li>
               <li><a href="#news" className="cursor-pointer hover:text-white transition-colors duration-200">Berita</a></li>
-              <li><a href="#" className="hover:text-white transition-colors duration-200">Galeri</a></li>
+              <li><a href="/galeri" className="hover:text-white transition-colors duration-200">Galeri</a></li>
             </ul>
           </div>
           

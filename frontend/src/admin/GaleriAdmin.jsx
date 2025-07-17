@@ -1,16 +1,22 @@
-import React, {useEffect, useState } from "react";
-import { Plus, Edit, Trash2, Save, X, Upload, ChevronLeft } from "lucide-react";
+import React, {useEffect, useState, useRef } from "react";
+import { Plus, Edit, Trash2, Save, X, Upload, ChevronLeft, ZoomIn, ZoomOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const GaleriAdmin = () => {
   const navigate = useNavigate();
-    const [images, setImages] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [showForm, setShowForm] = useState(false);
-    const [editingId, setEditingId] = useState(null);
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [zoomedImage, setZoomedImage] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const imageRef = useRef(null);
 
-const [formData, setFormData] = useState({ gambar: "" });
+  const [formData, setFormData] = useState({ gambar: "" });
 
   const getAuthToken = () => {
     return localStorage.getItem('token'); 
@@ -47,6 +53,85 @@ const [formData, setFormData] = useState({ gambar: "" });
     fetchImages();
   }, []);
 
+  // Handle zoom in/out
+  const handleZoom = (direction) => {
+    if (direction === 'in') {
+      setZoomLevel(prev => Math.min(prev + 0.25, 3));
+    } else {
+      setZoomLevel(prev => Math.max(prev - 0.25, 0.5));
+    }
+    // Reset position when zooming to keep image centered
+    setPosition({ x: 0, y: 0 });
+  };
+
+  // Reset zoom and position
+  const resetZoom = () => {
+    setZoomLevel(1);
+    setPosition({ x: 0, y: 0 });
+  };
+
+  // Mouse down handler for dragging
+  const handleMouseDown = (e) => {
+    if (zoomLevel === 1) return; // No need to drag when not zoomed
+    setIsDragging(true);
+    setStartPos({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    });
+  };
+
+  // Mouse move handler for dragging
+  const handleMouseMove = (e) => {
+    if (!isDragging || zoomLevel === 1) return;
+    
+    const newX = e.clientX - startPos.x;
+    const newY = e.clientY - startPos.y;
+    
+    // Calculate max position based on zoom level
+    if (imageRef.current) {
+      const maxX = (imageRef.current.offsetWidth * (zoomLevel - 1)) / 2;
+      const maxY = (imageRef.current.offsetHeight * (zoomLevel - 1)) / 2;
+      
+      setPosition({
+        x: Math.max(-maxX, Math.min(maxX, newX)),
+        y: Math.max(-maxY, Math.min(maxY, newY))
+      });
+    }
+  };
+
+  // Mouse up handler
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Touch start handler
+  const handleTouchStart = (e) => {
+    if (zoomLevel === 1) return;
+    setIsDragging(true);
+    setStartPos({
+      x: e.touches[0].clientX - position.x,
+      y: e.touches[0].clientY - position.y
+    });
+  };
+
+  // Touch move handler
+  const handleTouchMove = (e) => {
+    if (!isDragging || zoomLevel === 1) return;
+    
+    const newX = e.touches[0].clientX - startPos.x;
+    const newY = e.touches[0].clientY - startPos.y;
+    
+    if (imageRef.current) {
+      const maxX = (imageRef.current.offsetWidth * (zoomLevel - 1)) / 2;
+      const maxY = (imageRef.current.offsetHeight * (zoomLevel - 1)) / 2;
+      
+      setPosition({
+        x: Math.max(-maxX, Math.min(maxX, newX)),
+        y: Math.max(-maxY, Math.min(maxY, newY))
+      });
+    }
+  };
+
   // Handle file upload with base64
   const handleFileChange = async (e, field) => {
     const file = e.target.files[0];
@@ -82,24 +167,48 @@ const [formData, setFormData] = useState({ gambar: "" });
 
     try {
         const token = getAuthToken();
-        const response = await fetch("http://localhost:5000/api/galeri", {
+        let response;
+        
+        if (editingId) {
+          // Update existing image
+          response = await fetch(`http://localhost:5000/api/galeri/${editingId}`, {
+            method: "PUT",  // or "PATCH" depending on your API
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ gambar: formData.gambar })
+        });
+      } else {
+        // Create new image
+        response = await fetch("http://localhost:5000/api/galeri", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-        },
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+      },
         body: JSON.stringify({ gambar: formData.gambar })
-        });
-
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.error || "Gagal menyimpan gambar");
-
-        setImages([result.data, ...images]);
-        resetForm();
-    } catch (err) {
-        setError(err.message);
-    }
+      });
     };
+
+    const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Gagal menyimpan gambar");
+
+      if (editingId) {
+        // Update the existing image in state
+        setImages(images.map(img => 
+          img.id_galeri === editingId ? { ...img, gambar: formData.gambar } : img
+        ));
+      } else {
+        // Add new image to state
+        setImages([result.data, ...images]);
+      }
+      
+      resetForm();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   // Handle delete
   const handleDeleteImage = async (id) => {
@@ -197,60 +306,151 @@ const [formData, setFormData] = useState({ gambar: "" });
       {/* Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-                {error && (
-                    <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
-                    {error}
-                    </div>
-                )}
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {editingId ? "Edit Image" : "Add New Image"}
-                </h2>
-                <button
-                  onClick={resetForm}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <X size={24} />
-                </button>
+        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            {error && (
+              <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+                {error}
               </div>
+            )}
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                {editingId ? "Edit Image" : "Add New Image"}
+              </h2>
+              <button
+                onClick={resetForm}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={24} />
+              </button>
+            </div>
 
-               <div>
-                <label className="block font-medium text-sm mb-1">Upload Gambar</label>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileChange(e, "gambar")}
-                    className="mb-2 w-full border rounded px-3 py-2"
-                />
-                {formData.gambar && (
-                    <img
+            <div>
+              <label className="block font-medium text-sm mb-1">Upload Gambar</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, "gambar")}
+                className="mb-2 w-full border rounded px-3 py-2"
+              />
+              {formData.gambar && (
+                <div className="relative">
+                  <img
                     src={formData.gambar}
                     alt="Preview"
-                    className="w-full h-48 object-cover border rounded mb-4"
-                    />
-                )}
+                    className="w-full h-85 object-cover border rounded mb-4"
+                    style={{ transform: `scale(${zoomLevel})` }}
+                  />
+                  <div className="absolute bottom-4 right-4 flex gap-2 bg-white/80 p-2 rounded-lg shadow">
+                    <button 
+                      onClick={() => handleZoom('in')} 
+                      className="p-1 hover:bg-gray-200 rounded"
+                      disabled={zoomLevel >= 3}
+                    >
+                      <ZoomIn size={20} />
+                    </button>
+                    <button 
+                      onClick={() => handleZoom('out')} 
+                      className="p-1 hover:bg-gray-200 rounded"
+                      disabled={zoomLevel <= 0.5}
+                    >
+                      <ZoomOut size={20} />
+                    </button>
+                    <button 
+                      onClick={resetZoom} 
+                      className="p-1 hover:bg-gray-200 rounded text-sm px-2"
+                    >
+                      Reset
+                    </button>
+                  </div>
                 </div>
+              )}
+            </div>
 
-                <div className="flex gap-3 pt-4">
-                  <button
-                    onClick={handleSubmit}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
-                  >
-                    <Save size={20} />
-                    {editingId ? "Update" : "Create"}
-                  </button>
-                  <button
-                    onClick={resetForm}
-                    className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400 transition-colors duration-200"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
+            <div className="flex gap-3 pt-4">
+              <button
+                onClick={handleSubmit}
+                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+              >
+                <Save size={20} />
+                {editingId ? "Update" : "Create"}
+              </button>
+              <button
+                onClick={resetForm}
+                className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-400 transition-colors duration-200"
+              >
+                Cancel
+              </button>
             </div>
           </div>
+        </div>
+      </div>
+      )}
+
+      {/* Image Zoom Modal */}
+      {zoomedImage && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4"
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <div className="relative max-w-6xl w-full max-h-[90vh]">
+            <button
+              onClick={() => {
+                setZoomedImage(null);
+                resetZoom();
+              }}
+              className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full z-10"
+            >
+              <X size={24} />
+            </button>
+            
+            <div className="absolute top-4 left-4 flex gap-2 z-10">
+              <button 
+                onClick={() => handleZoom('in')} 
+                className="text-white bg-black/50 p-2 rounded-full"
+                disabled={zoomLevel >= 3}
+              >
+                <ZoomIn size={20} />
+              </button>
+              <button 
+                onClick={() => handleZoom('out')} 
+                className="text-white bg-black/50 p-2 rounded-full"
+                disabled={zoomLevel <= 0.5}
+              >
+                <ZoomOut size={20} />
+              </button>
+              <button 
+                onClick={resetZoom} 
+                className="text-white bg-black/50 p-2 rounded-full text-sm px-3"
+              >
+                Reset
+              </button>
+            </div>
+            
+            <div 
+              className="w-full h-full overflow-hidden"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleMouseUp}
+              style={{ cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+            >
+              <img
+                ref={imageRef}
+                src={zoomedImage}
+                alt="Zoomed"
+                className="w-full h-full object-contain"
+                style={{
+                  transform: `scale(${zoomLevel}) translate(${position.x}px, ${position.y}px)`,
+                  transition: isDragging ? 'none' : 'transform 0.3s ease'
+                }}
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Main Content */}
@@ -297,15 +497,25 @@ const [formData, setFormData] = useState({ gambar: "" });
                     </button>
                 </div>
 
-                <div className="h-64 w-full">
-                    <img
-                    src={
-                    gambar.startsWith("http") || gambar.startsWith("data:")
+                <div 
+                  className="h-64 w-full cursor-zoom-in"
+                  onClick={() => {
+                    setZoomedImage(
+                      gambar.startsWith("http") || gambar.startsWith("data:")
                         ? gambar
                         : `data:image/jpeg;base64,${gambar}`
-                    }
-                    alt={`${key}`}
-                    className="w-full h-full object-cover"
+                    );
+                    setZoomLevel(1);
+                  }}
+                >
+                    <img
+                      src={
+                      gambar.startsWith("http") || gambar.startsWith("data:")
+                          ? gambar
+                          : `data:image/jpeg;base64,${gambar}`
+                      }
+                      alt={`${key}`}
+                      className="w-full h-full object-cover"
                     />
                 </div>
                 </div>
