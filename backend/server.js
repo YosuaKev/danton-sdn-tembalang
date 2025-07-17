@@ -33,6 +33,10 @@ app.listen(PORT, () => {
   console.log("- POST   /api/profil");
 
   console.log("\nProfil Routes:"); 
-console.log("- GET    /api/footer");
-console.log("- POST   /api/footer");
+  console.log("- GET    /api/footer");
+  console.log("- POST   /api/footer");
+
+  console.log("\nGaleri Routes:"); 
+  console.log("- GET    /api/galeri");
+  console.log("- POST   /api/galeri");
 });

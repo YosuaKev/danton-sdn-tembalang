@@ -4,45 +4,12 @@ const galeriSchema = new mongoose.Schema({
   id_galeri: {
     type: Number,
     unique: true,
-    required: true
   },
-  judul: {
-    type: String,
-    required: true,
-    trim: true,
-    maxlength: 100
-  },
-  deskripsi: {
-    type: String,
-    required: true,
-    trim: true,
-    maxlength: 500
-  },
-  gambar1: {
+  gambar: {
     type: String,
     required: true,
     trim: true
   },
-  gambar2: {
-    type: String,
-    trim: true,
-    default: null
-  },
-  gambar3: {
-    type: String,
-    trim: true,
-    default: null
-  },
-  gambar4: {
-    type: String,
-    trim: true,
-    default: null
-  },
-  gambar5: {
-    type: String,
-    trim: true,
-    default: null
-  }
 }, {
   timestamps: true
 });
@@ -56,4 +23,4 @@ galeriSchema.pre('save', async function(next) {
   next();
 });
 
-export default mongoose.model("Galeri", galeriSchema);  // Changed model name to "Galeri"
+export default mongoose.model("Galeri", galeriSchema);  

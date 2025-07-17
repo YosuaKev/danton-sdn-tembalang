@@ -44,7 +44,7 @@ export async function getAllGaleri(req, res) {
 // Get single gallery entry
 export async function getGaleriById(req, res) {
   try {
-    const galeri = await Galeri.findOne({ id_galeri: req.params.id });
+    const galeri = await Galeri.findOne({ id_galeri: (req.params.id) });
     if (!galeri) {
       return res.status(404).json({
         success: false,
@@ -67,7 +67,7 @@ export async function getGaleriById(req, res) {
 export async function updateGaleri(req, res) {
   try {
     const galeri = await Galeri.findOneAndUpdate(
-      { id_galeri: req.params.id },
+      { id_galeri: (req.params.id) },
       req.body,
       { new: true, runValidators: true }
     );
@@ -93,7 +93,7 @@ export async function updateGaleri(req, res) {
 // Delete gallery entry
 export async function deleteGaleri(req, res) {
   try {
-    const galeri = await Galeri.findOneAndDelete({ id_galeri: req.params.id });
+    const galeri = await Galeri.findOneAndDelete({ id_galeri: (req.params.id) });
     if (!galeri) {
       return res.status(404).json({
         success: false,
@@ -111,3 +111,21 @@ export async function deleteGaleri(req, res) {
     });
   }
 }
+
+export async function appendGaleriImage(req, res) {
+  const { gambar } = req.body;
+
+  if (!gambar) {
+    return res.status(400).json({ success: false, error: "Gambar kosong" });
+  }
+
+  try {
+    const galeri = new Galeri({ gambar });
+
+    await galeri.save();
+    res.status(201).json({ success: true, data: galeri });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
