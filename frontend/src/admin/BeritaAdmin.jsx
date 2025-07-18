@@ -24,12 +24,12 @@ const BeritaAdmin = () => {
   const navigate = useNavigate();
   
   const [beritas, setBeritas] = useState([]);
-  const [, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [uploadMethod, setUploadMethod] = useState("url");
   const [imagePreview, setImagePreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   // const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [selectedBerita, setSelectedBerita] = useState(null); // For showing full article
   const getAuthToken = () => {
@@ -49,33 +49,42 @@ const BeritaAdmin = () => {
 
   // Fetch all 
   const fetchBeritas = async () => {
+    setIsLoading(true);
+    setError(null);
+
     try {
       const token = getAuthToken();
-      if (!token) throw new Error('No authentication token found');
+      if (!token) {
+        throw new Error('Authentication token not found. Please login first.');
+      }
+
       const response = await fetch("http://localhost:5000/api/berita", {
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
 
       if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Failed to fetch news. Status: ${response.status}\n${text}`);
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch news. Status: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
       setBeritas(data);
-      setLoading(false);
     } catch (err) {
       console.error("Fetch error:", err);
-      setError(err.message);
-      setLoading(false);
+      setError(err.message || "An unexpected error occurred while fetching news.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchBeritas();
-  }, );
+  },);
+
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -204,6 +213,17 @@ const BeritaAdmin = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Memuat data berita...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Handle edit
   const handleEdit = (berita) => {
     setEditingId(berita.id_berita);
@@ -264,9 +284,8 @@ const BeritaAdmin = () => {
       {/* Admin Navigation Bar */}
       <Header/>
 
-      <div className="container mx-auto px-4 py-8 bg-blue-600 mt-8">
+      <div className="w-full px-4 py-8 bg-blue-900">
         <h1 className="text-center text-4xl font-bold text-white">Manajemen Berita</h1>
-
       </div>
       <div className="container mx-auto px-4 mt-5 max-w-7xl sm:px-6 lg:px-8">
                 {localStorage.getItem('token') && (
