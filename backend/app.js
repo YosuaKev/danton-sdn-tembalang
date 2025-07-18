@@ -12,7 +12,8 @@ import kontakRoutes from "./routes/kontak.routes.js";
 import galeriRoutes from "./routes/galeri.routes.js";
 import homeRoutes from "./routes/home.routes.js";
 import profilRoutes from "./routes/profil.routes.js";
-import footerRoutes from "./routes/footer.routes.js"; // Add this line
+import footerRoutes from "./routes/footer.routes.js"; 
+import calendarRoutes from "./routes/calendar.routes.js";
 
 dotenv.config();
 
@@ -37,7 +38,8 @@ app.use("/api/berita", beritaRoutes);
 app.use("/api/galeri", galeriRoutes);
 app.use("/api/home", homeRoutes);
 app.use("/api/profil", profilRoutes);
-app.use("/api/footer", footerRoutes); // Add this line
+app.use("/api/footer", footerRoutes); 
+app.use("/api/calendar", calendarRoutes);
 
 app.use(errorHandler);
 

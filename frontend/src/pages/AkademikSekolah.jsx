@@ -186,18 +186,7 @@ const Akademik = () => {
 
   const dayNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
-  const getCategoryColor = (category) => {
-    const colors = {
-      "Upacara": "bg-blue-100 text-blue-800",
-      "Akademik": "bg-green-100 text-green-800",
-      "Ekstrakurikuler": "bg-purple-100 text-purple-800",
-      "Rapat": "bg-orange-100 text-orange-800",
-      "Kompetisi": "bg-red-100 text-red-800",
-      "Olahraga": "bg-yellow-100 text-yellow-800",
-      "Sosial": "bg-pink-100 text-pink-800"
-    };
-    return colors[category] || "bg-gray-100 text-gray-800";
-  };
+  
 
   return (
     <div className="min-h-screen bg-white">
@@ -304,7 +293,7 @@ const Akademik = () => {
                           {events.slice(0, 2).map(event => (
                             <div
                               key={event.id}
-                              className={`text-xs px-2 py-1 rounded mb-1 ${getCategoryColor(event.category)}`}
+                              className={`text-xs px-2 py-1 rounded mb-1 ${(event.category)}`}
                             >
                               {event.title.substring(0, 15)}...
                             </div>
@@ -330,7 +319,7 @@ const Akademik = () => {
                       <div className="flex-1">
                         <div className="flex items-center mb-2">
                           <h4 className="text-lg font-semibold text-gray-900 mr-3">{event.title}</h4>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${(event.category)}`}>
                             {event.category}
                           </span>
                         </div>

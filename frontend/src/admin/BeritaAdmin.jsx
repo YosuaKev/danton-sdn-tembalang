@@ -24,7 +24,7 @@ const BeritaAdmin = () => {
   const navigate = useNavigate();
   
   const [beritas, setBeritas] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);

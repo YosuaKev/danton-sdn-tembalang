@@ -1,27 +1,17 @@
-import { Router } from "express";
-const router = Router();
+import express from 'express';
 import {
+  getAllEvents,
   createEvent,
-  getEvents,
-  getEvent,
   updateEvent,
-  deleteEvent
-} from "../controllers/calendar.controller.js";
-import validateCalendar from "../middlewares/validate.calendar.js";
+  deleteEvent,
+} from '../controllers/calendar.controller.js';
+import validateCalendar from '../middleware/validate.calendar.js';
 
-// Create event
-router.post("/", validateCalendar, createEvent);
+const router = express.Router();
 
-// Get all events
-router.get("/", getEvents);
-
-// Get single event
-router.get("/:id", getEvent);
-
-// Update event
-router.put("/:id", validateCalendar, updateEvent);
-
-// Delete event
-router.delete("/:id", deleteEvent);
+router.get('/', getAllEvents);
+router.post('/', validateCalendar, createEvent);
+router.put('/:id', validateCalendar, updateEvent);
+router.delete('/:id', deleteEvent);
 
 export default router;

@@ -1,21 +1,30 @@
-import { body, validationResult } from "express-validator";
+// validate.calendar.js
+import { body, validationResult } from 'express-validator';
 
 export default [
   body('title')
-    .trim()
-    .notEmpty().withMessage('Title is required')
-    .isLength({ max: 100 }).withMessage('Title cannot exceed 100 characters'),
+    .notEmpty().withMessage('Judul kegiatan wajib diisi')
+    .isString().withMessage('Judul harus berupa teks')
+    .isLength({ max: 100 }).withMessage('Judul maksimal 100 karakter'),
 
   body('description')
     .optional()
-    .trim()
-    .isString().withMessage('Description must be a string'),
+    .isString().withMessage('Deskripsi harus berupa teks'),
 
   body('date')
-    .notEmpty().withMessage('Date is required')
-    .isISO8601().withMessage('Invalid date format')
-    .toDate(),
+    .notEmpty().withMessage('Tanggal wajib diisi')
+    .isISO8601().withMessage('Format tanggal tidak valid (gunakan ISO8601 ex: YYYY-MM-DD)'),
 
+  body('time')
+    .notEmpty().withMessage('Waktu wajib diisi')
+    .matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
+    .withMessage('Format waktu harus HH:MM (24 jam)'),
+
+  body('category')
+    .notEmpty().withMessage('Kategori wajib diisi')
+    .isString().withMessage('Kategori harus berupa teks'),
+
+  // Middleware untuk hasil validasi
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

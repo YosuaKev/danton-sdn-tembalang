@@ -51,7 +51,7 @@ const GaleriAdmin = () => {
 
   useEffect(() => {
     fetchImages();
-  }, []);
+  }, );
 
   // Handle zoom in/out
   const handleZoom = (direction) => {

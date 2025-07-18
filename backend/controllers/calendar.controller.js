@@ -1,67 +1,52 @@
-import Calendar from "../models/calendar.model.js";
+// calendar.controller.js
+import Calendar from '../models/calendar.model.js';
 
-// Create new calendar event
-export async function createEvent(req, res) {
-  try {
-    const event = new Calendar({
-      title: req.body.title,
-      description: req.body.description,
-      date: req.body.date
-    });
-    await event.save();
-    res.status(201).json(event);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-}
-
-// Get all events
-export async function getEvents(req, res) {
+// ✅ GET semua kegiatan
+export const getAllEvents = async (req, res) => {
   try {
     const events = await Calendar.find().sort({ date: 1 });
     res.json(events);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch events" });
+  } catch (error) {
+    res.status(500).json({ error: 'Gagal mengambil data kalender' });
   }
-}
+};
 
-// Get single event
-export async function getEvent(req, res) {
+// ✅ POST - Tambah kegiatan baru
+export const createEvent = async (req, res) => {
   try {
-    const event = await Calendar.findById(req.params.id);
-    if (!event) return res.status(404).json({ error: "Event not found" });
-    res.json(event);
+    const event = new Calendar(req.body);
+    const saved = await event.save();
+    res.status(201).json(saved);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch event" });
+    res.status(500).json({ error: 'Gagal menyimpan kegiatan' });
   }
-}
+};
 
-// Update event
-export async function updateEvent(req, res) {
+// ✅ PUT - Update kegiatan
+export const updateEvent = async (req, res) => {
   try {
-    const event = await Calendar.findByIdAndUpdate(
-      req.params.id,
-      {
-        title: req.body.title,
-        description: req.body.description,
-        date: req.body.date
-      },
-      { new: true }
-    );
-    if (!event) return res.status(404).json({ error: "Event not found" });
-    res.json(event);
+    const updated = await Calendar.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    if (!updated) {
+      return res.status(404).json({ error: 'Kegiatan tidak ditemukan' });
+    }
+    res.json(updated);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: 'Gagal memperbarui kegiatan' });
   }
-}
+};
 
-// Delete event
-export async function deleteEvent(req, res) {
+// ✅ DELETE - Hapus kegiatan
+export const deleteEvent = async (req, res) => {
   try {
-    const event = await Calendar.findByIdAndDelete(req.params.id);
-    if (!event) return res.status(404).json({ error: "Event not found" });
-    res.json({ message: "Event deleted successfully" });
+    const deleted = await Calendar.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Kegiatan tidak ditemukan' });
+    }
+    res.json({ message: 'Kegiatan berhasil dihapus' });
   } catch (err) {
-    res.status(500).json({ error: "Failed to delete event" });
+    res.status(500).json({ error: 'Gagal menghapus kegiatan' });
   }
-}
+};
