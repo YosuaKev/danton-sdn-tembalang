@@ -31,6 +31,7 @@ const ProfilAdmin = () => {
     misi: false,
     tujuan: false,
     strategi: false,
+    map: false
   });
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const ProfilAdmin = () => {
             misi: Array.isArray(data.misi) ? data.misi : [],
             tujuan: Array.isArray(data.tujuan) ? data.tujuan : [],
             strategi: data.strategi || "",
+            map: data.map || ""
           });
         }
       } catch (error) {
@@ -61,6 +63,7 @@ const ProfilAdmin = () => {
     misi: [],
     tujuan: [],
     strategi: "",
+    map: ""
   });
 
   const [tempData, setTempData] = useState({});
@@ -135,9 +138,9 @@ const ProfilAdmin = () => {
       <Header/>
 
       {/* Admin Panel Header */}
-      <div className="bg-blue-900 text-white py-4">
+      <div className="bg-blue-900 text-white py-8">
         <div className="container mx-auto px-4">
-          <h1 className="text-2xl font-bold text-center">
+          <h1 className="text-4xl font-bold text-center">
             Manajemen Profil Sekolah
           </h1>
         </div>
@@ -525,6 +528,74 @@ const ProfilAdmin = () => {
                   "{schoolData.strategi}"
                 </p>
               )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+        {/* Map Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800">
+              Lokasi Sekolah
+            </h2>
+            {!editMode.map ? (
+              <button
+                onClick={() => handleEdit("map")}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+              >
+                <Edit size={16} />
+                Edit
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleSave("map")}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                >
+                  <Save size={16} />
+                  Save
+                </button>
+                <button
+                  onClick={() => handleCancel("map")}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                >
+                  <X size={16} />
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            {editMode.map ? (
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={tempData.map || schoolData.map || ""}
+                  onChange={(e) => setTempData({ ...tempData, map: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Masukkan URL embed Google Maps"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Contoh: https://maps.google.com/maps?width=600&height=400&hl=en&q=SD%20Negeri%20Tembalang...
+                </p>
+              </div>
+            ) : null}
+            
+            <div className="bg-gray-200 rounded-lg overflow-hidden shadow-lg">
+              <iframe
+                src={editMode.map ? (tempData.map || schoolData.map) : (schoolData.map || "https://maps.google.com/maps?width=600&height=400&hl=en&q=SD%20Negeri%20Tembalang&t=&z=14&ie=UTF8&iwloc=B&output=embed")}
+                width="800%"
+                height="600"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-96"
+                title="Lokasi SDN TEMBALANG"
+              ></iframe>
             </div>
           </div>
         </div>

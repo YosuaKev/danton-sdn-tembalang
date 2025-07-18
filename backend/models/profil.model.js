@@ -27,6 +27,10 @@ const profilSchema = new Schema(
     strategi: {
       type: String,
       required: true,
+    },
+    map: {
+      type: String,
+      required: true,
     }
   },
   { timestamps: true }

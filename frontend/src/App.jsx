@@ -16,6 +16,7 @@ import AkademikAdmin from "./admin/AkademikAdmin";
 import DetailBerita from "./admin/detailBerita";
 import ProfilAdmin from "./admin/ProfilAdmin";
 import GaleriAdmin from "./admin/GaleriAdmin";
+import KontakAdmin from "./admin/KontakAdmin";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/akademikadmin" element={<AkademikAdmin/>}/>
         <Route path="/profiladmin" element={<ProfilAdmin/>}/>
         <Route path="/galeri" element={<GaleriAdmin />} />
+        <Route path="/kontakadmin" element={<KontakAdmin />} />
       </Routes>
     </Router>
   )

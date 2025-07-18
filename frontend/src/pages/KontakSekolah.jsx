@@ -239,30 +239,6 @@ const Kontak = () => {
       </div>
     </section>
 
-      {/* Map Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-800">
-            Lokasi Sekolah
-          </h2>
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gray-200 rounded-lg overflow-hidden shadow-lg">
-              <iframe
-                src="https://maps.google.com/maps?width=600&height=400&hl=en&q=SD%20Negeri%20Tembalang&t=&z=14&ie=UTF8&iwloc=B&output=embed"
-                width="800%"
-                height="600"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-96"
-                title="Lokasi SDN TEMBALANG"
-              ></iframe>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-blue-900 text-white py-12">
         <div className="container mx-auto px-4">

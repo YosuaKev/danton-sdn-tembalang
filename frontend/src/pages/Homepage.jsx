@@ -5,7 +5,6 @@ import HeroSection from "../components/HeroSection";
 import FeaturesSection from "../components/FeatureSection";
 import AboutSection from "../components/AboutSection";
 import DepartmentsSection from "../components/DepartmentsSection";
-import TestimonialsSection from "../components/TestimonialsSection";
 import NewsSection from "../components/NewsSection";
 import GallerySection from "../components/GallerySection";
 import AlumniSection from "../components/AlumniSection";
@@ -19,7 +18,6 @@ const App = () => {
       <JumlahSiswa />
       <FeaturesSection />
       <section id="about"><AboutSection /></section>
-      <TestimonialsSection />
       <section id="news"><NewsSection /></section>
       <GallerySection />
       <Footer />
