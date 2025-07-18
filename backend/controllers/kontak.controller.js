@@ -62,3 +62,25 @@ export async function getFeedbackById(req, res) {
     });
   }
 }
+
+// Delete feedback (admin only)
+export async function deleteFeedback(req, res) {
+  try {
+    const feedback = await Feedback.findByIdAndDelete(req.params.id);
+    if (!feedback) {
+      return res.status(404).json({
+        success: false,
+        error: "Feedback tidak ditemukan"
+      });
+    }
+    res.json({
+      success: true,
+      message: "Feedback berhasil dihapus"
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: "Gagal menghapus feedback"
+    });
+  }
+}

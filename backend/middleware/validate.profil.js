@@ -37,6 +37,12 @@ const validateProfil = [
     .isString()
     .withMessage("Strategi must be a string"),
 
+  body("map")
+    .notEmpty()
+    .withMessage("Map is required")
+    .isString()
+    .withMessage("Map must be a string"),
+
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

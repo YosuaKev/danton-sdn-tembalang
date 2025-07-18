@@ -82,8 +82,13 @@ const BeritaAdmin = () => {
   };
 
   useEffect(() => {
+    const delayFetch = async () => {
+    const delay = 10; 
+    await new Promise(resolve => setTimeout(resolve, delay)); 
     fetchBeritas();
-  },);
+  };
+  delayFetch();
+  }, []);
 
 
   // Handle input changes

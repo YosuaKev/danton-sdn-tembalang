@@ -39,4 +39,8 @@ app.listen(PORT, () => {
   console.log("\nGaleri Routes:"); 
   console.log("- GET    /api/galeri");
   console.log("- POST   /api/galeri");
+
+  console.log("\nKontak Routes:"); 
+  console.log("- GET    /api/kontak");
+  console.log("- POST   /api/kontak");
 });

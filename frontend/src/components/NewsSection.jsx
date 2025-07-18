@@ -1,46 +1,75 @@
-import React from "react";
-import { useState } from "react";
-import { Menu, X, User, BookOpen, Users, Trophy, Newspaper, UserCheck, Phone, Mail, MapPin, Facebook, Instagram, Youtube, ChevronRight, GraduationCap, Monitor, Wrench, Calculator, Palette, Camera, Heart, Star } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { ChevronRight } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 const NewsSection = () => {
-  const news = [
-    {
-      title: "Penerimaan Siswa Baru Tahun Ajaran 2024/2025",
-      date: "15 Mei 2024",
-      image: "news1",
-      snippet: "SMK Negeri Makassar membuka pendaftaran siswa baru untuk tahun ajaran 2024/2025..."
-    },
-    {
-      title: "Prestasi Gemilang dalam Lomba Kompetensi Siswa",
-      date: "10 Mei 2024",
-      image: "news2",
-      snippet: "Siswa SMK Negeri Makassar meraih juara pertama dalam kompetisi tingkat provinsi..."
-    },
-    {
-      title: "Kerjasama dengan Industri Terkemuka",
-      date: "5 Mei 2024",
-      image: "news3",
-      snippet: "Penandatanganan MOU dengan beberapa perusahaan untuk program magang siswa..."
-    },
-    {
-      title: "Workshop Teknologi Terbaru",
-      date: "1 Mei 2024",
-      image: "news4",
-      snippet: "Menghadirkan teknologi AI dan IoT dalam pembelajaran untuk siswa..."
-    },
-    {
-      title: "Kegiatan Ekstrakurikuler Semester Genap",
-      date: "25 April 2024",
-      image: "news5",
-      snippet: "Berbagai kegiatan ekstrakurikuler untuk mengembangkan bakat siswa..."
-    },
-    {
-      title: "Pelatihan Guru Berkelanjutan",
-      date: "20 April 2024",
-      image: "news6",
-      snippet: "Program peningkatan kompetensi guru untuk memberikan pendidikan terbaik..."
-    }
-  ];
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/berita");
+        if (!response.ok) {
+          throw new Error('Failed to fetch news');
+        }
+        const data = await response.json();
+        setNews(data);
+      } catch (err) {
+        console.error("Error fetching news:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Berita Terbaru Di SD Negeri Tembalang
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className="bg-gray-200 h-48 animate-pulse"></div>
+                <div className="p-6 space-y-3">
+                  <div className="h-6 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-16 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Berita Terbaru Di SD Negeri Tembalang
+            </h2>
+          </div>
+          <div className="text-center py-12">
+            <p className="text-red-500">Error loading news: {error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 bg-white">
@@ -50,23 +79,51 @@ const NewsSection = () => {
             Berita Terbaru Di SD Negeri Tembalang
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {news.map((item, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="bg-gray-300 h-48 flex items-center justify-center">
-                <span className="text-gray-600">News Image {index + 1}</span>
+        {news.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {news.map((item) => (
+              <div 
+                key={item.id_berita} 
+                className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+                onClick={() => navigate(`/berita/${item.id_berita}`)}
+              >
+                {item.gambar_utama && (
+                  <div className="h-48 overflow-hidden">
+                    <img
+                      src={item.gambar_utama.startsWith('http') 
+                        ? item.gambar_utama 
+                        : `data:image/jpeg;base64,${item.gambar_utama}`}
+                      alt={item.judul}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                    {item.judul}
+                  </h3>
+                  <p className="text-blue-600 text-sm mb-3">
+                    {new Date(item.tanggal_publikasi).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                    {item.isi}
+                  </p>
+                  <div className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                    Baca Selengkapnya <ChevronRight className="w-4 h-4 ml-1" />
+                  </div>
+                </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{item.title}</h3>
-                <p className="text-blue-600 text-sm mb-3">{item.date}</p>
-                <p className="text-gray-600 text-sm mb-4">{item.snippet}</p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
-                  Baca Selengkapnya <ChevronRight className="w-4 h-4 ml-1" />
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-500">Tidak ada berita yang tersedia saat ini.</p>
+          </div>
+        )}
       </div>
     </section>
   );
