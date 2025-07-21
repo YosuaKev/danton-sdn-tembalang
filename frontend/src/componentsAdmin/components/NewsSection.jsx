@@ -12,6 +12,28 @@ const NewsSection = () => {
     return localStorage.getItem('token'); 
   };
 
+  const [header, setHeader] = useState("");
+  
+    useEffect(() => {
+          const fetchData = async () => {
+            try {
+              const response = await fetch('http://localhost:5000/api/home');
+              if (response.ok) {
+    
+                const data = await response.json();
+                setHeader({nama: data.judul || ""});
+              }
+      
+            } catch (error) {
+              console.error('Error:', error);
+              // Fallback to default values if API fails
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchData();
+        }, []);
+
   // Fetch all news
   useEffect(() => {
   const fetchNews = async () => {
@@ -47,7 +69,7 @@ const NewsSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-            Berita Terbaru Di SD Negeri Tembalang
+            Berita Terbaru Di {header.nama}
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

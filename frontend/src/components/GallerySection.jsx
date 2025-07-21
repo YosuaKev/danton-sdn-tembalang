@@ -10,6 +10,7 @@ const GallerySection = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const imageRef = useRef(null);
+  const [header, setHeader] = useState("");
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -27,6 +28,26 @@ const GallerySection = () => {
 
     fetchImages();
   }, []);
+
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/home');
+          if (response.ok) {
+
+            const data = await response.json();
+            setHeader({nama: data.judul || ""});
+          }
+  
+        } catch (error) {
+          console.error('Error:', error);
+          // Fallback to default values if API fails
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }, []);
 
  const handleZoom = (direction, e) => {
     e.stopPropagation(); // Prevent event bubbling
@@ -80,9 +101,9 @@ const GallerySection = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Foto Dokumentasi Kegiatan
-            </h2>
+            <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <p>&copy; Foto Dokumentasi Kegiatan {header.nama}</p>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -100,7 +121,7 @@ const GallerySection = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Foto Dokumentasi Kegiatan
+              Foto Dokumentasi Kegiatan {header.nama}
             </h2>
           </div>
           

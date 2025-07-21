@@ -7,6 +7,7 @@ const NewsSection = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [header, setHeader] = useState({});
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -27,6 +28,26 @@ const NewsSection = () => {
 
     fetchNews();
   }, []);
+
+  useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://localhost:5000/api/home');
+            if (response.ok) {
+  
+              const data = await response.json();
+              setHeader({nama: data.judul || ""});
+            }
+    
+          } catch (error) {
+            console.error('Error:', error);
+            // Fallback to default values if API fails
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchData();
+      }, []);
 
   if (loading) {
     return (
@@ -60,7 +81,7 @@ const NewsSection = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Berita Terbaru Di SD Negeri Tembalang
+              Berita Terbaru Di {header.nama}
             </h2>
           </div>
           <div className="text-center py-12">
@@ -76,7 +97,7 @@ const NewsSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Berita Terbaru Di SD Negeri Tembalang
+            Berita Terbaru Di {header.nama}
           </h2>
         </div>
         {news.length > 0 ? (

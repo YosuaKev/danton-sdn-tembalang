@@ -1,33 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Instagram, Facebook, Youtube } from "lucide-react";
 
 const Footer = () => {
   const navigate = useNavigate();
-  const [footerData, setFooterData] = useState("");
-   useEffect(() => {
-    const fetchFooterData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/footer');
-        if (response.ok) {
-          const data = await response.json();
-          setFooterData({
-            logo: data.logo || "",
-            nama_sekolah: data.nama_sekolah || "",
-            alamat: data.alamat || "",
-            no_telepon: data.no_telepon || "",
-            email: data.email || "",
-            facebook: data.facebook || "",
-            youtube: data.youtube || "",
-            instagram: data.instagram || ""
-          });
+    const [footerData, setFooterData] = useState("");
+    useEffect(() => {
+      const fetchFooterData = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/footer');
+          if (response.ok) {
+            const data = await response.json();
+            setFooterData({
+              logo: data.logo || "",
+              nama_sekolah: data.nama_sekolah || "",
+              alamat: data.alamat || "",
+              no_telepon: data.no_telepon || "",
+              email: data.email || "",
+              facebook: data.facebook || "",
+              youtube: data.youtube || "",
+              instagram: data.instagram || ""
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching footer data:', error);
         }
-      } catch (error) {
-        console.error('Error fetching footer data:', error);
-      }
-    };
-    
-    fetchFooterData();
-  }, []);
+      };
+      
+      fetchFooterData();
+    }, []);
    
     const handleKontak = (e) => {
     e.preventDefault();
@@ -88,7 +89,7 @@ const Footer = () => {
             <div className="space-y-3">
               {footerData.facebook && (
                 <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
+                  <div className="w-6 h-6  mr-3"><Facebook /></div>
                   <a href={footerData.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-white transition-colors duration-200">
                     Facebook
                   </a>
@@ -96,7 +97,7 @@ const Footer = () => {
               )}
               {footerData.youtube && (
                 <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
+                  <div className="w-6 h-6 mr-3"><Youtube /></div>
                   <a href={footerData.youtube} target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-white transition-colors duration-200">
                     YouTube
                   </a>
@@ -104,7 +105,7 @@ const Footer = () => {
               )}
               {footerData.instagram && (
                 <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
+                  <div className="w-6 h-6 mr-3"><Instagram /></div>
                   <a href={footerData.instagram} target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-white transition-colors duration-200">
                     Instagram
                   </a>
