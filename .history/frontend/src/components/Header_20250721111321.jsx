@@ -31,8 +31,8 @@ const Header = () => {
       case 'Kontak':
         navigate('/kontak');
         break;
-      case 'Kalender':
-        navigate('/kalender');
+      case 'Kalendar':
+        navigate('/kalendar');
         break;
       default:
         navigate('/');
@@ -99,7 +99,7 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Kalender', 'Kontak'].map((item) => (
+            {['Beranda', 'Profil', 'Guru', 'Prestasi', 'Berita', 'Akademik', 'Kontak'].map((item) => (
               <button
                 key={item}
                 onClick={(e) => handleNavigation(e, item)}
@@ -131,7 +131,7 @@ const Header = () => {
                 {label: 'Guru', href: '/guru'}, 
                 {label: 'Prestasi', href: 'https://sangjuara.semarangkota.go.id/'}, 
                 {label: 'Berita', href: '/berita'}, 
-                {label: 'Kalender', href: '/kalender'},
+                {label: 'Akademik', href: '/akademik'},
                 {label: 'Kontak', href: '/kontak'}, 
               ].map((item) => (
                 <a 
