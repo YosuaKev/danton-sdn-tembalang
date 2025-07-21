@@ -142,7 +142,7 @@ const ActivityList = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 sticky top-24">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-blue-900">Kegiatan Non-Akademik</h3>
+              <h3 className="text-xl font-bold text-blue-900">Kegiatan Mendatang</h3>
               <button 
                 onClick={() => setIsAddModalOpen(true)}
                 className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition"

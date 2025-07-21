@@ -34,7 +34,7 @@ function App() {
         <Route path="/homeadmin" element={<HomeAdmin/>}/>
         <Route path="/siswaadmin" element={<SiswaAdmin/>}/>
         <Route path="/guruadmin" element={<GuruAdmin/>}/>
-        <Route path="/kalenderadmin" element={<KalenderAdmin/>}/>
+        <Route path="/kalenderadmin" element={<KalendarAdmin/>}/>
         <Route path="/profiladmin" element={<ProfilAdmin/>}/>
         <Route path="/galeri" element={<GaleriAdmin />} />
         <Route path="/kontakadmin" element={<KontakAdmin />} />

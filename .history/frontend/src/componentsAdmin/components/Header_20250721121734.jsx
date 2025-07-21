@@ -28,7 +28,7 @@ const Header = () => {
     } else if (item === "Prestasi") {
       window.open('https://sangjuara.semarangkota.go.id/', '_blank');
     } else if (item === "Guru") navigate("/guruadmin");
-    else if (item === "Kalender") navigate("/kalenderadmin");
+    else if (item === "Kalendar") navigate("/kalendaradmin");
     else if (item === "Siswa") navigate("/siswaadmin");
     else if (item === "Kontak") navigate("/kontakadmin");
     else {
@@ -231,8 +231,8 @@ const Header = () => {
               "Siswa",
               "Prestasi",
               "Berita",
-              "Kalender",
-              "Kontak",
+              "Kalendar",
+              "Kalendar",
             ].map((item) => (
               <button
                 key={item}
@@ -267,7 +267,6 @@ const Header = () => {
                 "Prestasi",
                 "Berita",
                 "Akademik",
-                "Kontak",
               ].map((item) => (
                 <button
                   key={item}

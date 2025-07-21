@@ -12,7 +12,7 @@ import BeritaAdmin from "./admin/BeritaAdmin";
 import HomeAdmin from "./admin/HomepageAdmin";
 import SiswaAdmin from "./admin/siswaAdmin";
 import GuruAdmin from "./admin/GuruAdmin";
-import KalenderAdmin from "./admin/KalenderAdmin";
+import KalendarAdmin from "./admin/KalendarAdmin";
 import DetailBerita from "./admin/detailBerita";
 import ProfilAdmin from "./admin/ProfilAdmin";
 import GaleriAdmin from "./admin/GaleriAdmin";
@@ -34,7 +34,7 @@ function App() {
         <Route path="/homeadmin" element={<HomeAdmin/>}/>
         <Route path="/siswaadmin" element={<SiswaAdmin/>}/>
         <Route path="/guruadmin" element={<GuruAdmin/>}/>
-        <Route path="/kalenderadmin" element={<KalenderAdmin/>}/>
+        <Route path="/kalendaradmin" element={<KalendarAdmin/>}/>
         <Route path="/profiladmin" element={<ProfilAdmin/>}/>
         <Route path="/galeri" element={<GaleriAdmin />} />
         <Route path="/kontakadmin" element={<KontakAdmin />} />

@@ -231,7 +231,7 @@ const Header = () => {
               "Siswa",
               "Prestasi",
               "Berita",
-              "Kalender",
+              "Kalendar",
               "Kontak",
             ].map((item) => (
               <button

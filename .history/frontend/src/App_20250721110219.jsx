@@ -6,13 +6,13 @@ import BeritaPage from"./pages/BeritaSekolah";
 import PrestasiPage from "./pages/PrestasiSekolah";
 import DataGuruPage from "./pages/GuruSekolah";
 import KontakPage from "./pages/KontakSekolah";
-import KalenderPage from "./pages/KalenderSekolah";
+import AkademikPage from "./pages/AkademikSekolah";
 import LoginPage from "./admin/LoginPage";
 import BeritaAdmin from "./admin/BeritaAdmin";
 import HomeAdmin from "./admin/HomepageAdmin";
 import SiswaAdmin from "./admin/siswaAdmin";
 import GuruAdmin from "./admin/GuruAdmin";
-import KalenderAdmin from "./admin/KalenderAdmin";
+import Kale from "./admin/AkademikAdmin";
 import DetailBerita from "./admin/detailBerita";
 import ProfilAdmin from "./admin/ProfilAdmin";
 import GaleriAdmin from "./admin/GaleriAdmin";
@@ -27,14 +27,14 @@ function App() {
         <Route path="/berita" element={<BeritaPage/>}/>
         <Route path="/guru" element={<DataGuruPage/>}/> 
         <Route path="/kontak" element={<KontakPage/>}/>
-        <Route path="/kalender" element={<KalenderPage/>}/>
+        <Route path="/akademik" element={<AkademikPage/>}/>
         <Route path="/admin" element={<LoginPage/>}/>
         <Route path="/beritaadmin" element={<BeritaAdmin/>}/>
         <Route path="/berita/:id" element={<DetailBerita/>}/>
         <Route path="/homeadmin" element={<HomeAdmin/>}/>
         <Route path="/siswaadmin" element={<SiswaAdmin/>}/>
         <Route path="/guruadmin" element={<GuruAdmin/>}/>
-        <Route path="/kalenderadmin" element={<KalenderAdmin/>}/>
+        <Route path="/akademikadmin" element={<AkademikAdmin/>}/>
         <Route path="/profiladmin" element={<ProfilAdmin/>}/>
         <Route path="/galeri" element={<GaleriAdmin />} />
         <Route path="/kontakadmin" element={<KontakAdmin />} />

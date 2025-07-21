@@ -31,7 +31,7 @@ const Header = () => {
       case 'Kontak':
         navigate('/kontak');
         break;
-      case 'Kalender':
+      case 'Kalendar':
         navigate('/kalender');
         break;
       default:
@@ -131,7 +131,7 @@ const Header = () => {
                 {label: 'Guru', href: '/guru'}, 
                 {label: 'Prestasi', href: 'https://sangjuara.semarangkota.go.id/'}, 
                 {label: 'Berita', href: '/berita'}, 
-                {label: 'Kalender', href: '/kalender'},
+                {label: 'Kalender', href: '/kalendar'},
                 {label: 'Kontak', href: '/kontak'}, 
               ].map((item) => (
                 <a 

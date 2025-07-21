@@ -16,8 +16,8 @@ import {
   Save,
 } from "lucide-react";
 import Header from "../componentsAdmin/components/Header";
-import Footer from "../componentsAdmin/components/Footer";
-import ActivityList from "../componentsAdmin/components/Activity";
+import Footer from "../components/Footer";
+import ActivityList from "../components/Activity";
 
 const AkademikAdmin = () => {
   const navigate = useNavigate();
@@ -279,10 +279,10 @@ const AkademikAdmin = () => {
         {/* Page Title */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-blue-900 mb-4">
-            Kalender Akademik - Admin
+            Kalender Kegiatan Sekolah - Admin
           </h1>
           <p className="text-gray-600 text-lg">
-            Kelola jadwal kegiatan dan acara sekolah SDN Tembalang
+            Kelola jadwal kegiatan dan acara sekolah
           </p>
         </div>
 
@@ -395,7 +395,7 @@ const AkademikAdmin = () => {
             {/* Events List */}
             <div className="mt-8">
               <h3 className="text-2xl font-bold text-blue-900 mb-6">
-                Daftar Kegiatan
+                Daftar Kegiatan Akademik
               </h3>
               {filteredEvents.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
