@@ -109,15 +109,15 @@ const Footer = () => {
           <form onSubmit={handleSubmit} className="space-y-2">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="font-bold text-lg block mb-2">School Name</label>
-                <input
-                  type="text"
-                  name="nama_sekolah"
-                  value={tempData.nama_sekolah || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                />
-              </div>
+  <label className="font-bold text-base block mb-1">School Name</label>
+  <input
+    type="text"
+    name="nama_sekolah"
+    value={tempData.nama_sekolah || ''}
+    onChange={handleChange}
+    className="w-full py-1 px-2 border-b border-white bg-transparent text-white focus:outline-none"
+  />
+</div>
               
               <div>
                 <label className="block mb-2">Logo URL</label>

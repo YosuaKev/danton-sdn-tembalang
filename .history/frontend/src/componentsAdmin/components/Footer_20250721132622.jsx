@@ -106,7 +106,7 @@ const Footer = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-6">Edit Footer</h2>
           
-          <form onSubmit={handleSubmit} className="space-y-2">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="font-bold text-lg block mb-2">School Name</label>
@@ -266,7 +266,7 @@ const Footer = () => {
                   <img src={footerData.logo} alt="School Logo" className="w-full h-full object-contain" />
                 </div>
               )}
-              <span className="font-semibold text-lg">{footerData.nama_sekolah}</span>
+              <span className="font-semibold text-[30px]">{footerData.nama_sekolah}</span>
             </div>
             <div className="space-y-2 text-blue-200">
               <p>{footerData.alamat}</p>

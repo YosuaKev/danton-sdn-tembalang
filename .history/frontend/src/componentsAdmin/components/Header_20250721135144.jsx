@@ -251,8 +251,8 @@ const Header = () => {
             ))}
             {/* Logout button */}
             <button
-              onClick={() => navigate("/logoutadmin")}
-              className="text-white border border-red-600 px-4 py-1 rounded bg-red-600"
+              onClick={handleLogout}
+              className="text-white border border-red-600 px-4 py-1 rounded bg-red-60"
             >
               Logout
             </button>

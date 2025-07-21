@@ -17,7 +17,7 @@ import DetailBerita from "./admin/detailBerita";
 import ProfilAdmin from "./admin/ProfilAdmin";
 import GaleriAdmin from "./admin/GaleriAdmin";
 import KontakAdmin from "./admin/KontakAdmin";
-import LogoutAdmin from "./admin/LogoutAdmin";
+import KontakAdmin from "./admin/KontakAdmin";
 
 function App() {
   return (
@@ -39,7 +39,6 @@ function App() {
         <Route path="/profiladmin" element={<ProfilAdmin/>}/>
         <Route path="/galeri" element={<GaleriAdmin />} />
         <Route path="/kontakadmin" element={<KontakAdmin />} />
-        <Route path="/logoutadmin" element={<LogoutAdmin />} />
       </Routes>
     </Router>
   )

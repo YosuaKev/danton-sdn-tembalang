@@ -39,7 +39,7 @@ function App() {
         <Route path="/profiladmin" element={<ProfilAdmin/>}/>
         <Route path="/galeri" element={<GaleriAdmin />} />
         <Route path="/kontakadmin" element={<KontakAdmin />} />
-        <Route path="/logoutadmin" element={<LogoutAdmin />} />
+        <Route path="/logoutadmin" element={<KontakAdmin />} />
       </Routes>
     </Router>
   )

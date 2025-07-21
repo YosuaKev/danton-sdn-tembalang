@@ -106,10 +106,10 @@ const Footer = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-6">Edit Footer</h2>
           
-          <form onSubmit={handleSubmit} className="space-y-2">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="font-bold text-lg block mb-2">School Name</label>
+                <label className="block mb-2">School Name</label>
                 <input
                   type="text"
                   name="nama_sekolah"
@@ -126,7 +126,7 @@ const Footer = () => {
                   name="logo"
                   value={tempData.logo || ''}
                   onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
+                  className="w-full p-2 rounded text-gray-800"
                   placeholder="https://example.com/logo.png"
                 />
                 {tempData.logo && (
@@ -143,7 +143,7 @@ const Footer = () => {
                   name="alamat"
                   value={tempData.alamat || ''}
                   onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
+                  className="w-full p-2 rounded text-gray-800"
                 />
               </div>
               
@@ -154,7 +154,7 @@ const Footer = () => {
                   name="no_telepon"
                   value={tempData.no_telepon || ''}
                   onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
+                  className="w-full p-2 rounded text-gray-800"
                 />
               </div>
               
@@ -165,7 +165,7 @@ const Footer = () => {
                   name="email"
                   value={tempData.email || ''}
                   onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
+                  className="w-full p-2 rounded text-gray-800"
                 />
               </div>
               
@@ -176,7 +176,7 @@ const Footer = () => {
                   name="facebook"
                   value={tempData.facebook || ''}
                   onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
+                  className="w-full p-2 rounded text-gray-800"
                   placeholder="https://facebook.com/yourpage"
                 />
               </div>
@@ -188,7 +188,7 @@ const Footer = () => {
                   name="instagram"
                   value={tempData.instagram || ''}
                   onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
+                  className="w-full p-2 rounded text-gray-800"
                   placeholder="https://instagram.com/yourpage"
                 />
               </div>
@@ -200,7 +200,7 @@ const Footer = () => {
                   name="youtube"
                   value={tempData.youtube || ''}
                   onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
+                  className="w-full p-2 rounded text-gray-800"
                   placeholder="https://youtube.com/yourchannel"
                 />
               </div>
