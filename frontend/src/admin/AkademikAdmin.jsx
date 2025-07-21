@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Header from "../componentsAdmin/components/Header";
 import Footer from "../componentsAdmin/components/Footer";
+import ActivityList from "../componentsAdmin/components/Activity";
 
 const AkademikAdmin = () => {
   const navigate = useNavigate();
@@ -472,6 +473,7 @@ const AkademikAdmin = () => {
           </div>
 
           {/* Right Sidebar - Upcoming Activities */}
+          <ActivityList />
         </div>
       </div>
 
