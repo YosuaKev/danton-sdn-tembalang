@@ -106,10 +106,10 @@ const Footer = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-6">Edit Footer</h2>
           
-          <form onSubmit={handleSubmit} className="space-y-2">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="font-bold text-lg block mb-2">School Name</label>
+                <label className="block mb-2">School Name</label>
                 <input
                   type="text"
                   name="nama_sekolah"

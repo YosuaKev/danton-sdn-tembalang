@@ -115,7 +115,7 @@ const Footer = () => {
                   name="nama_sekolah"
                   value={tempData.nama_sekolah || ''}
                   onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
+                  className="w-full p-1 rounded text-white"
                 />
               </div>
               

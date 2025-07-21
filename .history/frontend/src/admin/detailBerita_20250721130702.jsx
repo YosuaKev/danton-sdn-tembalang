@@ -56,6 +56,10 @@ useEffect(() => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
+              <div className="flex-shrink-0 flex items-center">
+                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
+                <span className="font-bold text-xl text-gray-900">SDN NGAWI</span>
+              </div>
             </div>
             <button
               onClick={() => navigate(-1)}

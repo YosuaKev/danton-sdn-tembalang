@@ -268,6 +268,7 @@ const GaleriAdmin = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
+              <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
             </div>
             
             <div className="flex items-center space-x-4">

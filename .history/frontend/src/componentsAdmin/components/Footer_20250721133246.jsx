@@ -251,7 +251,7 @@ const Footer = () => {
       {localStorage.getItem("token") && (
       <button
           onClick={handleEditClick}
-          className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+          className="absolute top-4 right-4 bg-red-600 text-green-300 px-3 py-1 rounded text-sm hover:bg-blue-700"
         >
           Edit Footer
         </button>

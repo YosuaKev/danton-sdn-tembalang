@@ -16,13 +16,7 @@ const Header = () => {
   const [tempLogo, setTempLogo] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const handleLogout = () => {
-    if (window.confirm("Apakah Anda yakin ingin logout?")) {
-      localStorage.removeItem("token");
-      navigate("/admin");
-    }
-  };
-
+  
   // Navigation handler
   const handleNavigation = (e, item) => {
     e.preventDefault();
@@ -249,13 +243,6 @@ const Header = () => {
                 {item}
               </button>
             ))}
-            {/* Logout button */}
-            <button
-              onClick={() => navigate("/logoutadmin")}
-              className="text-white border border-red-600 px-4 py-1 rounded bg-red-600"
-            >
-              Logout
-            </button>
           </nav>
 
           {/* Mobile menu button */}
@@ -282,7 +269,6 @@ const Header = () => {
                 "Berita",
                 "Akademik",
                 "Kontak",
-                "Logout"
               ].map((item) => (
                 <button
                   key={item}
@@ -295,18 +281,9 @@ const Header = () => {
                   {item}
                 </button>
               ))}
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsMenuOpen(false);
-                }}
-                className="block w-full text-left px-3 py-2 text-red-600 hover:text-red-800"
-              >
-                Logout
-              </button>
             </div>
           </div>
-        )}     
+        )}
       </div>
     </header>
   );

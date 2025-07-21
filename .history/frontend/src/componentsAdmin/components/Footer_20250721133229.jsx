@@ -247,7 +247,7 @@ const Footer = () => {
   }
 
   const renderFooterContent = () =>  (
-    <footer className="bg-blue-900 text-white py-12 relative ">
+    <footer className="bg-blue-900 text-green-300 py-12 relative ">
       {localStorage.getItem("token") && (
       <button
           onClick={handleEditClick}
