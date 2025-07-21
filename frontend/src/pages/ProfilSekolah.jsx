@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
 import { X, Menu } from 'lucide-react';
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const ProfilSekolah = () => {
-  const navigate = useNavigate();
   const [schoolData, setSchoolData] = useState({
     deskripsi: "",
     gambar: "",
@@ -14,32 +14,6 @@ const ProfilSekolah = () => {
     map: ""
   });
   const [loading, setLoading] = useState(true);
-
-  // Navigation handlers
-  const handleHome = (e) => {
-    e.preventDefault();
-    navigate('/');
-  }
-  const handleKontak = (e) => {
-    e.preventDefault();
-    navigate('/kontak');
-  }
-  const handleGuru = (e) => {
-    e.preventDefault();
-    navigate('/guru');
-  }
-  const handlePrestasi = (e) => {
-    e.preventDefault();
-    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
-  }
-  const handleBerita = (e) => {
-    e.preventDefault();
-    navigate('/berita');
-  }
-  const handleAkademik = (e) => {
-    e.preventDefault();
-    navigate('/akademik');
-  }
 
   // Fetch school profile data
   useEffect(() => {
@@ -81,38 +55,10 @@ const ProfilSekolah = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header Navigation */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-              <span className="font-semibold text-lg">SDN TEMBALANG</span>
-            </div>
-            
-            {/* Navigation Links */}
-            <nav className="hidden md:flex space-x-6">
-              <button onClick={handleHome} className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
-              <button className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Profil</button>
-              <button onClick={handleGuru} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
-              <button onClick={handleBerita} className="hover:text-blue-200 transition-colors duration-200">Berita</button>
-              <button onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <button onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
-              <button onClick={handleKontak} className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
-            </nav>
-            
-            {/* Mobile Menu Button */}
-            <button className="md:hidden">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+     <Header/>
 
-      <section className="py-12 bg-white">
-      <div className="container mx-auto px-4 max-w-6xl">
+      <section className="py-18 bg-white">
+      <div className="container mx-auto px-4 max-w-6xl bg-white p-8 rounded-lg shadow-md border border-gray-200">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           {/* Gambar Sekolah */}
           <div>
@@ -124,7 +70,7 @@ const ProfilSekolah = () => {
           </div>
 
           {/* Deskripsi Sekolah */}
-          <div className="flex flex-col space-y-4">
+          <div className="flex flex-col space-y-4 ">
             <h2 className="text-3xl font-bold text-blue-900">Profil</h2>
             <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-line">
               {schoolData.deskripsi}
@@ -235,71 +181,7 @@ const ProfilSekolah = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-blue-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            {/* Logo and Contact Info */}
-            <div className="md:col-span-1">
-              <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-semibold text-lg">SDN TEMBALANG</span>
-              </div>
-              <div className="space-y-2 text-blue-200">
-                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p>
-                <p>Jawa Tengah 43351, Indonesia</p>
-                <p>(024)6708666</p>
-                <p>sdn_tembalang@example.com</p>
-              </div>
-            </div>
-            
-            {/* Jelajah */}
-            <div>
-              <h3 className="text-xl font-bold mb-6">Jelajah</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li><button className="hover:text-white transition-colors duration-200">Sambutan</button></li>
-                <li><button className="hover:text-white transition-colors duration-200">Profil Sekolah</button></li>
-                <li><button onClick={handleBerita} className="hover:text-white transition-colors duration-200">Berita</button></li>
-                <li><button className="hover:text-white transition-colors duration-200">Galeri</button></li>
-              </ul>
-            </div>
-            
-            {/* Halaman Umum */}
-            <div>
-              <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li><button onClick={handleGuru} className="hover:text-white transition-colors duration-200">Data Guru</button></li>
-                <li><a href="https://spmb.semarangkota.go.id/sd" className="hover:text-white transition-colors duration-200">SPMB SDN</a></li>
-                <li><a href="https://spmb.semarangkota.go.id/assets/content_upload/panduan/Panduan%20Pendaftaran%20SD%202025.pdf" className="hover:text-white transition-colors duration-200">Panduan SPMB</a></li>
-                <li><a href="https://maps.app.goo.gl/ZoFMEgttrNr5Ak6g6" className="hover:text-white transition-colors duration-200">Lokasi</a></li>
-                <li><button onClick={handleKontak} className="hover:text-white transition-colors duration-200">Kontak</button></li>
-              </ul>
-            </div>
-            
-            {/* Media Sosial */}
-            <div>
-              <h3 className="text-xl font-bold mb-6">Media Sosial</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Facebook</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Twitter</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Instagram</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
-            <p>&copy; 2024 SDN TEMBALANG. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+     <Footer/>
     </div>
   );
 };

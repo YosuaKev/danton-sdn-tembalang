@@ -1,356 +1,187 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-
-const Berita = () => {
+const BeritaSekolah = () => {
     const navigate = useNavigate();
-    const handleHome = (e) => {
-    e.preventDefault();
-    navigate('/')
-    }
-    const handleProfil = (e) => {
-    e.preventDefault();
-    navigate('/profil')
-    }
-    const handleKontak = (e) => {
-    e.preventDefault();
-    navigate('/kontak');
-    }
-    const handleGuru = (e) => {
-    e.preventDefault();
-    navigate('/guru')
-    }
-    const handlePrestasi = (e) => {
-    e.preventDefault();
-    window.open('https://sangjuara.semarangkota.go.id/', '_blank');
-    }
-    const handleAkademik = (e) => {
-    e.preventDefault();
-    navigate('/akademik')
-    }
+    const [beritas, setBeritas] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-  return (
-    <div className="min-h-screen bg-white">
-      {/* Header Navigation */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-              <span className="font-semibold text-lg">SDN NGAWI</span>
-            </div>
-            
-            {/* Navigation Links */}
-            <nav className="hidden md:flex space-x-6">
-              <button href="#" onClick={handleHome} className="hover:text-blue-200 transition-colors duration-200">Beranda</button>
-              <button href="#" onClick={handleProfil} className="hover:text-blue-200 transition-colors duration-200">Profil</button>
-              <button href="#" onClick={handleGuru} className="hover:text-blue-200 transition-colors duration-200">Guru</button>
-              <a href="#" className="hover:text-blue-200 transition-colors duration-200 border-b-2 border-blue-400">Berita</a>
-              <button href="#" onClick={handlePrestasi} className="hover:text-blue-200 transition-colors duration-200">Prestasi</button>
-              <button href="#" onClick={handleAkademik} className="hover:text-blue-200 transition-colors duration-200">Akademik</button>
-              <button href="#" onClick={handleKontak}className="hover:text-blue-200 transition-colors duration-200">Kontak</button>
-            </nav>
-            
-            {/* Mobile Menu Button */}
-            <button className="md:hidden">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+    // Fetch all news
+    const fetchBeritas = async () => {
+        setIsLoading(true);
+        setError(null);
 
-      {/* Hero Banner */}
-      <section className="relative bg-gray-800 py-24">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900 to-blue-800 opacity-90"></div>
-        <div className="absolute inset-0 bg-[url('https://picsum.photos/1920/600?random=1')] bg-cover bg-center opacity-20"></div>
-        <div className="relative container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white">
-            Berita
-          </h1>
-        </div>
-      </section>
+        try {
+            const response = await fetch("http://localhost:5000/api/berita", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
-        
-        {/* Berita Baru Section */}
-        <section className="mb-16">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800">Berita Baru</h2>
-            <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
-              Lihat semua
-            </a>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Article Card 1 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-              <img 
-                src="https://picsum.photos/400/250?random=2" 
-                alt="Kegiatan Belajar Mengajar" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  Kegiatan Belajar Mengajar di Rumah 2020
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                  Read More...
-                </a>
-              </div>
-            </div>
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to fetch news. Status: ${response.status} - ${errorText}`);
+            }
 
-            {/* Article Card 2 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-              <img 
-                src="https://picsum.photos/400/250?random=3" 
-                alt="Kegiatan Belajar Mengajar" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  Kegiatan Belajar Mengajar di Rumah 2020
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                  Read More...
-                </a>
-              </div>
-            </div>
+            const data = await response.json();
+            setBeritas(data);
+        } catch (err) {
+            console.error("Fetch error:", err);
+            setError(err.message || "An unexpected error occurred while fetching news.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-            {/* Article Card 3 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-              <img 
-                src="https://picsum.photos/400/250?random=4" 
-                alt="Kegiatan Belajar Mengajar" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  Kegiatan Belajar Mengajar di Rumah 2020
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                  Read More...
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+    useEffect(() => {
+        fetchBeritas();
+    }, []);
 
-        {/* Featured Article Section */}
-        <section className="mb-16">
-          <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-            <div className="grid md:grid-cols-2 gap-0">
-              <div className="relative">
-                <img 
-                  src="https://picsum.photos/600/400?random=5" 
-                  alt="Kegiatan Belajar Mengajar dirumah" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-8 flex flex-col justify-center">
-                <h3 className="text-3xl font-bold text-gray-800 mb-6">
-                  Kegiatan Belajar Mengajar dirumah
-                </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                </p>
-                <a href="#" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 inline-block w-fit">
-                  Read More
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* More Article Cards Section */}
-        <section className="mb-16">
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Article Card 4 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-              <img 
-                src="https://picsum.photos/400/250?random=6" 
-                alt="Kegiatan Belajar Mengajar" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  Kegiatan Belajar Mengajar di Rumah 2020
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                  Read More...
-                </a>
-              </div>
-            </div>
-
-            {/* Article Card 5 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-              <img 
-                src="https://picsum.photos/400/250?random=7" 
-                alt="Kegiatan Belajar Mengajar" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  Kegiatan Belajar Mengajar di Rumah 2020
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                  Read More...
-                </a>
-              </div>
-            </div>
-
-            {/* Article Card 6 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-              <img 
-                src="https://picsum.photos/400/250?random=8" 
-                alt="Kegiatan Belajar Mengajar" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  Kegiatan Belajar Mengajar di Rumah 2020
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                  Read More...
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Single Article Card Section */}
-        <section className="mb-16">
-          <div className="max-w-md mx-auto">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-              <img 
-                src="https://picsum.photos/400/250?random=9" 
-                alt="Kegiatan Pembelajaran daring" 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  Kegiatan Pembelajaran daring
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors duration-200">
-                  Read More...
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Recent Post Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8">Recent Post</h2>
-          <div className="flex flex-wrap gap-4">
-            <a href="#" className="bg-gray-200 text-blue-600 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200">
-              Mendidik karakter di masa kini & masa depan
-            </a>
-            <a href="#" className="bg-gray-200 text-blue-600 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200">
-              Belajar mengajar di rumah
-            </a>
-            <a href="#" className="bg-gray-200 text-blue-600 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200">
-              Kegiatan Belajar mengajar di rumah 2020
-            </a>
-            <a href="#" className="bg-gray-200 text-blue-600 px-4 py-2 rounded-full hover:bg-gray-300 transition-colors duration-200">
-              Kegiatan Belajar mengajar di rumah & rumah 2021
-            </a>
-          </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-blue-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            {/* Logo and Contact Info */}
-            <div className="md:col-span-1">
-              <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-semibold text-lg">SDN NGAWI</span>
-              </div>
-              <div className="space-y-2 text-blue-200">
-                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p>
-                <p>Jawa Tengah 43351, Indonesia</p>
-                <p>(024)6708666</p>
-                <p>inpakan@smp1.sch.ac.id</p>
-              </div>
-            </div>
-            
-            {/* Jelajah */}
-            <div>
-              <h3 className="text-xl font-bold mb-6">Jelajah</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Sambutan</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Profil Sekolah</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Berita</a></li>
-                <li><a href="#" className="hover:text-white transition-colors duration-200">Galeri</a></li>
-              </ul>
-            </div>
-            
-            {/* Halaman Umum */}
-            <div>
-              <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li><a href="#" onClick={handleGuru} className="hover:text-white transition-colors duration-200">Data Guru</a></li>
-                <li><a href="https://spmb.semarangkota.go.id/sd" className="hover:text-white transition-colors duration-200">SPMB SDN</a></li>
-                <li><a href="https://spmb.semarangkota.go.id/assets/content_upload/panduan/Panduan%20Pendaftaran%20SD%202025.pdf" className="hover:text-white transition-colors duration-200">Panduan SPMB</a></li>
-                <li><a href="https://maps.app.goo.gl/ZoFMEgttrNr5Ak6g6" className="hover:text-white transition-colors duration-200">Lokasi</a></li>
-                <li><a href="#" onClick={handleKontak} className="hover:text-white transition-colors duration-200">Kontak</a></li>
-              </ul>
-            </div>
-            
-            {/* Media Sosial */}
-            <div>
-              <h3 className="text-xl font-bold mb-6">Media Sosial</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Facebook Icon</span>
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p>Memuat data berita...</p>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Twitter Icon</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span className="text-blue-200">Instagram Icon</span>
-                </div>
-              </div>
             </div>
-          </div>
-          
-          <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
-            <p>&copy; 2024 SDN NGAWI. All rights reserved.</p>
-          </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <div className="text-center text-red-600">
+                    <p>Error: {error}</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Featured article (first item)
+    const featuredArticle = beritas.length > 0 ? beritas[0] : null;
+    const regularArticles = beritas.length > 1 ? beritas.slice(1) : [];
+
+    return (
+        <div className="min-h-screen bg-white">
+            {/* Header Navigation */}
+           <Header/>
+
+            {/* Hero Banner */}
+            <section className="relative bg-gray-800 py-24">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-900 to-blue-800 opacity-90"></div>
+                <div className="absolute inset-0 bg-[url('https://picsum.photos/1920/600?random=1')] bg-cover bg-center opacity-20"></div>
+                <div className="relative container mx-auto px-4 text-center">
+                    <h1 className="text-5xl md:text-6xl font-bold text-white">
+                        Berita
+                    </h1>
+                </div>
+            </section>
+
+            {/* Main Content */}
+            <main className="container mx-auto px-4 py-12">
+                {/* Featured Article Section */}
+                {featuredArticle && (
+                    <section className="mb-16">
+                        <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            <div className="grid md:grid-cols-2 gap-0">
+                                <div className="relative">
+                                    <img
+                                        src={featuredArticle.gambar_utama.startsWith('http') 
+                                            ? featuredArticle.gambar_utama 
+                                            : `data:image/jpeg;base64,${featuredArticle.gambar_utama}`}
+                                        alt={featuredArticle.judul}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div className="p-8 flex flex-col justify-center">
+                                    <h3 className="text-3xl font-bold text-gray-800 mb-6">
+                                        {featuredArticle.judul}
+                                    </h3>
+                                    <p className="text-gray-600 mb-6 leading-relaxed">
+                                        {featuredArticle.isi.substring(0, 200)}...
+                                    </p>
+                                    <button 
+                                        onClick={() => navigate(`/berita/${featuredArticle.id_berita}`)}
+                                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 inline-block w-fit"
+                                    >
+                                        Baca Selengkapnya
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* Regular Articles Section */}
+                <section className="mb-16">
+                    <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-3xl font-bold text-gray-800">Berita Lainnya</h2>
+                        <span className="text-gray-600">
+                            {regularArticles.length} berita
+                        </span>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {regularArticles.map((berita) => (
+                            <div
+                                key={berita.id_berita}
+                                className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 cursor-pointer"
+                                onClick={() => navigate(`/berita/${berita.id_berita}`)}
+                            >
+                                {berita.gambar_utama && (
+                                    <div className="h-48 overflow-hidden">
+                                        <img
+                                            src={berita.gambar_utama.startsWith('http') 
+                                                ? berita.gambar_utama 
+                                                : `data:image/jpeg;base64,${berita.gambar_utama}`}
+                                            alt={berita.judul}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                )}
+                                <div className="p-6">
+                                    <h3 className="text-xl font-bold text-gray-800 mb-3 mt-2">
+                                        {berita.judul}
+                                    </h3>
+                                    <p className="text-gray-600 mb-4">
+                                        {berita.isi.substring(0, 120)}...
+                                    </p>
+                                    <div className="text-sm text-gray-500">
+                                        {new Date(berita.tanggal_publikasi).toLocaleDateString()}
+                                    </div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/berita/${berita.id_berita}`);
+                                        }}
+                                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                    >
+                                        Baca Selengkapnya
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {beritas.length === 0 && (
+                        <div className="text-center py-12">
+                            <p className="text-gray-500 text-lg">
+                                Tidak ada berita tersedia saat ini.
+                            </p>
+                        </div>
+                    )}
+                </section>
+            </main>
+
+            {/* Footer */}
+           <Footer/>
         </div>
-      </footer>
-    </div>
-  );
+    );
 };
 
-export default Berita;
+export default BeritaSekolah;
