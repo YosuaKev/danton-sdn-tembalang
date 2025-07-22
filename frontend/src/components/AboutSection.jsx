@@ -10,6 +10,27 @@ const AboutSection = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [header, setHeader] = useState("");
+
+  useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://localhost:5000/api/home');
+            if (response.ok) {
+  
+              const data = await response.json();
+              setHeader({nama: data.judul || ""});
+            }
+    
+          } catch (error) {
+            console.error('Error:', error);
+            // Fallback to default values if API fails
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchData();
+      }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -101,7 +122,7 @@ const AboutSection = () => {
           {/* Right side - Content */}
           <div>
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              Profil SD Negeri Tembalang
+              Profil {header.nama}
             </h2>
             <p className="text-gray-600 mb-8 text-lg leading-relaxed">
               {profileData.deskripsi || "SD Negeri Tembalang adalah sekolah dasar negeri yang berkomitmen untuk memberikan pendidikan berkualitas bagi siswa-siswinya."}
