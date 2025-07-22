@@ -102,136 +102,117 @@ const Footer = () => {
   
 
   const renderEditForm = () => (
-      <div className="bg-blue-900 text-white py-8">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-6">Edit Footer</h2>
-          
-          <form onSubmit={handleSubmit} className="space-y-2">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="font-bold text-lg block mb-2">School Name</label>
-                <input
-                  type="text"
-                  name="nama_sekolah"
-                  value={tempData.nama_sekolah || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                />
+      <div className="bg-blue-900 text-white py-12">
+        <div className="container mx-auto px-6 lg:px-10">
+          <h2 className="text-3xl font-bold mb-8 text-center">Edit Informasi Footer</h2>
+
+          <form onSubmit={handleSubmit} className="bg-white text-black p-6 rounded-lg shadow-lg">
+            <div className="grid md:grid-cols-2 gap-5">
+             <div className="md:col-span-2">
+                <div className="flex flex-wrap items-center gap-5">
+                {/* Kolom input: School Name */}
+                <div className="flex flex-col flex-1 min-w-[565px]">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    School Name
+                  </label>
+                  <input
+                    type="text"
+                    name="nama_sekolah"
+                    value={tempData.nama_sekolah || ""}
+                    onChange={handleChange}
+                    placeholder="School Name"
+                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                  {/* Input: Logo URL */}
+                  <div className="flex flex-col flex-1 min-w-[510px]">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Logo URL
+                  </label>
+                  <input
+                    type="text"
+                    name="logo"
+                    value={tempData.logo || ""}
+                    onChange={handleChange}
+                    placeholder="https://example.com/logo.png"
+                    className="flex-1 min-w-[200px] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                 {/* Preview: Logo */}
+                  <div className="flex flex-col flex-1 min-w-[20px]">
+                  <label className="block text-sm font-semibold text-gray-700 mb-6">
+                  </label>
+                 {tempData.logo?.startsWith("http") && (
+                    <img
+                      src={tempData.logo}
+                      alt="Logo Preview"
+                      className="h-12 w-12 object-contain"
+                      onError={(e) => (e.target.style.display = 'none')}
+                    />
+                  )}
+                </div>
+                </div>
               </div>
-              
-              <div>
-                <label className="block mb-2">Logo URL</label>
-                <input
-                  type="text"
-                  name="logo"
-                  value={tempData.logo || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                  placeholder="https://example.com/logo.png"
-                />
-                {tempData.logo && (
-                  <div className="mt-2">
-                    <img src={tempData.logo} alt="Logo Preview" className="h-12 object-contain" />
-                  </div>
-                )}
-              </div>
-              
-              <div>
-                <label className="block mb-2">Address</label>
-                <input
-                  type="text"
-                  name="alamat"
-                  value={tempData.alamat || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                />
-              </div>
-              
-              <div>
-                <label className="block mb-2">Phone Number</label>
-                <input
-                  type="text"
-                  name="no_telepon"
-                  value={tempData.no_telepon || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                />
-              </div>
-              
-              <div>
-                <label className="block mb-2">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={tempData.email || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                />
-              </div>
-              
-              <div>
-                <label className="block mb-2">Facebook URL</label>
-                <input
-                  type="url"
-                  name="facebook"
-                  value={tempData.facebook || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                  placeholder="https://facebook.com/yourpage"
-                />
-              </div>
-              
-              <div>
-                <label className="block mb-2">Instagram URL</label>
-                <input
-                  type="url"
-                  name="instagram"
-                  value={tempData.instagram || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                  placeholder="https://instagram.com/yourpage"
-                />
-              </div>
-              
-              <div>
-                <label className="block mb-2">YouTube URL</label>
-                <input
-                  type="url"
-                  name="youtube"
-                  value={tempData.youtube || ''}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded text-white"
-                  placeholder="https://youtube.com/yourchannel"
-                />
-              </div>
+              {/* Input Fields */}
+              {[
+                { label: "Address", name: "alamat", type: "text" },
+                { label: "Phone Number", name: "no_telepon", type: "text" },
+                { label: "Email", name: "email", type: "email" },
+                { label: "Facebook URL", name: "facebook", type: "url" },
+                { label: "Instagram URL", name: "instagram", type: "url" },
+                { label: "YouTube URL", name: "youtube", type: "url" },
+              ].map((field) => (
+                <div key={field.name}>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    {field.label}
+                  </label>
+                  <input
+                    type={field.type}
+                    name={field.name}
+                    value={tempData[field.name] || ""}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  {field.name === "logo" && tempData.logo && (
+                    <div className="mt-2">
+                      <img
+                        src={tempData.logo}
+                        alt="Logo Preview"
+                        className="h-12 object-contain"
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-            
-            <div className="flex gap-4 mt-6">
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-4 mt-8">
               <button
                 type="submit"
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md"
               >
                 Save Changes
               </button>
               <button
                 type="button"
                 onClick={handleCancelClick}
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-md"
               >
                 Cancel
               </button>
             </div>
-            
-            {message && <p className="text-green-300 mt-4">{message}</p>}
-            {error && <p className="text-red-300 mt-4">{error}</p>}
+
+            {/* Message Feedback */}
+            {message && <p className="text-green-600 mt-4">{message}</p>}
+            {error && <p className="text-red-600 mt-4">{error}</p>}
           </form>
         </div>
       </div>
     );
   
-
-  
-
   const handleKontak = (e) => {
     e.preventDefault();
     navigate('/kontak');

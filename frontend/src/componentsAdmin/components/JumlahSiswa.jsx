@@ -102,17 +102,19 @@ const JumlahSiswa = () => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Student Statistics</h2>
-        {localStorage.getItem('token') && !isEditing && (
-          <button
-            onClick={handleEditClick}
-            className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
-          >
-            Edit
-          </button>
-        )}
+    <div className="py-16 bg-white rounded-lg shadow">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Student Statistics</h2>
+          {localStorage.getItem('token') && !isEditing && (
+            <button
+              onClick={handleEditClick}
+              className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+            >
+              Edit
+            </button>
+          )}
+        </div>
       </div>
 
       {error && <div className="text-red-600 mb-4">{error}</div>}

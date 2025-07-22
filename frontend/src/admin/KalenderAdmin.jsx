@@ -24,10 +24,11 @@ const AkademikAdmin = () => {
   const token = localStorage.getItem('token');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState("");
-  const [, setSelectedDate] = useState(null);
   const [showEventModal, setShowEventModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [academicEvents, setAcademicEvents] = useState([]);
+  const [showEventDetails, setShowEventDetails] = useState(false);
+  const [selectedEventDetails, setSelectedEventDetails] = useState(null);
 
   // Navigation handlers
 
@@ -108,12 +109,26 @@ const AkademikAdmin = () => {
     });
   };
 
-  const filteredEvents = academicEvents.filter(
-    (event) =>
-      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (event.category &&
-        event.category.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const handleDayClick = (day) => {
+    if (!day) return;
+    
+    const events = getEventsForDate(day);
+    if (events.length > 0) {
+      setSelectedEventDetails(events);
+      setShowEventDetails(true);
+    }
+  };
+
+   const filteredEvents = academicEvents.filter((event) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      event.title.toLowerCase().includes(searchLower) ||
+      (event.category && event.category.toLowerCase().includes(searchLower)) ||
+      (event.description && event.description.toLowerCase().includes(searchLower)) ||
+      (event.date && new Date(event.date).toLocaleDateString('id-ID').toLowerCase().includes(searchLower)) ||
+      (event.time && event.time.toLowerCase().includes(searchLower))
+    );
+  });
 
   const navigateMonth = (direction) => {
     const newDate = new Date(currentDate);
@@ -360,9 +375,9 @@ const AkademikAdmin = () => {
                     <div
                       key={index}
                       className={`min-h-[80px] p-2 border border-gray-200 ${
-                        day ? "hover:bg-gray-50 cursor-pointer" : ""
+                      day ? "hover:bg-gray-50 cursor-pointer" : ""
                       } ${hasEvents ? "bg-blue-50" : ""}`}
-                      onClick={() => day && setSelectedDate(day)}
+                      onClick={() => handleDayClick(day)}
                     >
                       {day && (
                         <>
@@ -376,7 +391,7 @@ const AkademikAdmin = () => {
                                 event.category
                               )}`}
                             >
-                              {event.title.substring(0, 15)}...
+                              {event.title.substring(0, 10)}...
                             </div>
                           ))}
                           {events.length > 2 && (
@@ -588,6 +603,98 @@ const AkademikAdmin = () => {
               >
                 <Save className="w-4 h-4 mr-2" />
                 Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Event Details Popup */}
+      {showEventDetails && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Detail Kegiatan</h3>
+              <button
+                onClick={() => setShowEventDetails(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {selectedEventDetails.map((event, index) => (
+                <div key={index} className="mb-6 pb-6 border-b border-gray-200 last:border-0 last:pb-0 last:mb-0">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">{event.title}</h4>
+                  
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <div>
+                      <p className="text-sm text-gray-500">Tanggal</p>
+                      <p className="text-gray-700">
+                        {new Date(event.date).toLocaleDateString("id-ID", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    
+                    {event.time && (
+                      <div>
+                        <p className="text-sm text-gray-500">Waktu</p>
+                        <p className="text-gray-700">{event.time}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {event.category && (
+                    <div className="mb-3">
+                      <p className="text-sm text-gray-500">Kategori</p>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
+                        {event.category}
+                      </span>
+                    </div>
+                  )}
+
+                  {event.description && (
+                    <div>
+                      <p className="text-sm text-gray-500">Deskripsi</p>
+                      <p className="text-gray-700 whitespace-pre-line">{event.description}</p>
+                    </div>
+                  )}
+
+                  <div className="flex justify-end mt-4 space-x-2">
+                    <button
+                      onClick={() => {
+                        setShowEventDetails(false);
+                        handleEditEvent(event);
+                      }}
+                      className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+                    >
+                      <Edit className="w-4 h-4 mr-1" /> Edit
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowEventDetails(false);
+                        handleDeleteEvent(event._id);
+                      }}
+                      className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 flex items-center"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" /> Hapus
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setShowEventDetails(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Tutup
               </button>
             </div>
           </div>
