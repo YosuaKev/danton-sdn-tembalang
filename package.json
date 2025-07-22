@@ -4,6 +4,7 @@
     "eslint-plugin-react-hooks": "^5.2.0"
   },
   "dependencies": {
+    "framer-motion": "^12.23.6",
     "lucide-react": "^0.525.0"
   }
 }
