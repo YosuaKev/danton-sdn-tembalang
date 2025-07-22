@@ -28,7 +28,8 @@ const JumlahSiswa = () => {
           namajumlah2: data.namajumlah2 || '',
           jumlah2: data.jumlah2 || 0,
           namajumlah3: data.namajumlah3 || '',
-          jumlah3: data.jumlah3 || 0
+          jumlah3: data.jumlah3 || 0,
+          nama: data.judul || ""
         });
       } catch (error) {
         console.error('Error:', error);
@@ -102,10 +103,10 @@ const JumlahSiswa = () => {
   };
 
   return (
-    <div className="py-16 bg-white rounded-lg shadow">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Student Statistics</h2>
+    <div className="pb-16 bg-white rounded-lg shadow ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center mb-4 mt-16 ">
+          <h2 className="text-2xl font-bold">Statistik Warga Sekolah {stats.nama}</h2>
           {localStorage.getItem('token') && !isEditing && (
             <button
               onClick={handleEditClick}
@@ -164,7 +165,7 @@ const JumlahSiswa = () => {
           </div>
         </form>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {[1, 2, 3].map((num) => (
             <div key={num} className="text-center p-8 bg-gray-50 rounded">
               <h3 className="text-lg font-semibold text-gray-800">

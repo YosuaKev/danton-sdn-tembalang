@@ -16,7 +16,8 @@ const Jumlah = () => {
           namajumlah2: data.namajumlah2 || '',
           jumlah2: data.jumlah2 || 0,
           namajumlah3: data.namajumlah3 || '',
-          jumlah3: data.jumlah3 || 0
+          jumlah3: data.jumlah3 || 0,
+          nama: data.judul || ""
         });
       } catch (error) {
         console.error('Error:', error);
@@ -27,24 +28,27 @@ const Jumlah = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{stats.namajumlah1}</h3>
-            <div className="text-4xl font-bold text-blue-600">{stats.jumlah1}</div>
-          </div>
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{stats.namajumlah2}</h3>
-            <div className="text-4xl font-bold text-blue-600">{stats.jumlah2}</div>
-          </div>
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{stats.namajumlah3}</h3>
-            <div className="text-4xl font-bold text-blue-600">{stats.jumlah3}</div>
-          </div>
+    <div className="pb-12 pt-4 bg-white rounded-lg shadow ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center mb-4 mt-16 ">
+          <h2 className="text-2xl font-bold">Statistik Warga Sekolah {stats.nama}</h2>
         </div>
       </div>
-    </section>
+       (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {[1, 2, 3].map((num) => (
+            <div key={num} className="text-center p-8 bg-gray-50 rounded">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {stats[`namajumlah${num}`] || `Stat ${num}`}
+              </h3>
+              <div className="text-3xl font-bold text-blue-600">
+                {stats[`jumlah${num}`]}
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    </div>
   );
 };
 

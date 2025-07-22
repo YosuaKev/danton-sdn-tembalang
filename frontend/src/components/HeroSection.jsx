@@ -26,12 +26,12 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="bg-gradient-to-r from-blue-50 to-white py-20">
+    <section className="bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12  items-center pb-36 pt-36">
           {/* Left side - Image */}
           <div className="order-2 lg:order-1">
-            <div className="bg-gray-200 rounded-lg h-96 flex items-center justify-center overflow-hidden">
+            <div className="bg-gray-200 rounded-lg h-94 flex items-center justify-center overflow-hidden">
               {content.gambar ? (
                 <img 
                   src={content.gambar} 
