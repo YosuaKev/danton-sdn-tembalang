@@ -105,13 +105,12 @@ const Footer = () => {
       <div className="bg-blue-900 text-white py-12">
         <div className="container mx-auto px-6 lg:px-10">
           <h2 className="text-3xl font-bold mb-8 text-center">Edit Informasi Footer</h2>
-
           <form onSubmit={handleSubmit} className="bg-white text-black p-6 rounded-lg shadow-lg">
-            <div className="grid md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
              <div className="md:col-span-2">
-                <div className="flex flex-wrap items-center gap-5">
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Kolom input: School Name */}
-                <div className="flex flex-col flex-1 min-w-[565px]">
+                <div className="w-full">
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     School Name
                   </label>
@@ -121,12 +120,12 @@ const Footer = () => {
                     value={tempData.nama_sekolah || ""}
                     onChange={handleChange}
                     placeholder="School Name"
-                    className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                   {/* Input: Logo URL */}
-                  <div className="flex flex-col flex-1 min-w-[510px]">
+                  <div className="w-full">
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     Logo URL
                   </label>
@@ -136,23 +135,21 @@ const Footer = () => {
                     value={tempData.logo || ""}
                     onChange={handleChange}
                     placeholder="https://example.com/logo.png"
-                    className="flex-1 min-w-[200px] p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                  {/* Preview: Logo */}
-                  <div className="flex flex-col flex-1 min-w-[20px]">
-                  <label className="block text-sm font-semibold text-gray-700 mb-6">
-                  </label>
                  {tempData.logo?.startsWith("http") && (
-                    <img
-                      src={tempData.logo}
-                      alt="Logo Preview"
-                      className="h-12 w-12 object-contain"
-                      onError={(e) => (e.target.style.display = 'none')}
-                    />
+                    <div className="mt-2 flex justify-start">
+                      <img
+                        src={tempData.logo}
+                        alt="Logo Preview"
+                        className="h-12 w-12 object-contain border border-gray-300 rounded"
+                        onError={(e) => (e.target.style.display = 'none')}
+                      />
+                    </div>
                   )}
-                </div>
                 </div>
               </div>
               {/* Input Fields */}
