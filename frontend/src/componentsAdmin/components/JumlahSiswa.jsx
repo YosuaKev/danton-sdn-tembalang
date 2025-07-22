@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useInView } from "framer-motion";
 
 const JumlahSiswa = () => {
   const [stats, setStats] = useState({
@@ -9,6 +10,8 @@ const JumlahSiswa = () => {
     namajumlah3: '',
     jumlah3: 0
   });
+  const statsRef = useRef(null);
+  const isInView = useInView(statsRef, { once: true });
   const [isEditing, setIsEditing] = useState(false);
   const [tempStats, setTempStats] = useState({ ...stats });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -102,6 +105,30 @@ const JumlahSiswa = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.8,
+        staggerChildren: 1.0
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'tween',
+        ease: 'easeOut',
+        duration: 0.6
+      }
+    }
+  };
+
   return (
     <div className="pb-16 bg-white rounded-lg shadow ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -165,18 +192,28 @@ const JumlahSiswa = () => {
           </div>
         </form>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          ref={statsRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
           {[1, 2, 3].map((num) => (
-            <div key={num} className="text-center p-8 bg-gray-50 rounded">
+            <motion.div
+              key={num}
+              className="text-center p-8 bg-gray-50 rounded shadow"
+              variants={cardVariants}
+            >
               <h3 className="text-lg font-semibold text-gray-800">
                 {stats[`namajumlah${num}`] || `Stat ${num}`}
               </h3>
               <div className="text-3xl font-bold text-blue-600">
                 {stats[`jumlah${num}`]}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div> 
       )}
     </div>
   );

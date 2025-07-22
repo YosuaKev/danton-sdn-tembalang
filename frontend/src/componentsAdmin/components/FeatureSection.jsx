@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BookOpen, Users, Wrench, Trophy, Edit, X, Check, Loader2 } from 'lucide-react';
+import { motion, useInView } from 'framer-motion'; // 🔁 animasi
 
 const FeatureSection = () => {
   const [features, setFeatures] = useState({
@@ -13,11 +14,16 @@ const FeatureSection = () => {
     feature4: "",
     deskripsifeature4: ""
   });
+
   const [isEditing, setIsEditing] = useState(false);
   const [tempFeatures, setTempFeatures] = useState({ ...features });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+
+  // 👀 Ref dan scroll trigger
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true });
 
   useEffect(() => {
     const fetchFeatures = async () => {
@@ -25,7 +31,7 @@ const FeatureSection = () => {
         const response = await fetch('http://localhost:5000/api/home');
         if (!response.ok) throw new Error('Failed to fetch features');
         const data = await response.json();
-        
+
         setFeatures({
           judulfeature: data.judulfeature || "Kenapa Harus SD Negeri Tembalang?",
           feature1: data.feature1 || "Kurikulum Berbasis Industri",
@@ -71,7 +77,7 @@ const FeatureSection = () => {
 
     try {
       const currentData = await fetch('http://localhost:5000/api/home').then(res => res.json());
-      
+
       const response = await fetch('http://localhost:5000/api/home', {
         method: 'PUT',
         headers: {
@@ -117,8 +123,32 @@ const FeatureSection = () => {
     <Trophy className="w-8 h-8 text-blue-600" />
   ];
 
+  // 🔁 Animation Variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 1.0,
+        staggerChildren: 0.8
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
-    <section className="py-20 bg-white">
+    <section ref={sectionRef} className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           {isEditing ? (
@@ -173,9 +203,18 @@ const FeatureSection = () => {
           {message && <p className="text-green-600 mt-2">{message}</p>}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
           {[1, 2, 3, 4].map((num, index) => (
-            <div key={index} className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow">
+            <motion.div
+              key={index}
+              className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow bg-gray-50"
+              variants={cardVariants}
+            >
               <div className="flex justify-center mb-4">
                 {featureIcons[index]}
               </div>
@@ -206,9 +245,9 @@ const FeatureSection = () => {
                   </p>
                 </>
               )}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

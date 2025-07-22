@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 const HeroSection = () => {
   const [content, setContent] = useState({
     judul: "SD Negeri Tembalang",
     subjudul: "Lorem ipsum dolor sit amet consectetur adipisicing.",
-    deskripsi:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, provident.",
+    deskripsi: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, provident.",
     gambar: "",
   });
 
@@ -13,8 +13,9 @@ const HeroSection = () => {
   const [editContent, setEditContent] = useState({ ...content });
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState({ message: "", error: "" });
+  const [, setIsHovering] = useState(false);
+  const imageRef = useRef(null);
 
-  // Fetch initial content
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -23,12 +24,8 @@ const HeroSection = () => {
         const data = await response.json();
         setContent({
           judul: data.judul || "SD Negeri Tembalang",
-          subjudul:
-            data.subjudul ||
-            "Lorem ipsum dolor sit amet consectetur adipisicing.",
-          deskripsi:
-            data.deskripsi ||
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, provident.",
+          subjudul: data.subjudul || "Lorem ipsum dolor sit amet consectetur adipisicing.",
+          deskripsi: data.deskripsi || "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, provident.",
           gambar: data.gambar || "",
         });
       } catch (error) {
@@ -53,23 +50,12 @@ const HeroSection = () => {
     setEditContent((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleInputChange = (e) => {
-  const { name, value } = e.target;
-  setEditContent(prev => ({
-    ...prev,
-    [name]: value
-  }));
-};
-
   const handleSave = async () => {
     setIsLoading(true);
     setStatus({ message: "", error: "" });
 
     try {
-      // Get current data to preserve other fields
-      const currentData = await fetch("http://localhost:5000/api/home").then(
-        (res) => res.json()
-      );
+      const currentData = await fetch("http://localhost:5000/api/home").then((res) => res.json());
 
       const response = await fetch("http://localhost:5000/api/home", {
         method: "PUT",
@@ -92,17 +78,8 @@ const HeroSection = () => {
       }
 
       const updatedData = await response.json();
-      setContent({
-        judul: updatedData.judul,
-        subjudul: updatedData.subjudul,
-        deskripsi: updatedData.deskripsi,
-        gambar: updatedData.gambar,
-      });
-
-      setStatus((prev) => ({
-        ...prev,
-        message: "Perubahan berhasil disimpan!",
-      }));
+      setContent(updatedData);
+      setStatus((prev) => ({ ...prev, message: "Perubahan berhasil disimpan!" }));
       setIsEditing(false);
     } catch (error) {
       setStatus((prev) => ({ ...prev, error: error.message }));
@@ -111,12 +88,68 @@ const HeroSection = () => {
     }
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 1.0,
+        delayChildren: 0.8
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "tween",
+      ease: "easeOut",
+      duration: 1.0
+      }
+    }
+  };
+
+  const imageVariants = {
+    hidden: { x: 100, opacity: 0 },
+    visible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      type: "tween",
+      ease: "easeOut",
+      duration: 1.0,
+      delay: 0.5
+      }
+    },
+    hover: {
+      scale: 1.03,
+      transition: { duration: 0.3 }
+    }
+  };
+
+  const buttonVariants = {
+    hover: {
+      scale: 1.05,
+      boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
+      transition: {
+        duration: 0.3,
+        yoyo: Infinity
+      }
+    },
+    tap: {
+      scale: 0.95
+    }
+  };
+
   if (isEditing) {
     return (
-      <section className="bg-gray-50">
+      <section className="bg-gray-50 animate-fade-in transition-opacity duration-500 ease-in-out">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Image Editor */}
             <div className="order-2 lg:order-1">
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">Image URL</label>
@@ -124,22 +157,23 @@ const HeroSection = () => {
                   type="url"
                   name="gambar"
                   value={editContent.gambar || ""}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   placeholder="https://example.com/image.jpg"
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 border rounded transition-all duration-300 focus:ring-2 focus:ring-blue-400"
                   required
                 />
                 {editContent.gambar && (
                   <div className="mt-2">
-                    <img
+                    <motion.img
                       src={editContent.gambar}
                       alt="Preview"
                       className="max-w-full h-40 object-contain border rounded"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src =
-                          "https://via.placeholder.com/300x200?text=Invalid+URL";
+                        e.target.src = "https://via.placeholder.com/300x200?text=Invalid+URL";
                       }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
                     />
                     <p className="text-xs text-gray-500 mt-1">Image Preview</p>
                   </div>
@@ -147,47 +181,40 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Content Editor */}
             <div className="order-1 lg:order-2 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Judul
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Judul</label>
                 <input
                   type="text"
                   name="judul"
                   value={editContent.judul}
                   onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded transition-all duration-300 focus:ring-2 focus:ring-blue-400"
                   maxLength={200}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Subjudul
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Subjudul</label>
                 <input
                   type="text"
                   name="subjudul"
                   value={editContent.subjudul}
                   onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded transition-all duration-300 focus:ring-2 focus:ring-blue-400"
                   maxLength={200}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Deskripsi
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
                 <textarea
                   name="deskripsi"
                   value={editContent.deskripsi}
                   onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded transition-all duration-300 focus:ring-2 focus:ring-blue-400"
                   rows={4}
                   maxLength={1000}
                   required
@@ -195,27 +222,43 @@ const HeroSection = () => {
               </div>
 
               <div className="flex gap-2 pt-4">
-                <button
+                <motion.button
                   onClick={handleSave}
                   disabled={isLoading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 shadow-md"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {isLoading ? "Menyimpan..." : "Simpan"}
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   onClick={handleCancel}
                   disabled={isLoading}
                   className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   Batal
-                </button>
+                </motion.button>
               </div>
 
               {status.message && (
-                <p className="text-green-600 mt-2">{status.message}</p>
+                <motion.p 
+                  className="text-green-600 mt-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {status.message}
+                </motion.p>
               )}
               {status.error && (
-                <p className="text-red-600 mt-2">{status.error}</p>
+                <motion.p 
+                  className="text-red-600 mt-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {status.error}
+                </motion.p>
               )}
             </div>
           </div>
@@ -225,56 +268,107 @@ const HeroSection = () => {
   }
 
   return (
-    <section className="bg-gray-50">
+    <section className="bg-gray-50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12  items-center pb-36 pt-36">
-          {/* Image Display */}
-          <div className="order-2 lg:order-1">
-            <div className="bg-gray-200 rounded-lg h-94 flex items-center justify-center overflow-hidden">
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center pb-36 pt-36"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          <motion.div 
+            className="order-2 lg:order-1"
+            variants={imageVariants}
+            ref={imageRef}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            <div className="bg-gray-200 rounded-lg h-94 flex items-center justify-center overflow-hidden relative">
               {content.gambar ? (
-                <img 
-                  src={content.gambar} 
-                  alt="Lingkungan sekolah" 
-                  className="w-full h-full object-cover"
-                />
+                <>
+                  <motion.img
+                    src={content.gambar}
+                    alt="Lingkungan sekolah"
+                    className="w-full h-full object-cover"
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1,
+                      transition: { duration: 0.6 }
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </>
               ) : (
                 <span className="text-gray-500">Gambar Sekolah</span>
               )}
             </div>
-          </div>
+          </motion.div>
 
-          {/* Content Display */}
-          <div className="order-1 lg:order-2">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-              {content.judul}
-            </h1>
-            <h2 className="text-xl lg:text-2xl text-blue-600 mb-6">
+          <motion.div className="order-1 lg:order-2 space-y-6">
+            <motion.h1 
+              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4"
+              variants={itemVariants}
+            >
+              {content.judul.split("").map((char, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  style={{ display: 'inline-block' }}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </motion.span>
+              ))}
+            </motion.h1>
+
+            <motion.h2 
+              className="text-xl lg:text-2xl text-blue-600 mb-6"
+              variants={itemVariants}
+            >
               {content.subjudul}
-            </h2>
-            <p className="text-gray-600 mb-8 text-lg">{content.deskripsi}</p>
+            </motion.h2>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a
+            <motion.p 
+              className="text-gray-600 mb-8 text-lg"
+              variants={itemVariants}
+            >
+              {content.deskripsi}
+            </motion.p>
+
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4"
+              variants={itemVariants}
+            >
+              <motion.a
                 href="https://spmb.semarangkota.go.id/"
                 target="_blank"
                 rel="noopener noreferrer"
+                whileHover="hover"
+                whileTap="tap"
+                variants={buttonVariants}
               >
-                <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold">
+                <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 text-lg font-semibold shadow-md">
                   Daftar Sekarang
                 </button>
-              </a>
+              </motion.a>
 
               {localStorage.getItem("token") && (
-                <button
+                <motion.button
                   onClick={handleEdit}
-                  className="bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg font-semibold"
+                  className="bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 text-lg font-semibold"
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={buttonVariants}
                 >
                   Edit Konten
-                </button>
+                </motion.button>
               )}
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

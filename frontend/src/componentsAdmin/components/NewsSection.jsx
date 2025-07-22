@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronRight } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const NewsSection = () => {
   const [news, setNews] = useState([]);
@@ -14,72 +15,106 @@ const NewsSection = () => {
 
   const [header, setHeader] = useState("");
   
-    useEffect(() => {
-          const fetchData = async () => {
-            try {
-              const response = await fetch('http://localhost:5000/api/home');
-              if (response.ok) {
-    
-                const data = await response.json();
-                setHeader({nama: data.judul || ""});
-              }
-      
-            } catch (error) {
-              console.error('Error:', error);
-              // Fallback to default values if API fails
-            } finally {
-              setLoading(false);
-            }
-          };
-          fetchData();
-        }, []);
-
-  // Fetch all news
   useEffect(() => {
-  const fetchNews = async () => {
-    try {
-      const token = getAuthToken(); // Now using the function
-      const response = await fetch("http://localhost:5000/api/berita", {
-        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`Failed to fetch news. Status: ${response.status}\n${text}`);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/home');
+        if (response.ok) {
+          const data = await response.json();
+          setHeader({nama: data.judul || ""});
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
       }
+    };
+    fetchData();
+  }, []);
 
-      const data = await response.json();
-      setNews(data);
-      setLoading(false);
-    } catch (err) {
-      console.error("Fetch error:", err);
-      setError(err.message);
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const token = getAuthToken();
+        const response = await fetch("http://localhost:5000/api/berita", {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`Failed to fetch news. Status: ${response.status}\n${text}`);
+        }
+
+        const data = await response.json();
+        setNews(data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
 
     fetchNews();
   }, []);
 
-  if (loading) return <div className="text-center py-12">Loading news...</div>;
-  if (error) return <div className="text-center py-12 text-red-600">Error: {error}</div>;
+  if (loading) return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="text-center py-12"
+    >
+      Loading news...
+    </motion.div>
+  );
+  
+  if (error) return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="text-center py-12 text-red-600"
+    >
+      Error: {error}
+    </motion.div>
+  );
 
   return (
-    <section className="py-20 bg-white">
+    <motion.section 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="py-20 bg-white"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10"
+        >
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
             Berita Terbaru Di {header.nama}
           </h2>
-        </div>
+        </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {news.map((item) => (
-            <div 
-              key={item.id_berita} 
+          {news.map((item, index) => (
+            <motion.div
+              key={item.id_berita}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ 
+                duration: 0.5,
+                delay: index * 0.1
+              }}
+              whileHover={{ y: -5 }}
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
               onClick={() => navigate(`/berita/${item.id_berita}`)}
             >
-              <div className="h-48 overflow-hidden">
+              <motion.div 
+                className="h-48 overflow-hidden"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
                 {item.gambar_utama ? (
                   <img
                     src={item.gambar_utama.startsWith('http') 
@@ -93,24 +128,33 @@ const NewsSection = () => {
                     <span className="text-gray-600">No Image</span>
                   </div>
                 )}
-              </div>
+              </motion.div>
               <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{item.judul}</h3>
+                <motion.h3 
+                  className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2"
+                  whileHover={{ color: "#3b82f6" }}
+                >
+                  {item.judul}
+                </motion.h3>
                 <p className="text-blue-600 text-sm mb-3">
                   {new Date(item.tanggal_publikasi).toLocaleDateString()}
                 </p>
                 <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                   {item.isi}
                 </p>
-                <div className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                <motion.div 
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+                  whileHover={{ x: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
                   Baca Selengkapnya <ChevronRight className="w-4 h-4 ml-1" />
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
