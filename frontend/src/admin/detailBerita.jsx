@@ -10,6 +10,27 @@ const DetailBerita = () => {
   const [berita, setBerita] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [header, setHeader] = useState("");
+  
+    useEffect(() => {
+          const fetchData = async () => {
+            try {
+              const response = await fetch('http://localhost:5000/api/home');
+              if (response.ok) {
+    
+                const data = await response.json();
+                setHeader({nama: data.judul || ""});
+              }
+      
+            } catch (error) {
+              console.error('Error:', error);
+              // Fallback to default values if API fails
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchData();
+        }, []);
 
 useEffect(() => {
     if (!token) {
@@ -100,7 +121,7 @@ useEffect(() => {
       <footer className="bg-blue-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <p>&copy; 2024 SDN NGAWI. All rights reserved.</p>
+            <p>&copy; 2025 {header.nama}. All rights reserved.</p>
           </div>
         </div>
       </footer>
