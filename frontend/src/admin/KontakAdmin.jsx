@@ -137,7 +137,7 @@ const KontakAdmin = () => {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full table-auto divide-y divide-gray-200">
                   <thead className="bg-blue-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-blue-900 uppercase tracking-wider">
@@ -160,23 +160,23 @@ const KontakAdmin = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredFeedbacks.map((feedback) => (
                       <tr key={feedback._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-6 py-4 whitespace-normal break-words max-w-xs">
                           <div className="font-medium text-gray-900">
                             {feedback.nama}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-6 py-4 whitespace-normal break-words max-w-xs">
                           <div className="text-gray-600">{feedback.email}</div>
                           <div className="text-gray-500 text-sm mt-1">
                             {feedback.no_telepon}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 whitespace-normal break-words max-w-xs">
                           <div className="text-gray-700 max-w-md">
                             {feedback.isi}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-6 py-4 whitespace-normal break-words max-w-xs">
                           <div className="text-gray-500 text-sm">
                             {formatDate(feedback.createdAt)}
                           </div>

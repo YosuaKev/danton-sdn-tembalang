@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, Plus, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Scroll, Plus, Edit, Trash2 } from 'lucide-react';
 import Modal from 'react-modal';
 
 Modal.setAppElement('#root'); // Set this to your app root element id
@@ -11,6 +11,7 @@ const ActivityList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [newActivity, setNewActivity] = useState({
     title: '',
     description: '',
@@ -34,8 +35,8 @@ const ActivityList = () => {
         title: activity.title,
         description: activity.description,
         date: activity.date,
-        status: translateStatus(activity.status),
-        participants: "Semua Siswa"
+        status: reverseStatus(activity.status),
+        participants: activity.description
       }));
       
       setUpcomingActivities(transformedActivities);
@@ -47,7 +48,7 @@ const ActivityList = () => {
   };
 
   // Status translation
-  const translateStatus = (status) => {
+  const reverseStatus = (status) => {
     const statusMap = {
       'pending': 'Persiapan',
       'in-progress': 'Berlangsung',
@@ -55,6 +56,15 @@ const ActivityList = () => {
     };
     return statusMap[status] || status;
   };
+
+  const mapStatusToCode = (status) => {
+  const statusMap = {
+    'Persiapan': 'pending',
+    'Berlangsung': 'in-progress',
+    'Selesai': 'completed'
+  };
+  return statusMap[status] || status;
+};
 
   // Handle activity click
   const handleActivityClick = (activity) => {
@@ -69,14 +79,20 @@ const ActivityList = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          ...newActivity,
-          status: newActivity.status.toLowerCase()
+          title: newActivity.title,
+          description: newActivity.description,
+          date: newActivity.date,
+          status: newActivity.status
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to add activity');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to add activity');
+      }
 
       setIsAddModalOpen(false);
       setNewActivity({
@@ -96,6 +112,9 @@ const ActivityList = () => {
     try {
       const response = await fetch(`http://localhost:5000/api/activities/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
 
       if (!response.ok) throw new Error('Failed to delete activity');
@@ -116,20 +135,25 @@ const ActivityList = () => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
           body: JSON.stringify({
-            title: selectedActivity.title,
+           title: selectedActivity.title,
             description: selectedActivity.description,
             date: selectedActivity.date,
-            status: selectedActivity.status.toLowerCase()
+            status: mapStatusToCode(selectedActivity.status)
           }),
         }
       );
 
-      if (!response.ok) throw new Error('Failed to update activity');
+       if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update activity');
+      }
 
       setIsModalOpen(false);
-      fetchActivities(); // Refresh the list
+      setIsEditMode(false);
+      fetchActivities(); 
     } catch (err) {
       setError(err.message);
     }
@@ -139,67 +163,65 @@ const ActivityList = () => {
   if (error) return <div className="text-red-500 text-center py-8">Error: {error}</div>;
 
   return (
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 sticky top-24">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-blue-900">Kegiatan Non-Akademik</h3>
-              <button 
-                onClick={() => setIsAddModalOpen(true)}
-                className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition"
+          <div className="lg:col-span-1">
+      <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 sticky top-24">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-blue-900">Kegiatan Non-Akademik</h3>
+          <button 
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition"
+          >
+            <Plus size={18} />
+          </button>
+        </div>
+
+        {upcomingActivities.length === 0 ? (
+          <p className="text-gray-500">Tidak ada kegiatan yang akan datang</p>
+        ) : (
+          <div className="space-y-4">
+            {upcomingActivities.map(activity => (
+              <div 
+                key={activity.id} 
+                className="border-l-4 border-blue-600 pl-4 py-3 cursor-pointer hover:bg-gray-50 transition"
+                onClick={() => handleActivityClick(activity)}
               >
-                <Plus size={18} />
-              </button>
-            </div>
-
-            {upcomingActivities.length === 0 ? (
-              <p className="text-gray-500">Tidak ada kegiatan yang akan datang</p>
-            ) : (
-              <div className="space-y-4">
-                {upcomingActivities.map(activity => (
-                  <div 
-                    key={activity.id} 
-                    className="border-l-4 border-blue-600 pl-4 py-3 cursor-pointer hover:bg-gray-50 transition"
-                    onClick={() => handleActivityClick(activity)}
-                  >
-                    <h4 className="font-semibold text-gray-900 mb-2">{activity.title}</h4>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {new Date(activity.date).toLocaleDateString('id-ID', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </div>
-                      <div className="flex items-center">
-                        <Users className="w-4 h-4 mr-2" />
-                        {activity.participants}
-                      </div>
-                      <div className="mt-2">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          activity.status === 'Berlangsung' ? 'bg-green-100 text-green-800' :
-                          activity.status === 'Persiapan' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {activity.status}
-                        </span>
-                      </div>
-                    </div>
+                <h4 className="font-semibold text-gray-900 mb-2">{activity.title}</h4>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <div className="flex items-center">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    {new Date(activity.date).toLocaleDateString('id-ID', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
                   </div>
-                ))}
+                  <div className="flex items-center">
+                    <Scroll className="w-4 h-4 mr-2" />
+                    {activity.participants}
+                  </div>
+                  <div className="mt-2">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      activity.status === 'Berlangsung' ? 'bg-blue-100 text-blue-800' :
+                      activity.status === 'Persiapan' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-green-100 text-green-800'
+                    }`}>
+                      {activity.status}
+                    </span>
+                  </div>
+                </div>
               </div>
-            )}
-
-            <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-              <h4 className="font-semibold text-blue-900 mb-2">Informasi Penting</h4>
-              <p className="text-sm text-blue-800">
-                Untuk informasi lebih lanjut tentang kegiatan sekolah, silakan hubungi bagian Tata Usaha.
-              </p>
-            </div>
+            ))}
           </div>
-        
-      
+        )}
+
+        <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+          <h4 className="font-semibold text-blue-900 mb-2">Informasi Penting</h4>
+          <p className="text-sm text-blue-800">
+            Untuk informasi lebih lanjut tentang kegiatan sekolah, silakan hubungi bagian Tata Usaha.
+          </p>
+        </div>
+      </div>
 
       {/* Activity Detail Modal */}
       <Modal
@@ -210,53 +232,133 @@ const ActivityList = () => {
       >
         {selectedActivity && (
           <div className="bg-white p-6 rounded-lg max-w-md mx-auto">
-            <h3 className="text-xl font-bold text-blue-900 mb-4">{selectedActivity.title}</h3>
+           <div className="relative mb-4 flex items-center justify-between">
+            {/* Tombol Back (jika sedang edit) */}
+            {isEditMode ? (
+              <button
+                onClick={() => setIsEditMode(false)}
+                className="flex items-center text-gray-600 hover:text-gray-800"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            ) : (
+              <div /> // Spacer
+            )}
+
+            {/* Tombol X */}
+            <button
+              onClick={() => {
+                setIsModalOpen(false);
+                setIsEditMode(false);
+              }}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
             <div className="space-y-3 mb-6">
-              <div>
-                <label className="block text-gray-600 text-sm">Deskripsi:</label>
-                <p className="mt-1">{selectedActivity.description || 'Tidak ada deskripsi'}</p>
+                {/* Judul */}
+              <div className="mt-6">
+                <div className="mb-4">
+                <label className="block text-gray-600 text-sm mb-1">Judul:</label>
+                {isEditMode ? (
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 rounded p-2 text-gray-600"
+                    value={selectedActivity.title}
+                    onChange={(e) =>
+                      setSelectedActivity({ ...selectedActivity, title: e.target.value })
+                    }
+                  />
+                ) : (
+                  <h3 className="w-full border border-gray-300 rounded p-2 text-gray-600">{selectedActivity.title}</h3>
+                )}
+                </div>
               </div>
               <div>
-                <label className="block text-gray-600 text-sm">Tanggal:</label>
-                <p className="mt-1">
-                  {new Date(selectedActivity.date).toLocaleDateString('id-ID', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </p>
-              </div>
-              <div>
-                <label className="block text-gray-600 text-sm">Status:</label>
-                <select
-                  value={selectedActivity.status}
-                  onChange={(e) => setSelectedActivity({
-                    ...selectedActivity,
-                    status: e.target.value
-                  })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  <label className="block text-gray-600 text-sm">Deskripsi:</label>
+                  {isEditMode ? (
+                    <textarea
+                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                      rows="3"
+                      value={selectedActivity.description}
+                      onChange={(e) =>
+                        setSelectedActivity({ ...selectedActivity, description: e.target.value })
+                      }
+                    />
+                  ) : (
+                    <p className="mt-1 block w-full border border-gray-300 rounded-md p-2">{selectedActivity.description || 'Tidak ada deskripsi'}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-gray-600 text-sm">Tanggal:</label>
+                  {isEditMode ? (
+                    <input
+                      type="date"
+                      className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                      value={selectedActivity.date.split('T')[0]}
+                      onChange={(e) =>
+                        setSelectedActivity({ ...selectedActivity, date: e.target.value })
+                      }
+                    />
+                  ) : (
+                    <p className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                      {new Date(selectedActivity.date).toLocaleDateString('id-ID', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-gray-600 text-sm">Status:</label>
+                  <select
+                    value={selectedActivity.status}
+                    onChange={(e) =>
+                      setSelectedActivity({ ...selectedActivity, status: e.target.value })
+                    }
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  >
+                    <option value="Persiapan">Persiapan</option>
+                    <option value="Berlangsung">Berlangsung</option>
+                    <option value="Selesai">Selesai</option>
+                  </select>
+                </div>
+            </div>
+          <div className="flex justify-end space-x-3 mt-6">
+             <button
+              onClick={() => handleDeleteActivity(selectedActivity.id)}
+              className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200"
+            >
+              <Trash2 size={16} className="mr-2" /> Hapus
+            </button>
+            {!isEditMode ? (
+              <button
+                onClick={() => setIsEditMode(true)}
+                className="flex items-center px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+              >
+                <Edit size={16} className="mr-2" /> Edit
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={handleUpdateActivity}
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
-                  <option value="Persiapan">Persiapan</option>
-                  <option value="Berlangsung">Berlangsung</option>
-                  <option value="Selesai">Selesai</option>
-                </select>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => handleDeleteActivity(selectedActivity.id)}
-                className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200"
-              >
-                <Trash2 size={16} className="mr-2" /> Hapus
-              </button>
-              <button
-                onClick={handleUpdateActivity}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                <Edit size={16} className="mr-2" /> Simpan Perubahan
-              </button>
-            </div>
+                  <Edit size={16} className="mr-2" /> Simpan
+                </button>
+              </>
+            )}
+          </div>
           </div>
         )}
       </Modal>
@@ -264,7 +366,10 @@ const ActivityList = () => {
       {/* Add Activity Modal */}
       <Modal
         isOpen={isAddModalOpen}
-        onRequestClose={() => setIsAddModalOpen(false)}
+         onRequestClose={() => {
+          setIsModalOpen(false);
+          setIsEditMode(false); 
+        }}
         className="modal"
         overlayClassName="modal-overlay"
       >
