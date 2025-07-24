@@ -8,6 +8,7 @@ const Header = () => {
   const [header, setHeader] = useState('SD Negeri Tembalang');
   const [logo, setLogo] = useState('');
   const [loading, setLoading] = useState(true);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Navigation handler
   const handleNavigation = (e, item) => {
@@ -46,12 +47,12 @@ const Header = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/home');
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (!response.ok) throw new Error('Failed to fetch header');
         const data = await response.json();
         setHeader(data.header || 'SD Negeri Tembalang');
 
-        const logoResponse = await fetch('http://localhost:5000/api/footer');
+        const logoResponse = await fetch(`${API_BASE_URL}/api/footer`);
         if (!logoResponse.ok) throw new Error('Failed to fetch logo');
         const logoData = await logoResponse.json();
         setLogo(logoData.logo || '');

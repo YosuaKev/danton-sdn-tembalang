@@ -8,6 +8,7 @@ const BeritaSekolah = () => {
     const [beritas, setBeritas] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     // Fetch all news
     const fetchBeritas = async () => {
@@ -15,7 +16,7 @@ const BeritaSekolah = () => {
         setError(null);
 
         try {
-            const response = await fetch("http://localhost:5000/api/berita", {
+            const response = await fetch(`${API_BASE_URL}/api/berita`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json'

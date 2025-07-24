@@ -12,11 +12,12 @@ const AboutSection = () => {
     gambar: "",
   });
   const [header, setHeader] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/home');
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (response.ok) {
           const data = await response.json();
           setHeader({nama: data.judul || ""});
@@ -33,7 +34,7 @@ const AboutSection = () => {
   useEffect(() => {
     const fetchProfil = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/profil");
+        const response = await fetch(`${API_BASE_URL}/api/profil`);
         const data = await response.json();
         setProfil({
           deskripsi: data.deskripsi || "",

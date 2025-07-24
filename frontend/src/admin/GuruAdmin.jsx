@@ -25,6 +25,7 @@ const GuruAdmin = () => {
   const [teacherToDelete, setTeacherToDelete] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Form state
   const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ const GuruAdmin = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:5000/api/gurus");
+      const response = await fetch(`${API_BASE_URL}/api/gurus`);
       if (!response.ok) {
         throw new Error("Failed to fetch teachers");
       }
@@ -106,7 +107,7 @@ const GuruAdmin = () => {
       let response;
       if (modalMode === "create") {
         // Create new teacher
-        response = await fetch("http://localhost:5000/api/gurus", {
+        response = await fetch(`${API_BASE_URL}/api/gurus`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -115,7 +116,7 @@ const GuruAdmin = () => {
         });
       } else {
         // Update existing teacher
-        response = await fetch(`http://localhost:5000/api/gurus/${selectedTeacher._id}`, {
+        response = await fetch(`${API_BASE_URL}/api/gurus/${selectedTeacher._id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -192,7 +193,7 @@ const GuruAdmin = () => {
   // Confirm delete
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/gurus/${teacherToDelete._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/gurus/${teacherToDelete._id}`, {
         method: "DELETE",
       });
 

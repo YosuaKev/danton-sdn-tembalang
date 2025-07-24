@@ -6,11 +6,12 @@ const FeaturesSection = () => {
   const [features, setFeatures] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchFeatures = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/home');
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (!response.ok) throw new Error('Failed to fetch features');
         const data = await response.json();
         

@@ -16,6 +16,7 @@ const GaleriAdmin = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const imageRef = useRef(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [formData, setFormData] = useState({ gambar: "" });
 
@@ -29,7 +30,7 @@ const GaleriAdmin = () => {
       const token = getAuthToken();
       if (!token) throw new Error('No authentication token found');
       
-      const response = await fetch("http://localhost:5000/api/galeri", {
+      const response = await fetch(`${API_BASE_URL}/api/galeri`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -181,7 +182,7 @@ const GaleriAdmin = () => {
         
         if (editingId) {
           // Update existing image
-          response = await fetch(`http://localhost:5000/api/galeri/${editingId}`, {
+          response = await fetch(`${API_BASE_URL}/api/galeri/${editingId}`, {
             method: "PUT",  // or "PATCH" depending on your API
             headers: {
               "Content-Type": "application/json",
@@ -191,7 +192,7 @@ const GaleriAdmin = () => {
         });
       } else {
         // Create new image
-        response = await fetch("http://localhost:5000/api/galeri", {
+        response = await fetch(`${API_BASE_URL}/api/galeri`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -228,7 +229,7 @@ const GaleriAdmin = () => {
       const token = getAuthToken();
       if (!token) throw new Error('No authentication token found');
       
-      const response = await fetch(`http://localhost:5000/api/galeri/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/galeri/${id}`, {
         method: "DELETE",
         headers: {
           'Authorization': `Bearer ${token}`

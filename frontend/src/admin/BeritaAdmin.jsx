@@ -29,6 +29,7 @@ const BeritaAdmin = () => {
   const [uploadMethod, setUploadMethod] = useState("url");
   const [imagePreview, setImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [selectedBerita, setSelectedBerita] = useState(null); // For showing full article
   const getAuthToken = () => {
@@ -58,7 +59,7 @@ const BeritaAdmin = () => {
         throw new Error('Authentication token not found. Please login first.');
       }
 
-      const response = await fetch("http://localhost:5000/api/berita", {
+      const response = await fetch(`${API_BASE_URL}/api/berita`, {
         method: "GET",
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -159,7 +160,7 @@ const BeritaAdmin = () => {
     const tanggalPublikasi = new Date(formData.tanggal_publikasi).toISOString();
 
     try {
-      let url = 'http://localhost:5000/api/berita';
+      let url = `${API_BASE_URL}/api/berita`;
       let method = 'POST';
       const token = getAuthToken();
       if (!token) throw new Error('No authentication token found');
@@ -265,7 +266,7 @@ const BeritaAdmin = () => {
       const token = getAuthToken();
       if (!token) throw new Error('No authentication token found');
       
-      const response = await fetch(`http://localhost:5000/api/berita/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/berita/${id}`, {
         method: "DELETE",
         headers: {
           'Authorization': `Bearer ${token}`

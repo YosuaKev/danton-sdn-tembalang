@@ -12,6 +12,7 @@ const AboutSection = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [header, setHeader] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Animation variants
   const containerVariants = {
@@ -52,7 +53,7 @@ const AboutSection = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/home');
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (response.ok) {
           const data = await response.json();
           setHeader({nama: data.judul || ""});
@@ -69,7 +70,7 @@ const AboutSection = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/profil");
+        const response = await fetch(`${API_BASE_URL}/api/profil`);
         if (!response.ok) {
           throw new Error('Failed to fetch profile data');
         }

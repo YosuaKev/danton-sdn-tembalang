@@ -29,6 +29,7 @@ const AkademikAdmin = () => {
   const [academicEvents, setAcademicEvents] = useState([]);
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [selectedEventDetails, setSelectedEventDetails] = useState(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Navigation handlers
 
@@ -60,7 +61,7 @@ const AkademikAdmin = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/calendar");
+      const response = await fetch(`${API_BASE_URL}/api/calendar`);
       if (!response.ok) throw new Error("Failed to fetch events");
       const data = await response.json();
       setAcademicEvents(data);
@@ -165,7 +166,7 @@ const AkademikAdmin = () => {
     if (window.confirm("Apakah Anda yakin ingin menghapus kegiatan ini?")) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/calendar/${eventId}`,
+          `${API_BASE_URL}/api/calendar/${eventId}`,
           {
             method: "DELETE",
           }
@@ -202,7 +203,7 @@ const AkademikAdmin = () => {
 
       if (editingEvent) {
         response = await fetch(
-          `http://localhost:5000/api/calendar/${editingEvent._id}`,
+          `${API_BASE_URL}/api/calendar/${editingEvent._id}`,
           {
             method: "PUT",
             headers: {
@@ -213,7 +214,7 @@ const AkademikAdmin = () => {
           }
         );
       } else {
-        response = await fetch(`http://localhost:5000/api/calendar`, {
+        response = await fetch(`${API_BASE_URL}/api/calendar`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

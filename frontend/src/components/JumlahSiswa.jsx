@@ -3,11 +3,12 @@ import { motion } from 'framer-motion';
 
 const Jumlah = () => {
   const [stats, setStats] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/home');
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (!response.ok) throw new Error('Failed to fetch stats');
         const data = await response.json();
 

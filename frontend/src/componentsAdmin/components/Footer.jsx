@@ -19,11 +19,12 @@ const Footer = () => {
   const [tempData, setTempData] = useState({});
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchFooterData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/footer');
+        const response = await fetch(`${API_BASE_URL}/api/footer`);
         if (!response.ok) throw new Error('Failed to fetch footer data');
         const data = await response.json();
         setFooterData(prev => ({
@@ -68,7 +69,7 @@ const Footer = () => {
     setError("");
     
     try {
-      const response = await fetch('http://localhost:5000/api/footer', {
+      const response = await fetch(`${API_BASE_URL}/api/footer`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

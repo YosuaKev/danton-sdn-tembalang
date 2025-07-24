@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "../componentsAdmin/components/Header";
 import Footer from "../componentsAdmin/components/Footer";
 
-const API_URL = "http://localhost:5000/api/kontak";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL = `${API_BASE_URL}/api/kontak`;
 
 const fetchFeedback = async () => {
   const response = await fetch(`${API_URL}`, {

@@ -9,6 +9,7 @@ const NewsSection = () => {
   const [error, setError] = useState(null);
   const [header, setHeader] = useState({ nama: "" });
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const getAuthToken = () => {
     return localStorage.getItem('token');
@@ -17,7 +18,7 @@ const NewsSection = () => {
   useEffect(() => {
     const fetchHeader = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/home');
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (response.ok) {
           const data = await response.json();
           setHeader({ nama: data.judul || "" });
@@ -33,7 +34,7 @@ const NewsSection = () => {
     const fetchNews = async () => {
       try {
         const token = getAuthToken();
-        const response = await fetch("http://localhost:5000/api/berita", {
+        const response = await fetch(`${API_BASE_URL}/api/berita`, {
           headers: token ? { 'Authorization': `Bearer ${token}` } : {}
         });
 

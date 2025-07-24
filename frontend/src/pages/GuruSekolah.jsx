@@ -8,12 +8,13 @@ const GuruSekolah = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch teachers from API
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/gurus");
+        const response = await fetch(`${API_BASE_URL}/api/gurus`);
         if (!response.ok) throw new Error("Failed to fetch teachers");
         const data = await response.json();
         setTeachers(data);

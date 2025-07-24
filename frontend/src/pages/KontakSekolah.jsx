@@ -11,6 +11,7 @@ const Kontak = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +27,7 @@ const Kontak = () => {
     setSubmitMessage('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/kontak', {
+      const response = await fetch(`${API_BASE_URL}/api/kontak`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

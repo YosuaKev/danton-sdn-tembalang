@@ -12,11 +12,12 @@ const GallerySection = () => {
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const imageRef = useRef(null);
   const [header, setHeader] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/galeri");
+        const response = await fetch(`${API_BASE_URL}/api/galeri`);
         if (!response.ok) throw new Error('Failed to fetch images');
         const data = await response.json();
         setImages(data.data || []);
@@ -33,7 +34,7 @@ const GallerySection = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/home');
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (response.ok) {
           const data = await response.json();
           setHeader({nama: data.judul || ""});

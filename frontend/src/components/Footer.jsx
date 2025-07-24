@@ -5,10 +5,11 @@ import { Instagram, Facebook, Youtube } from "lucide-react";
 const Footer = () => {
   const navigate = useNavigate();
     const [footerData, setFooterData] = useState("");
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
     useEffect(() => {
       const fetchFooterData = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/footer');
+          const response = await fetch(`${API_BASE_URL}/api/footer`);
           if (response.ok) {
             const data = await response.json();
             setFooterData({

@@ -32,8 +32,9 @@ const SiswaAdmin = () => {
   });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const API_URL = 'http://localhost:5000/api/siswas';
+  const API_URL = `${API_BASE_URL}/api/siswas`;
 
   const kelasOptions = [
     'I-A', 'I-B', 'I-C', 

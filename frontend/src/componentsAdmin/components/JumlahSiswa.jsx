@@ -17,11 +17,12 @@ const JumlahSiswa = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/home');
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (!response.ok) throw new Error('Failed to fetch stats');
         const data = await response.json();
         
@@ -68,9 +69,9 @@ const JumlahSiswa = () => {
 
     try {
       // First get the current document to preserve other fields
-      const currentData = await fetch('http://localhost:5000/api/home').then(res => res.json());
+      const currentData = await fetch(`${API_BASE_URL}/api/home`).then(res => res.json());
       
-      const response = await fetch('http://localhost:5000/api/home', {
+      const response = await fetch(`${API_BASE_URL}/api/home`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

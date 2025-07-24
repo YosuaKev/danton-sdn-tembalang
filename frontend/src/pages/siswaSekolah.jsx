@@ -10,8 +10,9 @@ const SiswaSekolah = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredStudents, setFilteredStudents] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const API_URL = 'http://localhost:5000/api/siswas';
+  const API_URL = `${API_BASE_URL}/api/siswas`;
 
   // Helper function for HTTP errors
   const handleApiError = async (response) => {

@@ -18,6 +18,7 @@ const ActivityList = () => {
     date: '',
     status: 'pending'
   });
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch activities
   useEffect(() => {
@@ -26,7 +27,7 @@ const ActivityList = () => {
 
   const fetchActivities = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/activities');
+      const response = await fetch(`${API_BASE_URL}/api/activities`);
       if (!response.ok) throw new Error('Failed to fetch activities');
       const data = await response.json();
       
@@ -75,7 +76,7 @@ const ActivityList = () => {
   // Handle add activity
   const handleAddActivity = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/activities', {
+      const response = await fetch(`${API_BASE_URL}/api/activities`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +111,7 @@ const ActivityList = () => {
   // Handle delete activity
   const handleDeleteActivity = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/activities/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/activities/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -130,7 +131,7 @@ const ActivityList = () => {
   const handleUpdateActivity = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/activities/${selectedActivity.id}`, 
+        `${API_BASE_URL}/api/activities/${selectedActivity.id}`, 
         {
           method: 'PUT',
           headers: {

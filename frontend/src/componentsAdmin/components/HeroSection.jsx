@@ -15,11 +15,12 @@ const HeroSection = () => {
   const [status, setStatus] = useState({ message: "", error: "" });
   const [, setIsHovering] = useState(false);
   const imageRef = useRef(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/home");
+        const response = await fetch(`${API_BASE_URL}/api/home`);
         if (!response.ok) throw new Error("Gagal memuat konten");
         const data = await response.json();
         setContent({
@@ -55,9 +56,9 @@ const HeroSection = () => {
     setStatus({ message: "", error: "" });
 
     try {
-      const currentData = await fetch("http://localhost:5000/api/home").then((res) => res.json());
+      const currentData = await fetch(`${API_BASE_URL}/api/home`).then((res) => res.json());
 
-      const response = await fetch("http://localhost:5000/api/home", {
+      const response = await fetch(`${API_BASE_URL}/api/home`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
