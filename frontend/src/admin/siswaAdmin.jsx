@@ -115,13 +115,9 @@ const SiswaAdmin = () => {
   };
 
   const studentsByClass = groupStudentsByClass(filteredStudents);
-
-  // Sort classes in order: I-A, I-B, I-C, II-A, II-B, ..., VI-C
   const sortedClasses = Object.keys(studentsByClass).sort((a, b) => {
-    const gradeA = parseInt(a.split('-')[0].replace('I', '1').replace('II', '2').replace('III', '3').replace('IV', '4').replace('V', '5').replace('VI', '6'));
-    const gradeB = parseInt(b.split('-')[0].replace('I', '1').replace('II', '2').replace('III', '3').replace('IV', '4').replace('V', '5').replace('VI', '6'));
-    const classA = a.split('-')[1];
-    const classB = b.split('-')[1];
+  const [gradeA, classA] = a.split('-');
+  const [gradeB, classB] = b.split('-');
     const romanToNum = {
     'I': 1,
     'II': 2,
@@ -130,10 +126,11 @@ const SiswaAdmin = () => {
     'V': 5,
     'VI': 6
   };
-    if (romanToNum[gradeA] !== romanToNum[gradeB]) 
+    if (romanToNum[gradeA] !== romanToNum[gradeB]) {
     return romanToNum[gradeB] - romanToNum[gradeA];
-    return gradeB - gradeA || classB.localeCompare(classA);;
+  }
   });
+  
 
   // Toggle expand/collapse for class
   const toggleClass = (kelas) => {
