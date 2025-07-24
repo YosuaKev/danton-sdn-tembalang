@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
-import profileRoutes from "./routes/profile.routes.js";
 import guruRoutes from "./routes/guru.routes.js";
 import siswaRoutes from "./routes/siswa.routes.js";
 import errorHandler from "./middleware/error.handler.js";
@@ -23,15 +22,15 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: "https://sdn-tembalang-semarang.vercel.app",
-  credentials: true
+  // origin: "https://sdn-tembalang-semarang.vercel.app",
+  // credentials: true
 }));
+
 app.use(express.json({ limit: '10mb' })); 
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); 
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api", profileRoutes);
 app.use("/api/gurus", guruRoutes);
 app.use("/api/siswas", siswaRoutes);
 app.use("/api/kontak", kontakRoutes);
@@ -43,6 +42,5 @@ app.use("/api/footer", footerRoutes);
 app.use("/api/calendar", calendarRoutes);
 app.use("/api/activities", Activities);
 
-app.use(errorHandler);
 
 export default app;
