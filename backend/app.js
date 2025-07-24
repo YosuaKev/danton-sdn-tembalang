@@ -22,8 +22,8 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  // origin: "https://sdn-tembalang-semarang.vercel.app",
-  // credentials: true
+  origin:["https://sdn-tembalang.vercel.app", ],
+  credentials: true
 }));
 
 app.use(express.json({ limit: '10mb' })); 
