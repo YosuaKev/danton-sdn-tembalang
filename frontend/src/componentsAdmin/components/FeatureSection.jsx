@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BookOpen, Users, Wrench, Trophy, Edit, X, Check, Loader2 } from 'lucide-react';
-import { motion, useInView } from 'framer-motion'; // 🔁 animasi
+import { motion, useInView } from 'framer-motion'; 
 
 const FeatureSection = () => {
   const [features, setFeatures] = useState({

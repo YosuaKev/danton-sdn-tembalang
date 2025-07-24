@@ -181,7 +181,7 @@ const HeroSection = () => {
               </div>
             </div>
 
-            <div className="order-1 lg:order-2 space-y-4">
+            <div className="order-2 lg:order-2 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Judul</label>
                 <input
@@ -277,7 +277,7 @@ const HeroSection = () => {
           variants={containerVariants}
         >
           <motion.div 
-            className="order-2 lg:order-1"
+            className="order-1 lg:order-1"
             variants={imageVariants}
             ref={imageRef}
             onMouseEnter={() => setIsHovering(true)}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from 'lucide-react';
+import { motion } from "framer-motion";
 
 const AboutSection = () => {
   const navigate = useNavigate();
@@ -12,25 +13,58 @@ const AboutSection = () => {
   const [error, setError] = useState(null);
   const [header, setHeader] = useState("");
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.7,
+        when: "beforeChildren"
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.7,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const imageVariants = {
+    hidden: { scale: 0.9, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.7,
+        ease: "easeOut"
+      }
+    }
+  };
+
   useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetch('http://localhost:5000/api/home');
-            if (response.ok) {
-  
-              const data = await response.json();
-              setHeader({nama: data.judul || ""});
-            }
-    
-          } catch (error) {
-            console.error('Error:', error);
-            // Fallback to default values if API fails
-          } finally {
-            setLoading(false);
-          }
-        };
-        fetchData();
-      }, []);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/home');
+        if (response.ok) {
+          const data = await response.json();
+          setHeader({nama: data.judul || ""});
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -99,44 +133,64 @@ const AboutSection = () => {
   }
 
   return (
-    <section className="py-20 bg-gray-50">
+    <motion.section 
+      className="py-20 bg-gray-50"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={containerVariants}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Image */}
-          <div>
+          {/* Left side - Image with animation */}
+          <motion.div variants={imageVariants}>
             {profileData.gambar ? (
-              <img 
+              <motion.img
                 src={profileData.gambar.startsWith('http') 
                   ? profileData.gambar 
                   : `data:image/jpeg;base64,${profileData.gambar}`}
                 alt="Profil SD Negeri Tembalang"
                 className="rounded-lg h-96 w-full object-cover shadow-md"
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 250, damping: 10 }}
               />
             ) : (
               <div className="bg-gray-300 rounded-lg h-96 flex items-center justify-center">
                 <span className="text-gray-600">School Image</span>
               </div>
             )}
-          </div>
+          </motion.div>
 
-          {/* Right side - Content */}
-          <div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+          {/* Right side - Content with staggered animations */}
+          <motion.div variants={containerVariants}>
+            <motion.h2 
+              className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6"
+              variants={itemVariants}
+            >
               Profil {header.nama}
-            </h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+            </motion.h2>
+            <motion.p 
+              className="text-gray-600 mb-8 text-lg leading-relaxed"
+              variants={itemVariants}
+            >
               {profileData.deskripsi || "SD Negeri Tembalang adalah sekolah dasar negeri yang berkomitmen untuk memberikan pendidikan berkualitas bagi siswa-siswinya."}
-            </p>
-            <button 
-              onClick={handleProfil} 
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"
+            </motion.p>
+            <motion.button 
+              onClick={handleProfil}
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold flex items-center"
+              variants={itemVariants}
+              whileHover={{ 
+                scale: 1.05,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
+              }}
+              whileTap={{ scale: 0.98 }}
             >
               Baca Selengkapnya <ChevronRight className="inline ml-1" size={20} />
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
