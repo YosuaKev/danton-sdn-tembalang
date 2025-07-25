@@ -1,5 +1,6 @@
-import serverlessExpress from '@vendia/serverless-express';
+// index.js
 import app from './app.js';
 
-const handler = serverlessExpress({ app });
-export { handler };
+export default async (req, res) => {
+  return app(req, res);
+};
