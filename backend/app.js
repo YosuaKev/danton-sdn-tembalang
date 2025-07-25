@@ -15,7 +15,6 @@ import profilRoutes from "./routes/profil.routes.js";
 import footerRoutes from "./routes/footer.routes.js"; 
 import calendarRoutes from "./routes/calendar.routes.js";
 import Activities from "./routes/activity.routes.js";
-import profileRoutes from "./routes/profile.routes.js" 
 
 dotenv.config();
 
@@ -52,7 +51,6 @@ app.use("/api/berita", beritaRoutes);
 app.use("/api/galeri", galeriRoutes);
 app.use("/api/home", homeRoutes);
 app.use("/api/profil", profilRoutes);
-app.use("/api", profileRoutes)
 app.use("/api/footer", footerRoutes);
 app.use("/api/calendar", calendarRoutes);
 app.use("/api/activities", Activities);
