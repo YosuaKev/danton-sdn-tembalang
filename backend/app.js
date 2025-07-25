@@ -20,6 +20,16 @@ dotenv.config();
 
 const app = express();
 
+
+// CORS header fix (Vercel fix)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://frontend-sdn-tembalang.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
 // Koneksi ke DB
 connectDB();
 
@@ -49,6 +59,8 @@ app.use("/api/activities", Activities);
 app.get("/", (req, res) => {
   res.send("Backend server is running on Vercel");
 });
+
+app.options('*', cors());
 
 // Error handler
 app.use(errorHandler);
