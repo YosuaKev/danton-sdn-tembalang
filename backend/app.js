@@ -15,11 +15,11 @@ import profilRoutes from "./routes/profil.routes.js";
 import footerRoutes from "./routes/footer.routes.js"; 
 import calendarRoutes from "./routes/calendar.routes.js";
 import Activities from "./routes/activity.routes.js";
+import profileRoutes from "./routes/profile.routes.js" 
 
 dotenv.config();
 
 const app = express();
-
 
 // CORS header fix (Vercel fix)
 app.use((req, res, next) => {
@@ -52,6 +52,7 @@ app.use("/api/berita", beritaRoutes);
 app.use("/api/galeri", galeriRoutes);
 app.use("/api/home", homeRoutes);
 app.use("/api/profil", profilRoutes);
+app.use("/api", profileRoutes)
 app.use("/api/footer", footerRoutes);
 app.use("/api/calendar", calendarRoutes);
 app.use("/api/activities", Activities);
@@ -64,5 +65,11 @@ app.options('*', cors());
 
 // Error handler
 app.use(errorHandler);
+
+// Middleware untuk menangkap error yang tidak tertangani
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err.stack);
+  res.status(500).json({ message: "Something went wrong", error: err.message });
+});
 
 export default app;

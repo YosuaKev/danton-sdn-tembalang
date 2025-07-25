@@ -19,6 +19,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Header from "../componentsAdmin/components/Header";
 import Footer from "../componentsAdmin/components/Footer";
+import { fetchWithAuth } from "../utils/api";
 
 const BeritaAdmin = () => {
   const navigate = useNavigate();
