@@ -1,5 +1,4 @@
-// index.js
+import serverlessExpress from '@vendia/serverless-express';
 import app from './app.js';
-import { createServer } from '@vendia/serverless-express';
 
-export default createServer(app);
+export default serverlessExpress({ app }); 
