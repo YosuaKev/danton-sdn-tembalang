@@ -24,6 +24,28 @@ const GaleriAdmin = () => {
     return localStorage.getItem('token'); 
   };
 
+  const [header, setHeader] = useState("");
+    
+      useEffect(() => {
+            const fetchData = async () => {
+              try {
+                const response = await fetch(`${API_BASE_URL}/api/home`);
+                if (response.ok) {
+      
+                  const data = await response.json();
+                  setHeader({nama: data.judul || ""});
+                }
+        
+              } catch (error) {
+                console.error('Error:', error);
+                // Fallback to default values if API fails
+              } finally {
+                setLoading(false);
+              }
+            };
+            fetchData();
+          }, []);
+
   // Fetch all gallery images
   const fetchImages = async () => {
     try {
@@ -544,62 +566,8 @@ const GaleriAdmin = () => {
       {/* Footer */}
       <footer className="bg-blue-900 text-white py-12">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-1">
-              <div className="flex items-center mb-6">
-                <div className="w-8 h-8 bg-blue-600 rounded mr-3"></div>
-                <span className="font-semibold text-lg">SDN NGAWI</span>
-              </div>
-              <div className="space-y-2 text-blue-200">
-                <p>Jl. Jawaipno No 122, Tembalang, Semarang</p>
-                <p>Jawa Tengah 43351, Indonesia</p>
-                <p>(024)6708666</p>
-                <p>inpakan@smp1.sch.ac.id</p>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Jelajah</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li><a href="#" className="hover:text-white">Sambutan</a></li>
-                <li><a href="#" className="hover:text-white">Profil Sekolah</a></li>
-                <li><a href="#" className="hover:text-white">Berita</a></li>
-                <li><a href="#" className="hover:text-white">Galeri</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Halaman Umum</h3>
-              <ul className="space-y-2 text-blue-200">
-                <li><a href="#" className="hover:text-white">Data Guru</a></li>
-                <li><a href="#" className="hover:text-white">PPDB SDN</a></li>
-                <li><a href="#" className="hover:text-white">Panduan PPDB</a></li>
-                <li><a href="#" className="hover:text-white">Lokasi</a></li>
-                <li><a href="#" className="hover:text-white">Kontak</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-6">Media Sosial</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span>Facebook</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span>Twitter</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded mr-3"></div>
-                  <span>Instagram</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
-            <p>&copy; 2024 SDN NGAWI. All rights reserved.</p>
+          <div className="text-center">
+            <p>&copy; 2025 {header.nama}. All rights reserved.</p>
           </div>
         </div>
       </footer>
