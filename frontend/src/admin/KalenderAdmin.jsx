@@ -18,7 +18,6 @@ import {
 import Header from "../componentsAdmin/components/Header";
 import Footer from "../componentsAdmin/components/Footer";
 import ActivityList from "../componentsAdmin/components/Activity";
-import { fetchWithAuth } from "../utils/api";
 
 const AkademikAdmin = () => {
   const navigate = useNavigate();
@@ -62,7 +61,7 @@ const AkademikAdmin = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetchWithAuth(`/calendar`);
+      const response = await fetch(`${API_BASE_URL}/api/calendar`);
       if (!response.ok) throw new Error("Failed to fetch events");
       const data = await response.json();
       setAcademicEvents(data);
