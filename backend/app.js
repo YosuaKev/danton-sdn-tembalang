@@ -23,7 +23,6 @@ const app = express();
 // Koneksi ke DB
 connectDB();
 
-// Middleware
 app.use(cors({
   origin: [
     'http://localhost:5173',
