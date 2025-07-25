@@ -59,8 +59,6 @@ app.get("/", (req, res) => {
   res.send("Backend server is running on Vercel");
 });
 
-app.options('*', cors());
-
 // Error handler
 app.use(errorHandler);
 
