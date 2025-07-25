@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
-
+import profileRoutes from "./routes/profile.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import guruRoutes from "./routes/guru.routes.js";
 import siswaRoutes from "./routes/siswa.routes.js";
@@ -29,8 +29,6 @@ app.use(cors({
     'http://localhost:5173',
     'https://frontend-sdn-tembalang.vercel.app'
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
   credentials: true
 }));
 
@@ -39,6 +37,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/users", profileRoutes);    
 app.use("/api/gurus", guruRoutes);
 app.use("/api/siswas", siswaRoutes);
 app.use("/api/kontak", kontakRoutes);
