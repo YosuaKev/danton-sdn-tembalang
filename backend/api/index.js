@@ -1,4 +1,6 @@
-import serverlessExpress from '@vendia/serverless-express';
+// api/index.js
 import app from '../app.js';
 
-export default serverlessExpress({ app });
+export default function handler(req, res) {
+  app(req, res);
+}
