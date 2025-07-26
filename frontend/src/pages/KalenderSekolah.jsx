@@ -17,10 +17,11 @@ const AkademikAdmin = ({ token }) => {
   const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState("");
-  const [, setSelectedDate] = useState(null);
   const [showEventModal, setShowEventModal] = useState(false);
   const [editingEvent] = useState(null);
   const [academicEvents, setAcademicEvents] = useState([]);
+  const [showEventDetails, setShowEventDetails] = useState(false);
+  const [selectedEventDetails, setSelectedEventDetails] = useState(null);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [eventForm, setEventForm] = useState({
@@ -42,19 +43,19 @@ const AkademikAdmin = ({ token }) => {
   ];
 
   useEffect(() => {
-  const fetchEvents = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/calendar`);
-      if (!response.ok) throw new Error("Failed to fetch events");
-      const data = await response.json();
-      setAcademicEvents(data);
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    }
-  };
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/calendar`);
+        if (!response.ok) throw new Error("Failed to fetch events");
+        const data = await response.json();
+        setAcademicEvents(data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
 
-  fetchEvents();
-}, []);
+    fetchEvents();
+  }, []);
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -88,11 +89,24 @@ const AkademikAdmin = ({ token }) => {
     });
   };
 
+  const handleDayClick = (day) => {
+    if (!day) return;
+    
+    const events = getEventsForDate(day);
+    if (events.length > 0) {
+      setSelectedEventDetails(events);
+      setShowEventDetails(true);
+    }
+  };
+
   const filteredEvents = academicEvents.filter(
     (event) =>
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (event.category &&
-        event.category.toLowerCase().includes(searchTerm.toLowerCase()))
+        event.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.description && event.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.date && new Date(event.date).toLocaleDateString('id-ID').toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (event.time && event.time.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const navigateMonth = (direction) => {
@@ -272,7 +286,7 @@ const AkademikAdmin = ({ token }) => {
                       className={`min-h-[80px] p-2 border border-gray-200 ${
                         day ? "hover:bg-gray-50 cursor-pointer" : ""
                       } ${hasEvents ? "bg-blue-50" : ""}`}
-                      onClick={() => day && setSelectedDate(day)}
+                      onClick={() => handleDayClick(day)}
                     >
                       {day && (
                         <>
@@ -313,7 +327,11 @@ const AkademikAdmin = ({ token }) => {
                   {filteredEvents.map((event) => (
                     <div
                       key={event._id}
-                      className="bg-white rounded-lg shadow-md border border-gray-200 p-6"
+                      className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                      onClick={() => {
+                        setSelectedEventDetails([event]);
+                        setShowEventDetails(true);
+                      }}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -450,6 +468,76 @@ const AkademikAdmin = ({ token }) => {
                 <Save className="w-4 h-4 mr-2" />
                 Simpan
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Event Details Popup */}
+      {showEventDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="relative bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg">
+            
+            {/* Close button */}
+            <button
+              onClick={() => setShowEventDetails(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-gray-900">Detail Kegiatan</h3>
+            </div>
+
+            <div className="space-y-4">
+              {selectedEventDetails.map((event, index) => (
+                <div
+                  key={index}
+                  className="mb-6 pb-6 border-b border-gray-200 last:border-0 last:pb-0 last:mb-0"
+                >
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">{event.title}</h4>
+
+                  <div className="grid grid-cols-2 gap-4 mb-3 mt-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Tanggal</p>
+                      <p className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                        {new Date(event.date).toLocaleDateString("id-ID", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
+                    </div>
+
+                    {event.time && (
+                      <div>
+                        <p className="text-sm text-gray-500">Waktu</p>
+                        <p className="mt-1 block w-full border border-gray-300 rounded-md p-2">{event.time}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {event.category && (
+                    <div className="mt-4">
+                      <p className="text-sm text-gray-500">Kategori</p>
+                      <span
+                        className={`mt-1 block w-full border border-gray-300 rounded-md p-2 ${getCategoryColor(event.category)}`}
+                      >
+                        {event.category}
+                      </span>
+                    </div>
+                  )}
+
+                  {event.description && (
+                    <div className="mt-4">
+                      <p className="text-sm text-gray-500">Deskripsi</p>
+                      <p className="mt-1 block w-full border border-gray-300 rounded-md p-2">{event.description}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
