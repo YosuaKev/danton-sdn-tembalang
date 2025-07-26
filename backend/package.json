@@ -12,7 +12,6 @@
   "license": "ISC",
   "description": "This documentation provides details about the authentication endpoints available in the JagaDompet API. The authentication system uses JWT (JSON Web Tokens) for secure user authentication.",
   "dependencies": {
-    "@vendia/serverless-express": "^4.12.6",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
