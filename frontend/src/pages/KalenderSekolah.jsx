@@ -42,26 +42,19 @@ const AkademikAdmin = ({ token }) => {
   ];
 
   useEffect(() => {
-    if (!token) {
-      navigate("/admin");
-      return;
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/calendar`);
+      if (!response.ok) throw new Error("Failed to fetch events");
+      const data = await response.json();
+      setAcademicEvents(data);
+    } catch (error) {
+      console.error("Error fetching events:", error);
     }
+  };
 
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/calendar`);
-        if (!response.ok) throw new Error("Failed to fetch events");
-        const data = await response.json();
-        setAcademicEvents(data);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
-    fetchEvents();
-  }, [token, navigate]);
-
-  if (!token) return null;
+  fetchEvents();
+}, []);
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
