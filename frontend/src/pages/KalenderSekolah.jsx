@@ -5,34 +5,24 @@ import {
   ChevronRight,
   Search,
   Calendar,
-  MapPin,
   Clock,
-  Users,
-  Plus,
-  Edit,
-  Menu,
-  Trash2,
-  X,
   Save,
+  X,
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ActivityList from "../components/Activity";
 
-const AkademikAdmin = () => {
+const AkademikAdmin = ({ token }) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState("");
   const [, setSelectedDate] = useState(null);
   const [showEventModal, setShowEventModal] = useState(false);
-  const [editingEvent, ] = useState(null);
+  const [editingEvent] = useState(null);
   const [academicEvents, setAcademicEvents] = useState([]);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Navigation handlers
-
-  // Form states
   const [eventForm, setEventForm] = useState({
     title: "",
     date: "",
@@ -41,7 +31,6 @@ const AkademikAdmin = () => {
     description: "",
   });
 
-  // Categories and statuses
   const categories = [
     "Upacara",
     "Akademik",
@@ -53,30 +42,27 @@ const AkademikAdmin = () => {
   ];
 
   useEffect(() => {
-  if (!token) {
-    navigate("/admin");
-    return;
-  }
-
-  const fetchEvents = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/calendar`);
-      if (!response.ok) throw new Error("Failed to fetch events");
-      const data = await response.json();
-      setAcademicEvents(data);
-    } catch (error) {
-      console.error("Error fetching events:", error);
+    if (!token) {
+      navigate("/admin");
+      return;
     }
-  };
+
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/calendar`);
+        if (!response.ok) throw new Error("Failed to fetch events");
+        const data = await response.json();
+        setAcademicEvents(data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
 
     fetchEvents();
   }, [token, navigate]);
 
-  if (!token) {
-    return null;
-}
+  if (!token) return null;
 
-  // Calendar helper functions
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -122,7 +108,6 @@ const AkademikAdmin = () => {
     setCurrentDate(newDate);
   };
 
-  // Event handlers
   const handleSaveEvent = async () => {
     if (!eventForm.title || !eventForm.date) {
       alert("Mohon lengkapi semua field yang wajib diisi");
@@ -140,25 +125,25 @@ const AkademikAdmin = () => {
 
       let response;
 
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) headers.Authorization = `Bearer ${token}`;
+
       if (editingEvent) {
         response = await fetch(
           `${API_BASE_URL}/api/calendar/${editingEvent._id}`,
           {
             method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+            headers,
             body: JSON.stringify(eventData),
           }
         );
       } else {
         response = await fetch(`${API_BASE_URL}/api/calendar`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers,
           body: JSON.stringify(eventData),
         });
       }
@@ -191,9 +176,6 @@ const AkademikAdmin = () => {
     }
   };
 
-  // Activity handlers (these would need their own backend endpoints)
-
-  // Helper functions
   const monthNames = [
     "Januari",
     "Februari",
@@ -226,12 +208,9 @@ const AkademikAdmin = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header Navigation */}
       <Header />
 
-      {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        {/* Page Title */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-blue-900 mb-4">
             Kalender Kegiatan Sekolah
@@ -241,10 +220,6 @@ const AkademikAdmin = () => {
           </p>
         </div>
 
-        {/* Admin Controls */}
-       
-
-        {/* Search Box */}
         <div className="mb-8">
           <div className="relative max-w-md mx-auto">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -259,10 +234,8 @@ const AkademikAdmin = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Calendar Section */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-              {/* Calendar Header */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-blue-900">
                   {monthNames[currentDate.getMonth()]}{" "}
@@ -284,7 +257,6 @@ const AkademikAdmin = () => {
                 </div>
               </div>
 
-              {/* Calendar Grid */}
               <div className="grid grid-cols-7 gap-1 mb-4">
                 {dayNames.map((day) => (
                   <div
@@ -311,9 +283,7 @@ const AkademikAdmin = () => {
                     >
                       {day && (
                         <>
-                          <div className="font-semibold text-sm mb-1">
-                            {day}
-                          </div>
+                          <div className="font-semibold text-sm mb-1">{day}</div>
                           {events.slice(0, 2).map((event) => (
                             <div
                               key={event._id}
@@ -337,7 +307,6 @@ const AkademikAdmin = () => {
               </div>
             </div>
 
-            {/* Events List */}
             <div className="mt-8">
               <h3 className="text-2xl font-bold text-blue-900 mb-6">
                 Daftar Kegiatan Akademik
@@ -395,7 +364,6 @@ const AkademikAdmin = () => {
                             )}
                           </div>
                         </div>
-                        
                       </div>
                     </div>
                   ))}
@@ -404,12 +372,10 @@ const AkademikAdmin = () => {
             </div>
           </div>
 
-          {/* Right Sidebar - Upcoming Activities */}
           <ActivityList />
         </div>
       </div>
 
-      {/* Event Modal */}
       {showEventModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -426,97 +392,67 @@ const AkademikAdmin = () => {
             </div>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Judul Kegiatan *
-                </label>
-                <input
-                  type="text"
-                  value={eventForm.title}
-                  onChange={(e) =>
-                    setEventForm({ ...eventForm, title: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Masukkan judul kegiatan"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tanggal *
-                </label>
-                <input
-                  type="date"
-                  value={eventForm.date}
-                  onChange={(e) =>
-                    setEventForm({ ...eventForm, date: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Waktu
-                </label>
-                <input
-                  type="time"
-                  value={eventForm.time}
-                  onChange={(e) =>
-                    setEventForm({ ...eventForm, time: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Contoh: 08:00 - 10:00"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Kategori
-                </label>
-                <select
-                  value={eventForm.category}
-                  onChange={(e) =>
-                    setEventForm({ ...eventForm, category: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Deskripsi
-                </label>
-                <textarea
-                  value={eventForm.description}
-                  onChange={(e) =>
-                    setEventForm({ ...eventForm, description: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows="3"
-                  placeholder="Masukkan deskripsi kegiatan"
-                />
-              </div>
+              <input
+                type="text"
+                value={eventForm.title}
+                onChange={(e) =>
+                  setEventForm({ ...eventForm, title: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                placeholder="Judul kegiatan *"
+                required
+              />
+              <input
+                type="date"
+                value={eventForm.date}
+                onChange={(e) =>
+                  setEventForm({ ...eventForm, date: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                required
+              />
+              <input
+                type="time"
+                value={eventForm.time}
+                onChange={(e) =>
+                  setEventForm({ ...eventForm, time: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+              <select
+                value={eventForm.category}
+                onChange={(e) =>
+                  setEventForm({ ...eventForm, category: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              >
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              <textarea
+                value={eventForm.description}
+                onChange={(e) =>
+                  setEventForm({ ...eventForm, description: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                rows="3"
+                placeholder="Deskripsi kegiatan"
+              />
             </div>
 
             <div className="flex justify-end space-x-3 mt-6">
               <button
                 onClick={() => setShowEventModal(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
                 Batal
               </button>
               <button
                 onClick={handleSaveEvent}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
               >
                 <Save className="w-4 h-4 mr-2" />
                 Simpan
@@ -526,9 +462,6 @@ const AkademikAdmin = () => {
         </div>
       )}
 
-      {/* Activity Modal */}
-
-      {/* Footer */}
       <Footer />
     </div>
   );
